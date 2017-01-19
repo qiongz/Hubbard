@@ -1,5 +1,5 @@
 CC = g++ 
-CFLAGS = -g 
+CFLAGS = -std=c++11
 
 hubbard:main.cpp basis.o
 	$(CC) $(CFLAGS) $^ -o $@
