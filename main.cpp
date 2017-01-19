@@ -1,16 +1,9 @@
 #include<iostream>
-#include<sstream>
-#include<fstream>
-#include<cstdlib>
-#include<string>
 #include<unistd.h>
-#include<vector>
-#include<list>
-#include<map>
-#include<algorithm>
 #include"basis.h"
 
 using namespace std;
+extern "C" int dsyev_(char *, char *, int *, double *, int*, double *, double *, int *, int *);
 
 int main(int argc,char *argv[]){
     int n_site,n_el;
@@ -20,6 +13,7 @@ int main(int argc,char *argv[]){
     double t,U;
     double *hamiltonian;
     double *energy;
+    void dsyev(double *, double *, int);
 
     /* initialize parameters */
     n_site=2; 
@@ -67,8 +61,6 @@ int main(int argc,char *argv[]){
     sector.init();
     /* print basis set */
     sector.print();
-    
-
 
     /* calculating hamiltonian matrix elements */
     int n,i,j,k,l;
@@ -107,6 +99,10 @@ int main(int argc,char *argv[]){
         else
             cout<<"]"<<endl;
     }
+    /* print eigenvalues */
+    dsyev(hamiltonian,energy,n_basis);
+    for(n=0;n<n_basis;n++)
+        cout<<energy[n]<<endl;
          
     return 0;
 }
@@ -118,4 +114,16 @@ void usage(char *target){
     cout<<"  -t                       Hopping strength\n";
     cout<<"  -U                       Onsite replusion energy\n";
     cout<<"Default: (l,n,t,U) = (2,2,1.0,0.5)"<<endl;
+}
+
+void dsyev(double *h, double *e, int l){
+    char jobz,uplo;
+    int info;
+    jobz = 'V';
+    uplo = 'U';
+    int lda=l;
+    int lwork = 3*l-1;
+    double *work=new double[lwork];
+    dsyev_(&jobz, &uplo, &l, h, &lda, e, work, &lwork, &info);
+    delete [] work;
 }
