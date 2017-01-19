@@ -8,7 +8,7 @@
 #include<list>
 #include<map>
 #include<algorithm>
-//#include"mkl.h"
+#include"basis.h"
 
 using namespace std;
 
@@ -57,12 +57,11 @@ int main(int argc,char *argv[]){
     }
 
     /* generating basis */
-    int i,j,k,l;
-    for(n_elu=0;n_elu<=n_el;n_elu++){
-        Sz_tot=2*n_elu-n_el;
-        basis sector(n_site,n_elu,n_eld);
+    n_elu=n_el/2;
+    n_eld=n_el/2;
+    basis sector(n_site,n_elu,n_eld);
+    sector.print();
     
-    }
     return 0;
 }
 void usage(char *target){
