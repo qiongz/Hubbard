@@ -1,4 +1,5 @@
 #include<iostream>
+#include<bitset>
 #include<unistd.h>
 #include"basis.h"
 
@@ -13,7 +14,7 @@ int main(int argc,char *argv[]){
     double t,U;
     double *hamiltonian;
     double *energy;
-    void dsyev(double *, double *, int);
+    void diag(double *, double *, int);
 
     /* initialize parameters */
     n_site=2; 
@@ -54,16 +55,18 @@ int main(int argc,char *argv[]){
     }
 
     /* generating basis */
-    // Sz=0 sector 
-    n_elu=1;
+    int n,i,j,k,l;
+    for(n_elu=1;n_elu<=n_el/2;n_elu++){
     n_eld=n_el-n_elu;
+    Sz_tot=(n_elu-n_eld)/2;
+    cout<<"Sz_tot=: "<<Sz_tot<<endl;
+    /* generating basis */
     basis sector(n_site,n_elu,n_eld);
     sector.init();
     /* print basis set */
-    sector.print();
+   // sector.print();
 
     /* calculating hamiltonian matrix elements */
-    int n,i,j,k,l;
     nb_up=sector.nb_up;
     nb_down=sector.nb_up;
     n_basis=nb_up*nb_down;
@@ -87,23 +90,39 @@ int main(int argc,char *argv[]){
     }
 
     /* print hamiltonian matrix */
+    /*
     for(i=0;i<n_basis;i++){
+        cout<<setw(3);
         if(i==0)
            cout<<"[[ ";
         else
-           cout<<"[ ";
+           cout<<" [ ";
         for(j=0;j<n_basis;j++)
            cout<<hamiltonian[i*n_basis+j]<<", ";
         if(i==n_basis-1)
             cout<<"]]"<<endl;
         else
-            cout<<"]"<<endl;
+            cout<<"] "<<endl;
     }
+    */
+    
     /* print eigenvalues */
-    dsyev(hamiltonian,energy,n_basis);
+    diag(hamiltonian,energy,n_basis);
+    /*
+    cout<<"Eigenenergies:"<<endl;
     for(n=0;n<n_basis;n++)
-        cout<<energy[n]<<endl;
+        cout<<setprecision(3)<<energy[n]<<endl;
+    */
+    cout<<"E0=:"<<energy[0]<<endl;
+    // print the wavefunction corresponding to the lowest eigenenergy in the sector
+    cout<<"# basis "<<"spin-up"<<" "<<"spin-down"<<" "<<"coefficients"<<endl;
+    for(i=0;i<nb_up;i++)
+        for(j=0;j<nb_down;j++)
+            cout<<i*nb_down+j<<" "<<bitset<8>(sector.relu[i]).to_string()<<" "<<bitset<8>(sector.reld[j]).to_string()<<" "<<hamiltonian[i*nb_down+j]<<endl;
          
+    delete [] hamiltonian; 
+    delete [] energy;
+    }
     return 0;
 }
 void usage(char *target){
@@ -116,7 +135,7 @@ void usage(char *target){
     cout<<"Default: (l,n,t,U) = (2,2,1.0,0.5)"<<endl;
 }
 
-void dsyev(double *h, double *e, int l){
+void diag(double *h, double *e, int l){
     char jobz,uplo;
     int info;
     jobz = 'V';
