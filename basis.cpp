@@ -94,7 +94,7 @@ int basis::potential(int i,int j,int n){
    int mask,bu,bd;
    mask=(1<<n);
    bu=relu[i]&mask;
-   bd=reld[i]&mask;
+   bd=reld[j]&mask;
    if(bu==mask && bd==mask)
        return 1;
    else
