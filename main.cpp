@@ -60,35 +60,37 @@ int main(int argc,char *argv[]){
     }
 
     /* generating basis */
-    int n,i,j,k,l;
     // Sz=0 sector 
-    n_elu=n_el/2;
-    n_eld=n_el/2;
+    n_elu=1;
+    n_eld=n_el-n_elu;
     basis sector(n_site,n_elu,n_eld);
+    sector.init();
     /* print basis set */
     sector.print();
+    
 
 
     /* calculating hamiltonian matrix elements */
-    n_basis=sector.n_basis;
+    int n,i,j,k,l;
     nb_up=sector.nb_up;
     nb_down=sector.nb_up;
+    n_basis=nb_up*nb_down;
     hamiltonian=new double[n_basis*n_basis];
     energy=new double[n_basis];
-    memset(hamiltonian,0,16*n_basis*n_basis);
+    memset(hamiltonian,0,sizeof(double)*n_basis*n_basis);
     for(i=0;i<nb_up;i++){
         for(j=0;j<nb_down;j++){
             for(n=0;n<n_site-1;n++){
                 k=sector.hopping_up(i,n);
                 l=sector.hopping_down(j,n);
                 if(k!=i)
-                    hamiltonian[(i*nb_up+j)*n_basis+k*nb_up+j]+=-t;
+                    hamiltonian[(i*nb_down+j)*n_basis+k*nb_down+j]+=-t;
                 if(l!=j)
-                    hamiltonian[(i*nb_up+j)*n_basis+i*nb_up+l]+=-t;
+                    hamiltonian[(i*nb_down+j)*n_basis+i*nb_down+l]+=-t;
             }
             for(n=0;n<n_site;n++)
                 if(sector.potential(i,j,n))
-                    hamiltonian[(i*nb_up+j)*n_basis+i*nb_up+j]+=U;
+                    hamiltonian[(i*nb_down+j)*n_basis+i*nb_down+j]+=U;
         }
     }
 
