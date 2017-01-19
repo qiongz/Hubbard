@@ -3,6 +3,7 @@
 #include<iomanip>
 #include<string.h>
 #include<cstdlib>
+#include<map>
 using namespace std;
 
 class basis{
@@ -16,11 +17,11 @@ public:
     basis(int,int,int);
     const basis & operator=(const basis &);
     ~basis();
-    basis hopping(int,int);
-    basis potential(int);
+    //basis hopping(int,int);
+    //basis potential(int);
     void generate_up(int);
     void generate_down(int);
-    void factorial(int,int);
+    int factorial(int,int);
     void print();
 };
     
