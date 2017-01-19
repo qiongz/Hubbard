@@ -6,9 +6,9 @@ basis::basis(){
 }
 
 basis::basis(int _n_site,int _n_elu, int _n_eld):n_site(_n_site),n_elu(_n_elu),n_eld(_n_eld){
-    init();
 }
 
+/*
 const basis & basis::operator =(const basis & _basis){
     if(this !=&_basis){
         n_site=_basis.n_site;
@@ -19,6 +19,7 @@ const basis & basis::operator =(const basis & _basis){
     }
     return *this;
 }
+*/
 
 basis::~basis(){}
 
@@ -38,7 +39,6 @@ void basis::init(){
     int i,config_init;
     nb_up=factorial(n_site,n_elu);
     nb_down=factorial(n_site,n_eld);
-    n_basis=nb_up*nb_down;
     config_init=0;
     for(i=0;i<n_elu;i++)
        config_init+=(1<<i);
@@ -62,7 +62,6 @@ void basis::init(){
         elu[relu[i]]=i; 
     for(i=0;i<nb_down;i++)
         eld[reld[i]]=i; 
-    
 }
 
 
