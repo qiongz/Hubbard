@@ -29,7 +29,7 @@ int main(int argc,char *argv[]){
     basis sector(n_site,n_elu,n_eld);
     sector.init();
     /* print basis set */
-   // sector.print();
+    sector.print();
 
     /* calculating hamiltonian matrix elements */
     nb_up=sector.nb_up;
