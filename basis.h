@@ -1,3 +1,11 @@
+/************************************************
+   Basis generation library for 1D Hubbard model
+   @author qiongzhu
+   20/1/2017
+   Email:qiongzhunow@gmail.com
+*************************************************/
+#ifndef BASIS_H
+#define BASIS_H
 #include<iostream>
 #include<string.h>
 #include<iomanip>
@@ -29,4 +37,5 @@ public:
     void generate_down(int);
     void print();
 };
-    
+
+#endif 
