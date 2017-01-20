@@ -21,12 +21,11 @@ private:
     map<int,int> elu,eld;     // basis set of spin-up/down electrons, I-J table
 
 public:
-    int n_basis;               // No. of basis
     int nb_up,nb_down;        // No. of basis for spin-up/down electrons
     vector<int> relu,reld;    // reversal table, J->I, Lin's Table is a 2D array 
     explicit basis();
     basis(int,int,int);
-    //const basis & operator=(const basis &);
+    const basis & operator=(const basis &);
     ~basis();
     int hopping_up(int,int);
     int hopping_down(int,int);
