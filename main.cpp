@@ -1,10 +1,7 @@
-#include<iostream>
-#include<bitset>
-#include<unistd.h>
+#include"init.h"
+#include"lanczos.h"
 #include"basis.h"
-
 using namespace std;
-extern "C" int dsyev_(char *, char *, int *, double *, int*, double *, double *, int *, int *);
 
 int main(int argc,char *argv[]){
     int n_site,n_el;
@@ -14,45 +11,13 @@ int main(int argc,char *argv[]){
     double t,U;
     double *hamiltonian;
     double *energy;
-    void diag(double *, double *, int);
 
     /* initialize parameters */
     n_site=2; 
     n_el=2;
     t=1.0;
     U=0.5;
-    void usage(char*);
-    int getopt(int argc,char * const argv[],const char *optstring);
-    extern char *optarg;
-    extern int optind, opterr, optopt;
-    int ch,errFlag;
-    errFlag=0;
-    while((ch=getopt(argc,argv,"l:n:t:U:h:"))!=-1){
-    switch(ch){
-        case 'l':
-            n_site=atoi(optarg);
-            break;
-        case 'n':
-            n_el=atoi(optarg);
-            break;
-        case 't':
-            t=atof(optarg);
-            break;
-        case 'U':
-            U=atof(optarg);
-            break;
-        case 'h':
-            errFlag++;
-            break;
-        default:
-            errFlag++;
-            break;
-       }
-    }
-    if(errFlag) {
-        usage(argv[0]);
-        exit(2);
-    }
+    init(&n_site,&n_el,&t,&U,argc,argv);
 
     /* generating basis */
     int n,i,j,k,l;
@@ -124,25 +89,4 @@ int main(int argc,char *argv[]){
     delete [] energy;
     }
     return 0;
-}
-void usage(char *target){
-    cout<<"Usage: "<<target<<" [Options]\n";
-    cout<<"Options:\n";
-    cout<<"  -l                       Number of sites\n";
-    cout<<"  -n                       Number of electrons\n";
-    cout<<"  -t                       Hopping strength\n";
-    cout<<"  -U                       Onsite replusion energy\n";
-    cout<<"Default: (l,n,t,U) = (2,2,1.0,0.5)"<<endl;
-}
-
-void diag(double *h, double *e, int l){
-    char jobz,uplo;
-    int info;
-    jobz = 'V';
-    uplo = 'U';
-    int lda=l;
-    int lwork = 3*l-1;
-    double *work=new double[lwork];
-    dsyev_(&jobz, &uplo, &l, h, &lda, e, work, &lwork, &info);
-    delete [] work;
 }
