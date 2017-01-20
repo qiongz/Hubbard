@@ -1,5 +1,4 @@
 #include"basis.h"
-
 using namespace std;
 
 basis::basis(){
@@ -8,7 +7,6 @@ basis::basis(){
 basis::basis(int _n_site,int _n_elu, int _n_eld):n_site(_n_site),n_elu(_n_elu),n_eld(_n_eld){
 }
 
-/*
 const basis & basis::operator =(const basis & _basis){
     if(this !=&_basis){
         n_site=_basis.n_site;
@@ -16,10 +14,13 @@ const basis & basis::operator =(const basis & _basis){
         n_eld=_basis.n_eld;
         nb_up=_basis.nb_up;
         nb_down=_basis.nb_down;
+        elu=_basis.elu;
+        eld=_basis.eld;
+        relu=_basis.relu;
+        reld=_basis.reld;
     }
     return *this;
 }
-*/
 
 basis::~basis(){}
 
