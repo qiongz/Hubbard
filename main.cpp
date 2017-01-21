@@ -1,6 +1,8 @@
 #include"init.h"
 #include"basis.h"
 #include"hamiltonian.h"
+#include<ctime>
+#include<cstdlib>
 
 using namespace std;
 
@@ -17,7 +19,7 @@ int main(int argc,char *argv[]) {
     nel=2;
     t=1.0;
     U=0.5;
-    init(&nsite,&nel,&t,&U,argc,argv);
+    init_argv(&nsite,&nel,&t,&U,argc,argv);
 
     /* generating basis */
     int n,i,j,k,l;
@@ -30,7 +32,6 @@ int main(int argc,char *argv[]) {
         sector.init();
         /* print basis set */
         sector.print();
-
 
         diag_hamil(&sector,t,U,energy,wf);
         /* calculating hamiltonian matrix elements */
