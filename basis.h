@@ -16,13 +16,12 @@
 using namespace std;
 
 class basis{
-private:
-    int n_site,n_elu,n_eld;  // No. of sites, spin-up/down electrons
-    map<int,int> elu,eld;     // basis set of spin-up/down electrons, I-J table
-
 public:
-    int nb_up,nb_down;        // No. of basis for spin-up/down electrons
-    vector<int> relu,reld;    // reversal table, J->I, Lin's Table is a 2D array 
+    int nsite,nel_up,nel_down;          // No. of sites, spin-up/down electrons
+    map<int,int> basis_up,basis_down;   // basis set of spin-up/down electrons, I-J table
+
+    int nbasis_up,nbasis_down;          // No. of basis for spin-up/down electrons
+    vector<int> id_up,id_down;          // reversal table, J->I, Lin's Table is a 2D array 
     explicit basis();
     basis(int,int,int);
     const basis & operator=(const basis &);
