@@ -4,20 +4,20 @@ using namespace std;
 basis::basis(){
 }
 
-basis::basis(int _n_site,int _n_elu, int _n_eld):n_site(_n_site),n_elu(_n_elu),n_eld(_n_eld){
+basis::basis(int _nsite,int _nel_up, int _nel_down):nsite(_nsite),nel_up(_nel_up),nel_down(_nel_down){
 }
 
 const basis & basis::operator =(const basis & _basis){
     if(this !=&_basis){
-        n_site=_basis.n_site;
-        n_elu=_basis.n_elu;
-        n_eld=_basis.n_eld;
-        nb_up=_basis.nb_up;
-        nb_down=_basis.nb_down;
-        elu=_basis.elu;
-        eld=_basis.eld;
-        relu=_basis.relu;
-        reld=_basis.reld;
+        nsite=_basis.nsite;
+        nel_up=_basis.nel_up;
+        nel_down=_basis.nel_down;
+        nbasis_up=_basis.nbasis_up;
+        nbasis_down=_basis.nbasis_down;
+        basis_up=_basis.basis_up;
+        basis_down=_basis.basis_down;
+        id_up=_basis.id_up;
+        id_down=_basis.id_down;
     }
     return *this;
 }
@@ -38,63 +38,63 @@ int basis::factorial(int N, int m){
 
 void basis::init(){
     int i,config_init;
-    nb_up=factorial(n_site,n_elu);
-    nb_down=factorial(n_site,n_eld);
+    nbasis_up=factorial(nsite,nel_up);
+    nbasis_down=factorial(nsite,nel_down);
     config_init=0;
-    for(i=0;i<n_elu;i++)
+    for(i=0;i<nel_up;i++)
        config_init+=(1<<i);
     generate_up(config_init);
 
     config_init=0;
-    for(i=0;i<n_eld;i++)
+    for(i=0;i<nel_down;i++)
        config_init+=(1<<i);
     generate_down(config_init);
     
-    for(auto &x:elu)
-      relu.push_back(x.first);
-    for(auto &x:eld)
-      reld.push_back(x.first);
+    for(auto &x:basis_up)
+      id_up.push_back(x.first);
+    for(auto &x:basis_down)
+      id_down.push_back(x.first);
 
-    sort(relu.begin(),relu.end());     
-    sort(reld.begin(),reld.end());     
-    elu.clear();
-    eld.clear();
-    for(i=0;i<nb_up;i++)
-        elu[relu[i]]=i; 
-    for(i=0;i<nb_down;i++)
-        eld[reld[i]]=i; 
+    sort(id_up.begin(),id_up.end());     
+    sort(id_down.begin(),id_down.end());     
+    basis_up.clear();
+    basis_down.clear();
+    for(i=0;i<nbasis_up;i++)
+        basis_up[id_up[i]]=i; 
+    for(i=0;i<nbasis_down;i++)
+        basis_down[id_down[i]]=i; 
 }
 
 
 int basis::hopping_up(int i,int n){
    int mask,K,L,b;
    mask=(1<<n)+(1<<(n+1));
-   K=mask&relu[i];
+   K=mask&id_up[i];
    L=K^mask;
    if(L!=0 && L!=mask)
-       b=relu[i]-K+L;
+       b=id_up[i]-K+L;
    else
-       b=relu[i];
-   return elu[b];
+       b=id_up[i];
+   return basis_up[b];
 }
 
 int basis::hopping_down(int i,int n){
    int mask,K,L,b;
    mask=(1<<n)+(1<<(n+1));
-   K=mask&reld[i];
+   K=mask&id_down[i];
    L=K^mask;
    if(L!=0 && L!=mask)
-       b=reld[i]-K+L;
+       b=id_down[i]-K+L;
    else
-       b=reld[i];
-   return eld[b];
+       b=id_down[i];
+   return basis_down[b];
 }
 
 int basis::potential(int i,int j,int n){
    int mask,bu,bd;
    mask=(1<<n);
-   bu=relu[i]&mask;
-   bd=reld[j]&mask;
+   bu=id_up[i]&mask;
+   bd=id_down[j]&mask;
    if(bu==mask && bd==mask)
        return 1;
    else
@@ -102,17 +102,17 @@ int basis::potential(int i,int j,int n){
 }
 
 void basis::generate_up(int a){
-   elu.emplace(a,a);
    int mask,K,L,b;
-   for(int i=0;i<n_site-1;i++){
+   basis_up.emplace(a,a);
+   for(int i=0;i<nsite-1;i++){
        mask=(1<<i)+(1<<(i+1));
        K=mask&a;
        L=K^mask;
        if(L!=0 && L!=mask){
             b=a-K+L;
-            if(elu.find(b)==elu.end())
+            if(basis_up.find(b)==basis_up.end())
                    generate_up(b);
-            if(elu.size()==nb_up)
+            if(basis_up.size()==nbasis_up)
                  return;
        }
    }
@@ -120,17 +120,17 @@ void basis::generate_up(int a){
 }
 
 void basis::generate_down(int a){
-   eld.emplace(a,a);
    int mask,K,L,b;
-   for(int i=0;i<n_site-1;i++){
+   basis_down.emplace(a,a);
+   for(int i=0;i<nsite-1;i++){
        mask=(1<<i)+(1<<(i+1));
        K=mask&a;
        L=K^mask;
        if(L!=0 && L!=mask){
             b=a-K+L;
-            if(eld.find(b)==eld.end())
+            if(basis_down.find(b)==basis_down.end())
                    generate_down(b);
-            if(eld.size()==nb_down)
+            if(basis_down.size()==nbasis_down)
                  return;
        }
    }
@@ -140,16 +140,16 @@ void basis::print(){
     cout<<"---------------------------------------"<<endl;
     cout<<"spin-up electrons:"<<endl;
     cout<<"---------------------------------------"<<endl;
-    for(auto &x: elu)
+    for(auto &x: basis_up)
          cout<<bitset<16>(x.first).to_string()<<" "<<setw(6)<<x.first<<endl;
     cout<<"---------------------------------------"<<endl;
     cout<<"spin-down electrons:"<<endl;
     cout<<"---------------------------------------"<<endl;
-    for(auto &x: eld)
+    for(auto &x: basis_down)
          cout<<bitset<16>(x.first).to_string()<<" "<<setw(6)<<x.first<<endl;
     cout<<"---------------------------------------"<<endl;
-    cout<<"No. basis for spin-up electrons: "<<setw(6)<<nb_up<<endl;
-    cout<<"No. basis for spin-down electrons: "<<setw(6)<<nb_down<<endl;
+    cout<<"No. basis for spin-up electrons: "<<setw(6)<<nbasis_up<<endl;
+    cout<<"No. basis for spin-down electrons: "<<setw(6)<<nbasis_down<<endl;
     cout<<"---------------------------------------"<<endl;
 }
 
