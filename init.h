@@ -1,8 +1,10 @@
 #ifndef INIT_H
 #define INIT_H
 #include<unistd.h>
+#include<cmath>
 #include<iostream>
-void usage(char *target);
-void init(int *n_site, int *n_el, double *t, double *U, int argc,char *argv[]);
+#include<stdexcept>
+void usage(char *);
+void init_argv(int *, int *, double *, double *, int ,char **);
 
 #endif
