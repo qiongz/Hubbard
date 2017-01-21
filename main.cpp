@@ -1,37 +1,38 @@
 #include"init.h"
 #include"basis.h"
 #include"hamiltonian.h"
+
 using namespace std;
 
 int main(int argc,char *argv[]) {
-    int n_site,n_el;
-    int n_elu,n_eld;
-    int n_basis,nb_up,nb_down;
-    int Sz_tot;
+    int nsite,nel;
+    int nel_up,nel_down;
+    int nbasis,nbasis_up,nbasis_down;
+    int Sz;
     double t,U;
     double *wf,energy;
 
     /* initialize parameters */
-    n_site=2;
-    n_el=2;
+    nsite=2;
+    nel=2;
     t=1.0;
     U=0.5;
-    init(&n_site,&n_el,&t,&U,argc,argv);
+    init(&nsite,&nel,&t,&U,argc,argv);
 
     /* generating basis */
     int n,i,j,k,l;
-    for(n_elu=1; n_elu<=n_el/2; n_elu++) {
-        n_eld=n_el-n_elu;
-        Sz_tot=(n_elu-n_eld)/2;
-        cout<<"Sz_tot=: "<<Sz_tot<<endl;
+    for(nel_up=1; nel_up<=nel/2; nel_up++) {
+        nel_down=nel-nel_up;
+        Sz=(nel_up-nel_down)/2;
+        cout<<"Sz=: "<<Sz<<endl;
         /* generating basis */
-        basis sector(n_site,n_elu,n_eld);
+        basis sector(nsite,nel_up,nel_down);
         sector.init();
         /* print basis set */
         sector.print();
 
 
-        diag_hamil(sector,t,U,energy,wf);
+        diag_hamil(&sector,t,U,energy,wf);
         /* calculating hamiltonian matrix elements */
         /* 
         nb_up=sector.nb_up;
