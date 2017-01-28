@@ -1,9 +1,9 @@
 #include"hamiltonian.h"
 void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     int nsite,nbasis_up,nbasis_down,nHilbert;
-    nsite=(*sector).nsite;
-    nbasis_up=(*sector).nbasis_up;
-    nbasis_down=(*sector).nbasis_down;
+    nsite=sector->nsite;
+    nbasis_up=sector->nbasis_up;
+    nbasis_down=sector->nbasis_down;
     nHilbert=nbasis_up*nbasis_down;
     srand(1);
 
@@ -20,8 +20,8 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     for(i=0; i<nbasis_up; i++) {
         for(j=0; j<nbasis_down; j++) {
             for(n=0; n<nsite-1; n++) {
-                k=(*sector).hopping_up(i,n);
-                l=(*sector).hopping_down(j,n);
+                k=sector->hopping_up(i,n);
+                l=sector->hopping_down(j,n);
                 if(k!=i) {
                     hamil_nonzero[(i*nbasis_down+j)*nHilbert+k*nbasis_down+j]+=-t;
                     full_hamil[(i*nbasis_down+j)*nHilbert+k*nbasis_down+j]+=-t;
@@ -32,7 +32,7 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
                 }
             }
             for(n=0; n<nsite; n++)
-                if((*sector).potential(i,j,n)) {
+                if(sector->potential(i,j,n)) {
                     hamil_nonzero[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
                     full_hamil[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
                 }
@@ -57,14 +57,14 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     phi_0.init_random();
     basis_list.push_back(phi_0);
     norm_factor.push_back(1);
-
+    
     // initialize phi_1
     lbasis phi_1=phi_0.hoperation(hamil,row_index,col_index);
     overlap_factor.push_back(phi_0*phi_1);
     phi_1=phi_1-phi_0*overlap_factor[0];
+
     norm_factor.push_back(phi_1.normalize());
     basis_list.push_back(phi_1);
-
     // iterative generation of basis of phi_1,phi_2,...,phi_lambda
     for(i=1; i<lambda_max; i++) {
         phi_1=basis_list[i].hoperation(hamil,row_index,col_index);
@@ -77,7 +77,12 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
            break;
         }
     }
-
+    
+    for(i=0;i<lambda;i++){
+        cout<<basis_list[i]<<endl;
+    }
+  
+/*
     // hamiltonian in the Lanczos basis
     double *lanczos_eigenvalues=new double[lambda];
     double *lanczos_hamil=new double [lambda*lambda];
@@ -104,7 +109,6 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
         else
             std::cout<<"] "<<std::endl;
     }
-
     // print the full hamiltonian
     std::cout<<"#full hamiltonian"<<std::endl;
     for(i=0;i<nHilbert;i++){
@@ -128,6 +132,7 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
 
     delete [] full_hamil,full_eigenvalues,norm_factor,overlap_factor;
     delete [] lanczos_eigenvalues,lanczos_hamil;
+*/
 }
 
 
