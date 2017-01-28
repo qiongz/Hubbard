@@ -18,6 +18,7 @@ public:
       const lbasis operator-(const lbasis &) const;
       const lbasis operator*(const double &)const ;
       const double operator*(const lbasis &)const;
+      friend ostream & operator<<(ostream & os, const lbasis &); 
       lbasis hoperation(const vector<double> &,const vector<int> &, const vector<int> &);
 };
 
