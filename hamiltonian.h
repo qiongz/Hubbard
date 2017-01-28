@@ -3,7 +3,6 @@
 #include"lanczos.h"
 #include"basis.h"
 
-void hoperation(double*,double*,std::vector<double>&,std::vector<int> &,std::vector<int> &,int);
 void diag_hamil(basis* ,double ,double ,double, double *);
 
 #endif
