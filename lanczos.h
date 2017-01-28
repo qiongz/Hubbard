@@ -10,12 +10,14 @@ public:
       lbasis(const int);
       lbasis(const lbasis &);
       ~lbasis();
-      void init(const int);
+      void init_zeros();
+      void init_random();
       double normalize();
       lbasis & operator=(const lbasis &);
-      const lbasis operator+(const lbasis &);
-      const lbasis operator*(const double &);
-      double operator*(const lbasis &);
+      const lbasis operator+(const lbasis &) const;
+      const lbasis operator-(const lbasis &) const;
+      const lbasis operator*(const double &)const ;
+      const double operator*(const lbasis &)const;
       lbasis hoperation(const vector<double> &,const vector<int> &, const vector<int> &);
 };
 
