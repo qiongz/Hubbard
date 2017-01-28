@@ -54,6 +54,7 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     
     // initialize phi_0
     lbasis phi_0(nHilbert);
+    phi_0.init_random();
     basis_list.push_back(phi_0);
     norm_factor.push_back(1);
 
