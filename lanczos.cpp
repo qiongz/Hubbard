@@ -1,7 +1,8 @@
 #include"lanczos.h"
 lbasis::lbasis(){}
 
-lbasis::lbasis(const int _size):size(_size){
+lbasis::lbasis(const int _size){
+    size=_size;
     init(size);
 }
 
@@ -56,23 +57,24 @@ void lbasis::init(const int _n){
         coeff[i]/=norm;
 }
 
-lbasis lbasis::hoperation(vector<double> &hamil,vector<int> & row, vector<int> &col){
-    lbasis wf_2(this);
-    wf_2.coeff.assign(wf_2.size(),0);
+lbasis lbasis::hoperation(const vector<double> &hamil,const vector<int> & row, const vector<int> &col){
+    lbasis wf_2(*this);
+    wf_2.coeff.assign(wf_2.size,0);
     for(int i=0;i<size;i++)
-        wf2.coeff[row[i]]+=hamil[i]*(*this).coeff[col[i]];
+        wf_2.coeff[row[i]]+=hamil[i]*(*this).coeff[col[i]];
 
     return wf_2;
 }
 
 
-void lbasis::normalize() {
+double lbasis::normalize() {
     int i;
     for(i=0; i<size; i++)
         norm+=coeff[i]*coeff[i];
     norm=sqrt(norm);
     for(i=0; i<size; i++)
         coeff[i]/=norm;
+    return norm;
 }
 
 void diag(double *h, double *e, int l){
