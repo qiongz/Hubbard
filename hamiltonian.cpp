@@ -1,10 +1,4 @@
 #include"hamiltonian.h"
-void hoperation(double *wf_1, double * wf_2, std::vector<double> &hamil,std::vector<int> & row_index, std::vector<int> & col_index,int n) {
-    memset(wf_2,0,sizeof(double)*n);
-    for(int i=0; i<hamil.size(); i++)
-        wf_2[row_index[i]]+=hamil[i]*wf_1[col_index[i]];
-}
-
 void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     int nsite,nbasis_up,nbasis_down,nHilbert;
     nsite=(*sector).nsite;
@@ -71,7 +65,6 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     basis_list.push_back(phi_1);
 
     // iterative generation of basis of phi_1,phi_2,...,phi_lambda
-    
     for(i=1; i<lambda_max; i++) {
         phi_1=basis_list[i].hoperation(hamil,row_index,col_index);
         overlap_factor.push_back(basis_list[i],phi_1); 
