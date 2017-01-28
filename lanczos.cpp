@@ -3,7 +3,6 @@ lbasis::lbasis(){}
 
 lbasis::lbasis(const int _size){
     size=_size;
-    init(size);
 }
 
 lbasis::lbasis(const lbasis &rhs){
@@ -21,48 +20,61 @@ lbasis & lbasis::operator=(const lbasis & rhs){
    return *this;
 }
 
-double lbasis::operator*(const lbasis &rhs){
-    if(this->size!=rhs.size) return 0 ;
+const double lbasis::operator*(const lbasis &rhs)const{
+    if(size!=rhs.size) return 0 ;
     double overlap=0;
-    for(int i=0;i<this->size;i++)
+    for(int i=0;i<size;i++)
         overlap+=coeff[i]*(rhs.coeff)[i];
     return overlap;
 }
 
-const lbasis lbasis::operator+(const lbasis & rhs){
-    lbasis sum(*this);
+const lbasis lbasis::operator+(const lbasis & rhs)const {
+    lbasis sum(size);
+    sum.init_zeros();
     for(int i=0;i<size;i++)
        (sum.coeff)[i]=(sum.coeff)[i]+(rhs.coeff)[i];
     return sum;
 }
 
-const lbasis lbasis::operator*(const double &rhs){
-    lbasis sum(*this);
+const lbasis lbasis::operator-(const lbasis & rhs)const {
+    lbasis sum(size);
+    sum.init_zeros();
+    for(int i=0;i<size;i++)
+       (sum.coeff)[i]=(sum.coeff)[i]-(rhs.coeff)[i];
+    return sum;
+}
+
+const lbasis lbasis::operator*(const double &rhs)const {
+    lbasis sum(size);
+    sum.init_zeros();
     for(int i=0;i<size;i++)
         (sum.coeff)[i]*=rhs;
     return sum;
 }
 
-void lbasis::init(const int _n){
-    int i=0;
-    size=_n;
+void lbasis::init_zeros(){
+    coeff.assign(size,0);
+    norm=0; 
+}
+
+
+void lbasis::init_random(){
     coeff.reserve(size);
     norm=0;
-    for(i=0;i<size;i++){
+    for(int i=0;i<size;i++){
         coeff.push_back(rand()*1.0/RAND_MAX-0.5);
         norm+=coeff.back()*coeff.back();
     }
     norm=sqrt(norm);
-    for(i=0;i<size;i++)
+    for(int i=0;i<size;i++)
         coeff[i]/=norm;
 }
 
 lbasis lbasis::hoperation(const vector<double> &hamil,const vector<int> & row, const vector<int> &col){
-    lbasis wf_2(*this);
-    wf_2.coeff.assign(wf_2.size,0);
+    lbasis wf_2(size);
+    wf_2.init_zeros();
     for(int i=0;i<size;i++)
-        wf_2.coeff[row[i]]+=hamil[i]*(*this).coeff[col[i]];
-
+        (wf_2.coeff)[row[i]]+=hamil[i]*coeff[col[i]];
     return wf_2;
 }
 
