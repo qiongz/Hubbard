@@ -1,38 +1,37 @@
 #include"lanczos.h"
-lbasis lbasis::lbasis(){}
+lbasis::lbasis(){}
 
-lbasis lbasis::~lbasis(){}
-
-lbasis lbasis::lbasis(int _size):size(_size){
+lbasis::lbasis(const int _size):size(_size){
     init(size);
 }
 
-lbasis lbasis::lbasis(const lbasis &rhs){
+lbasis::lbasis(const lbasis &rhs){
     size=rhs.size;
     for(int i=0;i<size;i++)
         coeff.assign((rhs.coeff).begin(),(rhs.coeff).end());
 }
 
-lbasis lbasis::&operator=(const lbasis & rhs){
-   if(this==&rhs.this) return *this;
-   size=_b.size;
-   norm=_b.norm;
-   coeff.assign((_b.coeff).begin(),(_b.coeff).end());
+lbasis::~lbasis(){}
+
+lbasis & lbasis::operator=(const lbasis & rhs){
+   size=rhs.size;
+   norm=rhs.norm;
+   coeff.assign((rhs.coeff).begin(),(rhs.coeff).end());
    return *this;
 }
 
-double lbasis::&operator*(const lbasis &rhs){
-    if(this.size!=rhs.size) return 0;
+double lbasis::operator*(const lbasis &rhs){
+    if(this->size!=rhs.size) return 0 ;
     double overlap=0;
-    for(int i=0;i<this.size;i++)
-        overlap+=coeff[i]*(rhi.coeff)[i];
+    for(int i=0;i<this->size;i++)
+        overlap+=coeff[i]*(rhs.coeff)[i];
     return overlap;
 }
 
 const lbasis lbasis::operator+(const lbasis & rhs){
     lbasis sum(*this);
-    for(int i=0;i<this.size;i++)
-       (sum.coeff)[i]=(sum.coeff)[i]+(rhi.coeff)[i];
+    for(int i=0;i<size;i++)
+       (sum.coeff)[i]=(sum.coeff)[i]+(rhs.coeff)[i];
     return sum;
 }
 
@@ -57,6 +56,16 @@ void lbasis::init(const int _n){
         coeff[i]/=norm;
 }
 
+lbasis lbasis::hoperation(vector<double> &hamil,vector<int> & row, vector<int> &col){
+    lbasis wf_2(this);
+    wf_2.coeff.assign(wf_2.size(),0);
+    for(int i=0;i<size;i++)
+        wf2.coeff[row[i]]+=hamil[i]*(*this).coeff[col[i]];
+
+    return wf_2;
+}
+
+
 void lbasis::normalize() {
     int i;
     for(i=0; i<size; i++)
@@ -77,4 +86,6 @@ void diag(double *h, double *e, int l){
     dsyev_(&jobz, &uplo, &l, h, &lda, e, work, &lwork, &info);
     delete [] work;
 }
+
+
 
