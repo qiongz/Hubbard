@@ -19,7 +19,7 @@ int main(int argc,char *argv[]) {
     nel=2;
     t=1.0;
     U=0.5;
-    init_argv(&nsite,&nel,&t,&U,argc,argv);
+    init_argv(nsite,nel,t,U,argc,argv);
 
     /* generating basis */
     int n,i,j,k,l;
