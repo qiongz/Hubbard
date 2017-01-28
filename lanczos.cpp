@@ -15,7 +15,6 @@ lbasis::~lbasis(){}
 
 lbasis & lbasis::operator=(const lbasis & rhs){
    size=rhs.size;
-   norm=rhs.norm;
    coeff.assign((rhs.coeff).begin(),(rhs.coeff).end());
    return *this;
 }
@@ -45,17 +44,17 @@ const lbasis lbasis::operator-(const lbasis & rhs)const {
 }
 
 const lbasis lbasis::operator*(const double &rhs)const {
-    lbasis sum(size);
+    lbasis prod(size);
     for(int i=0;i<size;i++)
-        (sum.coeff).push_back(coeff[i]*rhs);
-    return sum;
+        (prod.coeff).push_back(coeff[i]*rhs);
+    return prod;
 }
 
 ostream & operator<<(ostream & os, const lbasis & _lb){
   os<<"[ ";
   for(int i=0;i<_lb.size-1;i++)
-    os<<(_lb.coeff)[i]<<", ";
-  os<<(_lb.coeff)[_lb.size-1]<<" ]";
+    os<<setprecision(6)<<setw(10)<<(_lb.coeff)[i]<<", ";
+  os<<setprecision(6)<<setw(10)<<(_lb.coeff)[_lb.size-1]<<" ]";
 }
 
 void lbasis::init_zeros(){
@@ -69,6 +68,7 @@ void lbasis::init_random(){
     norm=0;
     for(int i=0;i<size;i++){
         coeff.push_back(rand()*1.0/RAND_MAX-0.5);
+        //coeff.push_back(rand()*1.0/RAND_MAX);
         norm+=coeff.back()*coeff.back();
     }
     norm=sqrt(norm);
