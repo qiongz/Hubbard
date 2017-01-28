@@ -10,6 +10,7 @@
 #include<string.h>
 #include<iomanip>
 #include<bitset>
+#include<cstdlib>
 #include<map>
 #include<vector>
 #include<algorithm>
@@ -34,6 +35,7 @@ public:
     void generate_up(int);
     void generate_down(int);
     void print();
+    friend ostream & operator<<(ostream & os, const basis &); 
 };
 
 #endif 
