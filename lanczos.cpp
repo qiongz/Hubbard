@@ -32,24 +32,30 @@ const lbasis lbasis::operator+(const lbasis & rhs)const {
     lbasis sum(size);
     sum.init_zeros();
     for(int i=0;i<size;i++)
-       (sum.coeff)[i]=(sum.coeff)[i]+(rhs.coeff)[i];
+       (sum.coeff)[i]=coeff[i]+(rhs.coeff)[i];
     return sum;
 }
 
 const lbasis lbasis::operator-(const lbasis & rhs)const {
-    lbasis sum(size);
-    sum.init_zeros();
+    lbasis minus(size);
+    minus.init_zeros();
     for(int i=0;i<size;i++)
-       (sum.coeff)[i]=(sum.coeff)[i]-(rhs.coeff)[i];
-    return sum;
+       (minus.coeff)[i]=coeff[i]-(rhs.coeff)[i];
+    return minus;
 }
 
 const lbasis lbasis::operator*(const double &rhs)const {
     lbasis sum(size);
-    sum.init_zeros();
     for(int i=0;i<size;i++)
-        (sum.coeff)[i]*=rhs;
+        (sum.coeff).push_back(coeff[i]*rhs);
     return sum;
+}
+
+ostream & operator<<(ostream & os, const lbasis & _lb){
+  os<<"[ ";
+  for(int i=0;i<_lb.size-1;i++)
+    os<<(_lb.coeff)[i]<<", ";
+  os<<(_lb.coeff)[_lb.size-1]<<" ]";
 }
 
 void lbasis::init_zeros(){
@@ -74,13 +80,14 @@ lbasis lbasis::hoperation(const vector<double> &hamil,const vector<int> & row, c
     lbasis wf_2(size);
     wf_2.init_zeros();
     for(int i=0;i<size;i++)
-        (wf_2.coeff)[row[i]]+=hamil[i]*coeff[col[i]];
+        wf_2.coeff[row[i]]+=hamil[i]*coeff[col[i]];
     return wf_2;
 }
 
 
 double lbasis::normalize() {
     int i;
+    norm=0;
     for(i=0; i<size; i++)
         norm+=coeff[i]*coeff[i];
     norm=sqrt(norm);
