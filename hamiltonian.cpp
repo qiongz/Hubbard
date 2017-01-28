@@ -23,18 +23,18 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
                 k=(*sector).hopping_up(i,n);
                 l=(*sector).hopping_down(j,n);
                 if(k!=i) {
-                    hamil_nonzero[(i*nbasis_down+j)*nbasis+k*nbasis_down+j]+=-t;
-                    full_hamil[(i*nbasis_down+j)*nbasis+k*nbasis_down+j]+=-t;
+                    hamil_nonzero[(i*nbasis_down+j)*nHilbert+k*nbasis_down+j]+=-t;
+                    full_hamil[(i*nbasis_down+j)*nHilbert+k*nbasis_down+j]+=-t;
                 }
                 if(l!=j) {
-                    hamil_nonzero[(i*nbasis_down+j)*nbasis+i*nbasis_down+l]+=-t;
-                    full_hamil[(i*nbasis_down+j)*nbasis+i*nbasis_down+l]+=-t;
+                    hamil_nonzero[(i*nbasis_down+j)*nHilbert+i*nbasis_down+l]+=-t;
+                    full_hamil[(i*nbasis_down+j)*nHilbert+i*nbasis_down+l]+=-t;
                 }
             }
             for(n=0; n<nsite; n++)
                 if((*sector).potential(i,j,n)) {
-                    hamil_nonzero[(i*nbasis_down+j)*nbasis+i*nbasis_down+j]+=U;
-                    full_hamil[(i*nbasis_down+j)*nbasis+i*nbasis_down+j]+=U;
+                    hamil_nonzero[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
+                    full_hamil[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
                 }
         }
     }
@@ -60,15 +60,15 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     // initialize phi_1
     lbasis phi_1=phi_0.hoperation(hamil,row_index,col_index);
     overlap_factor.push_back(phi_0*phi_1);
-    phi_1=phi_1-overlap_factor[0]*phi_0;
+    phi_1=phi_1-phi_0*overlap_factor[0];
     norm_factor.push_back(phi_1.normalize());
     basis_list.push_back(phi_1);
 
     // iterative generation of basis of phi_1,phi_2,...,phi_lambda
     for(i=1; i<lambda_max; i++) {
         phi_1=basis_list[i].hoperation(hamil,row_index,col_index);
-        overlap_factor.push_back(basis_list[i],phi_1); 
-        phi_1=phi_1-overlap_factor.back()*basis_list[i]-norm_factor.back()*basis_list[i-1];
+        overlap_factor.push_back(basis_list[i]*phi_1); 
+        phi_1=phi_1-basis_list[i]*overlap_factor.back()-basis_list[i-1]*norm_factor.back();
         norm_factor.push_back(phi_1.normalize());
         basis_list.push_back(phi_1);
         if(fabs(overlap_factor[i]/norm_factor[i])<1e-8){
@@ -106,20 +106,20 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
 
     // print the full hamiltonian
     std::cout<<"#full hamiltonian"<<std::endl;
-    for(i=0;i<nbasis;i++){
+    for(i=0;i<nHilbert;i++){
         if(i==0)
             std::cout<<"[[ ";
         else
             std::cout<<" [ ";
-        for(j=0; j<nbasis; j++)
-            std::cout<<full_hamil[i*nbasis+j]<<", ";
-        if(i==nbasis-1)
+        for(j=0; j<nHilbert; j++)
+            std::cout<<full_hamil[i*nHilbert+j]<<", ";
+        if(i==nHilbert-1)
             std::cout<<"]]"<<std::endl;
         else
             std::cout<<"] "<<std::endl;
     }
     // diagonalization and compare
-    diag(full_hamil,full_eigenvalues,nbasis);
+    diag(full_hamil,full_eigenvalues,nHilbert);
     diag(lanczos_hamil,lanczos_eigenvalues,lambda);
     // print and compare the eigenvalues
     for(i=0; i<lambda; i++)
