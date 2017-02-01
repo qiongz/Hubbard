@@ -3,6 +3,6 @@
 #include"lanczos.h"
 #include"basis.h"
 
-void diag_hamil( basis * ,double ,double ,double, double *);
+void diag_hamil(basis & ,double ,double ,double, double *);
 
 #endif
