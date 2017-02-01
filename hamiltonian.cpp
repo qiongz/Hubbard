@@ -1,9 +1,9 @@
 #include"hamiltonian.h"
-void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
+void diag_hamil(basis &sector,double t, double U, double energy,double *wf) {
     int nsite,nbasis_up,nbasis_down,nHilbert;
-    nsite=sector->nsite;
-    nbasis_up=sector->nbasis_up;
-    nbasis_down=sector->nbasis_down;
+    nsite=sector.nsite;
+    nbasis_up=sector.nbasis_up;
+    nbasis_down=sector.nbasis_down;
     nHilbert=nbasis_up*nbasis_down;
     srand(1);
 
@@ -20,8 +20,8 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     for(i=0; i<nbasis_up; i++) {
         for(j=0; j<nbasis_down; j++) {
             for(n=0; n<nsite-1; n++) {
-                k=sector->hopping_up(i,n);
-                l=sector->hopping_down(j,n);
+                k=sector.hopping_up(i,n);
+                l=sector.hopping_down(j,n);
                 if(k!=i) {
                     hamil_nonzero[(i*nbasis_down+j)*nHilbert+k*nbasis_down+j]+=-t;
                     full_hamil[(i*nbasis_down+j)*nHilbert+k*nbasis_down+j]+=-t;
@@ -32,7 +32,7 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
                 }
             }
             for(n=0; n<nsite; n++)
-                if(sector->potential(i,j,n)) {
+                if(sector.potential(i,j,n)) {
                     hamil_nonzero[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
                     full_hamil[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
                 }
@@ -79,15 +79,19 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
         // |phi_i+1>=|phi_i+1>/N_i+1
         norm_factor.push_back(phi_1.normalize());
         basis_list.push_back(phi_1);
+        /*
         if(fabs(overlap_factor[i]/norm_factor[i])<1e-8){
            lambda=i-1;
            break;
         }
+        */
     }
-    lambda=4; 
+    lambda=nHilbert; 
+    
     cout<<"# Lanczos basis, norm_factor,  overlap_factor"<<endl;
     for(i=0;i<lambda;i++)
         cout<<basis_list[i]<<" "<<setprecision(6)<<setw(12)<<norm_factor[i]<<" "<<overlap_factor[i]<<endl;
+   
     
   
     // hamiltonian in the Lanczos basis
@@ -96,13 +100,14 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
     memset(lanczos_hamil,0,sizeof(double)*lambda*lambda);
 
     for(i=0;i<lambda-1;i++){
-       lanczos_hamil[i*lambda+i+1]=sqrt(norm_factor[i+1]);
-       lanczos_hamil[(i+1)*lambda+i]=sqrt(norm_factor[i+1]);
+       lanczos_hamil[i*lambda+i+1]=norm_factor[i+1];
+       lanczos_hamil[(i+1)*lambda+i]=norm_factor[i+1];
        lanczos_hamil[i*lambda+i]=overlap_factor[i];
     }
     lanczos_hamil[lambda*(lambda-1)+lambda-1]=overlap_factor[lambda-1];
     
     // print the lanczos hamiltonian
+    
     std::cout<<"#lanczos hamiltonian"<<std::endl;
     for(i=0; i<lambda; i++) {
         if(i==0)
@@ -117,7 +122,9 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
         else
             std::cout<<"] "<<std::endl;
     }
+   
     // print the full hamiltonian
+  
     std::cout<<"#full hamiltonian"<<std::endl;
     for(i=0;i<nHilbert;i++){
         if(i==0)
@@ -132,6 +139,7 @@ void diag_hamil(basis *sector,double t, double U, double energy,double *wf) {
         else
             std::cout<<"] "<<std::endl;
     }
+ 
 
     // diagonalization and compare
     diag(full_hamil,full_eigenvalues,nHilbert);
