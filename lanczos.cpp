@@ -107,6 +107,3 @@ void diag(double *h, double *e, int l){
     dsyev_(&jobz, &uplo, &l, h, &lda, e, work, &lwork, &info);
     delete [] work;
 }
-
-
-
