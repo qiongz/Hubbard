@@ -33,7 +33,7 @@ int main(int argc,char *argv[]) {
         /* print basis set */
         sector.print();
 
-        diag_hamil(&sector,t,U,energy,wf);
+        diag_hamil(sector,t,U,energy,wf);
         /* calculating hamiltonian matrix elements */
         /* 
         nb_up=sector.nb_up;
