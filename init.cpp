@@ -13,6 +13,7 @@ void init_argv(int& nsite, int& nel, double &t, double &U, int argc,char *argv[]
 {
     extern char *optarg;
     int ch,errFlag;
+    errFlag=0;
     while((ch=getopt(argc,argv,"l:n:t:U:h:"))!=-1){
         switch(ch){
         case 'l':
@@ -40,7 +41,7 @@ void init_argv(int& nsite, int& nel, double &t, double &U, int argc,char *argv[]
         throw std::logic_error("-l: positive value required !");
      if(nel<=0)
         throw std::logic_error("-n: positive value required !");
-     if(nsite*2<nel)
+    if(nsite*2<nel)
         throw std::logic_error("-l -n: electron filling nu=(n/2l)>1 !");
      if(fabs(t)<1e-8 && fabs(U)<1e-8)
         throw std::logic_error("-t -U: at least one finite coupling constant required !");
