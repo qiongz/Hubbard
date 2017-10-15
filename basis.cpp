@@ -4,7 +4,7 @@ using namespace std;
 basis::basis(){
 }
 
-basis::basis(int _nsite,int _nel_up, int _nel_down):nsite(_nsite),nel_up(_nel_up),nel_down(_nel_down){
+basis::basis(long _nsite,long _nel_up, long _nel_down):nsite(_nsite),nel_up(_nel_up),nel_down(_nel_down){
 }
 
 const basis & basis::operator =(const basis & _basis){
@@ -24,9 +24,9 @@ const basis & basis::operator =(const basis & _basis){
 
 basis::~basis(){}
 
-int basis::factorial(int N, int m){
+long basis::factorial(long N, long m){
     unsigned long num,denum;
-    int i;
+    long i;
     num=1;
     for(i=N-m+1;i<=N;i++)
         num*=i;
@@ -37,7 +37,7 @@ int basis::factorial(int N, int m){
 }
 
 void basis::init(){
-    int i,config_init;
+    long i,config_init;
     nbasis_up=factorial(nsite,nel_up);
     nbasis_down=factorial(nsite,nel_down);
     config_init=0;
@@ -65,9 +65,8 @@ void basis::init(){
         basis_down[id_down[i]]=i; 
 }
 
-
-int basis::hopping_up(int i,int n){
-   int mask,K,L,b;
+long basis::hopping_up(long i,long n){
+   long mask,K,L,b;
    mask=(1<<n)+(1<<(n+1));
    K=mask&id_up[i];
    L=K^mask;
@@ -78,8 +77,8 @@ int basis::hopping_up(int i,int n){
    return basis_up[b];
 }
 
-int basis::hopping_down(int i,int n){
-   int mask,K,L,b;
+long basis::hopping_down(long i,long n){
+   long mask,K,L,b;
    mask=(1<<n)+(1<<(n+1));
    K=mask&id_down[i];
    L=K^mask;
@@ -90,8 +89,8 @@ int basis::hopping_down(int i,int n){
    return basis_down[b];
 }
 
-int basis::potential(int i,int j,int n){
-   int mask,bu,bd;
+long basis::potential(long i,long j,long n){
+   long mask,bu,bd;
    mask=(1<<n);
    bu=id_up[i]&mask;
    bd=id_down[j]&mask;
@@ -101,10 +100,10 @@ int basis::potential(int i,int j,int n){
        return 0;
 }
 
-void basis::generate_up(int a){
-   int mask,K,L,b;
+void basis::generate_up(long a){
+   long mask,K,L,b;
    basis_up.emplace(a,a);
-   for(int i=0;i<nsite-1;i++){
+   for(long i=0;i<nsite-1;i++){
        mask=(1<<i)+(1<<(i+1));
        K=mask&a;
        L=K^mask;
@@ -119,10 +118,10 @@ void basis::generate_up(int a){
    return;
 }
 
-void basis::generate_down(int a){
-   int mask,K,L,b;
+void basis::generate_down(long a){
+   long mask,K,L,b;
    basis_down.emplace(a,a);
-   for(int i=0;i<nsite-1;i++){
+   for(long i=0;i<nsite-1;i++){
        mask=(1<<i)+(1<<(i+1));
        K=mask&a;
        L=K^mask;
@@ -136,7 +135,7 @@ void basis::generate_down(int a){
    }
 }
 
-void basis::print(){
+void basis::prlong(){
     cout<<"---------------------------------------"<<endl;
     cout<<"spin-up electrons:"<<endl;
     cout<<"---------------------------------------"<<endl;

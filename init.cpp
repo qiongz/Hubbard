@@ -37,6 +37,8 @@ void init_argv(int& nsite, int& nel, double &t, double &U, int argc,char *argv[]
        }
      }
      try{  
+     if(nsite>=18 && nel==nsite/2)
+        throw std::overflow_error("-l -n:Hilbert space larger than the memory space !");
      if(nsite<=0)
         throw std::logic_error("-l: positive value required !");
      if(nel<=0)
@@ -48,6 +50,10 @@ void init_argv(int& nsite, int& nel, double &t, double &U, int argc,char *argv[]
      }catch(std::logic_error &e){
         std::cout<<e.what()<<std::endl;
         usage(argv[0]);
+        exit(2);
+     }
+     catch(std::overflow_error &e){
+        std::cout<<e.what()<<std::endl;
         exit(2);
      }
     

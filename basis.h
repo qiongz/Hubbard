@@ -18,23 +18,23 @@ using namespace std;
 
 class basis{
 public:
-    int nsite,nel_up,nel_down;          // No. of sites, spin-up/down electrons
-    map<int,int> basis_up,basis_down;   // basis set of spin-up/down electrons, I-J table
+    long nsite,nel_up,nel_down;  // No. of sites, spin-up/down electrons
+    map<long,long> basis_up,basis_down; // basis set of spin-up/down electrons, I-J table
 
-    int nbasis_up,nbasis_down;          // No. of basis for spin-up/down electrons
-    vector<int> id_up,id_down;          // reversal table, J->I, Lin's Table is a 2D array 
+    long nbasis_up,nbasis_down;     // No. of basis for spin-up/down electrons
+    vector<long> id_up,id_down;     // reversal table, J->I, Lin's Table is a 2D array 
     explicit basis();
-    basis(int,int,int);
+    basis(long,long,long);
     const basis & operator=(const basis &);
     ~basis();
-    int hopping_up(int,int);
-    int hopping_down(int,int);
-    int potential(int,int,int);
-    int factorial(int,int);
+    long hopping_up(long,long);
+    long hopping_down(long,long);
+    long potential(long,long,long);
+    long factorial(long,long);
     void init();
-    void generate_up(int);
-    void generate_down(int);
-    void print();
+    void generate_up(long);
+    void generate_down(long);
+    void prlong();
     friend ostream & operator<<(ostream & os, const basis &); 
 };
 

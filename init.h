@@ -1,6 +1,7 @@
 #ifndef INIT_H
 #define INIT_H
 #include<unistd.h>
+#include<cstdlib>
 #include<cmath>
 #include<iostream>
 #include<stdexcept>

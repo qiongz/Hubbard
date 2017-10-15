@@ -1,162 +1,138 @@
 #include"hamiltonian.h"
-void diag_hamil(basis &sector,double t, double U, double energy,double *wf) {
-    int nsite,nbasis_up,nbasis_down,nHilbert;
+hamil::hamil(){}
+
+hamil::hamil(basis &sector,double t, double U) {
+    long nsite,nbasis_up,nbasis_down;
     nsite=sector.nsite;
     nbasis_up=sector.nbasis_up;
     nbasis_down=sector.nbasis_down;
     nHilbert=nbasis_up*nbasis_down;
-    srand(1);
+    // CSR format of matrix storage
+    std::vector<long> inner_indices, outer_starts;
+    std::vector<double> matrix_elements;
+    inner_indices.reserve(nHilbert*nsite);
+    matrix_elements.reserve(nHilbert*nsite);
+    outer_starts.reserve(nHilbert+1);
 
-    // only the nonzero hamiltonian elements with their indices are stored
-    double *full_hamil,*full_eigenvalues;
-    full_hamil=new double[nHilbert*nHilbert];
-    full_eigenvalues=new double[nHilbert];
-    memset(full_hamil,0,sizeof(double)*nHilbert*nHilbert);
-
+    /*
     std::map<int,double> hamil_nonzero;
+    std::map<int,double>::iterator it;
     std::vector<int> row_index,col_index;
-    std::vector<double> hamil;
-    int n,i,j,k,l;
+    int matrix_index;
+    */
+    long n,i,j,k,l;
+    long row=0;
+    outer_starts.push_back(0);
     for(i=0; i<nbasis_up; i++) {
         for(j=0; j<nbasis_down; j++) {
             for(n=0; n<nsite-1; n++) {
                 k=sector.hopping_up(i,n);
                 l=sector.hopping_down(j,n);
+                //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+l;
                 if(k!=i) {
-                    hamil_nonzero[(i*nbasis_down+j)*nHilbert+k*nbasis_down+j]+=-t;
-                    full_hamil[(i*nbasis_down+j)*nHilbert+k*nbasis_down+j]+=-t;
+                    //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+j;
+                    /*
+                    it=hamil_nonzero.find(matrix_index);
+                    
+                    if(it==hamil_nonzero.end())
+                        hamil_nonzero.insert(pair<int,double>(matrix_index,-t));
+                    else
+                        it->second=it->second-t;
+                    */
+                    row++;
+                    inner_indices.push_back(k*nbasis_down+j);
+                    matrix_elements.push_back(-t);
                 }
+
                 if(l!=j) {
-                    hamil_nonzero[(i*nbasis_down+j)*nHilbert+i*nbasis_down+l]+=-t;
-                    full_hamil[(i*nbasis_down+j)*nHilbert+i*nbasis_down+l]+=-t;
+                    /*matrix_index=(i*nbasis_down+j)*nHilbert+i*nbasis_down+l;
+                    it=hamil_nonzero.find(matrix_index);
+                    if(it==hamil_nonzero.end())
+                        hamil_nonzero.insert(pair<int,double>(matrix_index,-t));
+                    else
+                        it->second=it->second-t;
+                    */
+                    row++;
+                    inner_indices.push_back(i*nbasis_down+l);
+                    matrix_elements.push_back(-t);
+                }
+                if(sector.potential(i,j,n)){
+                   row++;
+                   inner_indices.push_back(i*nbasis_down+j);
+                   matrix_elements.push_back(U);
                 }
             }
+            if(sector.potential(i,j,nsite-1)){
+                   row++;
+                   inner_indices.push_back(i*nbasis_down+j);
+                   matrix_elements.push_back(U);
+            }
+            outer_starts.push_back(row);
+            /*
             for(n=0; n<nsite; n++)
                 if(sector.potential(i,j,n)) {
-                    hamil_nonzero[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
-                    full_hamil[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
+                    matrix_index=(i*nbasis_down+j)*nHilbert+i*nbasis_down+j;
+                    full_hamil[matrix_index]+=U;
+
+                    it=hamil_nonzero.find(matrix_index);
+                    if(it==hamil_nonzero.end())
+                        hamil_nonzero.insert(pair<int,double>(matrix_index,U));
+                    else
+                        it->second=it->second+U;
                 }
+            */
         }
     }
-    //std::cout<<"hamiltonain nonzero elements:"<<std::endl;
-    for(auto &x:hamil_nonzero) {
-        // std::cout<<x.first/nHilbert<<" "<<x.first%nHilbert<<" "<<x.second<<std::endl;
-        row_index.push_back(x.first/nHilbert);
-        col_index.push_back(x.first%nHilbert);
-        hamil.push_back(x.second);
-    }
-    hamil_nonzero.clear();
-
-    /* Lanczos basis generation */
-    int lambda,lambda_max=100;
-    vector<double> norm_factor,overlap_factor; 
-    vector<lbasis> basis_list;
-    
-    // initialize phi_0
-    lbasis phi_0(nHilbert);
-    phi_0.init_random();
-    basis_list.push_back(phi_0);
-    norm_factor.push_back(1);
-    
-    // initialize H|phi_0> 
-    lbasis phi_1=phi_0.hoperation(hamil,row_index,col_index);
-    // a_0=<phi_0|H|phi_0>
-    overlap_factor.push_back(phi_0*phi_1);
-    // |phi_1>=H|phi_0>-a_0|phi_0>
-    phi_1=phi_1-phi_0*overlap_factor[0];
-    // |phi_1>=|phi_1>/N_1
-    norm_factor.push_back(phi_1.normalize());
-    basis_list.push_back(phi_1);
-
-    // iterative generation of basis of phi_1,phi_2,...,phi_lambda
-    for(i=1; i<lambda_max; i++) {
-        // initialize H|phi_i>
-        phi_1=basis_list[i].hoperation(hamil,row_index,col_index);
-        // a_i=<phi_i|H|phi_i>
-        overlap_factor.push_back(basis_list[i]*phi_1); 
-        // |phi_i+1>=H|phi_i>-a_i|phi_i>-N_i|phi_i-1>
-        phi_1=phi_1-basis_list[i]*overlap_factor[i]-basis_list[i-1]*norm_factor[i];
-        // |phi_i+1>=|phi_i+1>/N_i+1
-        norm_factor.push_back(phi_1.normalize());
-        basis_list.push_back(phi_1);
-        /*
-        if(fabs(overlap_factor[i]/norm_factor[i])<1e-8){
-           lambda=i-1;
-           break;
-        }
-        */
-    }
-    lambda=nHilbert; 
-    
-    cout<<"# Lanczos basis, norm_factor,  overlap_factor"<<endl;
-    for(i=0;i<lambda;i++)
-        cout<<basis_list[i]<<" "<<setprecision(6)<<setw(12)<<norm_factor[i]<<" "<<overlap_factor[i]<<endl;
-   
-    
-  
-    // hamiltonian in the Lanczos basis
-    double *lanczos_eigenvalues=new double[lambda];
-    double *lanczos_hamil=new double [lambda*lambda];
-    memset(lanczos_hamil,0,sizeof(double)*lambda*lambda);
-
-    for(i=0;i<lambda-1;i++){
-       lanczos_hamil[i*lambda+i+1]=norm_factor[i+1];
-       lanczos_hamil[(i+1)*lambda+i]=norm_factor[i+1];
-       lanczos_hamil[i*lambda+i]=overlap_factor[i];
-    }
-    lanczos_hamil[lambda*(lambda-1)+lambda-1]=overlap_factor[lambda-1];
-    
-    // print the lanczos hamiltonian
-    
-    std::cout<<"#lanczos hamiltonian"<<std::endl;
-    for(i=0; i<lambda; i++) {
-        if(i==0)
-            std::cout<<"[[ ";
-        else
-            std::cout<<" [ ";
-        for(j=0; j<lambda-1; j++)
-            std::cout<<setprecision(3)<<setw(8)<<lanczos_hamil[i*lambda+j]<<", ";
-        std::cout<<setprecision(3)<<setw(8)<<lanczos_hamil[i*lambda+lambda-1]<<" ";
-        if(i==lambda-1)
-            std::cout<<"]]"<<std::endl;
-        else
-            std::cout<<"] "<<std::endl;
-    }
-   
-    // print the full hamiltonian
-  
-    std::cout<<"#full hamiltonian"<<std::endl;
-    for(i=0;i<nHilbert;i++){
-        if(i==0)
-            std::cout<<"[[ ";
-        else
-            std::cout<<" [ ";
-        for(j=0; j<nHilbert-1; j++)
-            std::cout<<setprecision(3)<<setw(8)<<full_hamil[i*nHilbert+j]<<", ";
-        std::cout<<setprecision(3)<<setw(8)<<full_hamil[i*nHilbert+nHilbert-1]<<" ";
-        if(i==nHilbert-1)
-            std::cout<<"]]"<<std::endl;
-        else
-            std::cout<<"] "<<std::endl;
-    }
- 
-
-    // diagonalization and compare
-    diag(full_hamil,full_eigenvalues,nHilbert);
-    diag(lanczos_hamil,lanczos_eigenvalues,lambda);
-    // print and compare the eigenvalues
-    std::cout<<"# Full-Eigenvalues:= [";
-    for(i=0; i<nHilbert-1; i++)
-        std::cout<<full_eigenvalues[i]<<", ";
-    std::cout<<full_eigenvalues[i]<<" ]"<<std::endl;
-
-    std::cout<<"# Lanczos-Eigenvalues:= [";
-    for(i=0; i<lambda-1; i++)
-        std::cout<<lanczos_eigenvalues[i]<<", ";
-    std::cout<<lanczos_eigenvalues[i]<<" ]"<<std::endl;
-
-    delete [] full_hamil,full_eigenvalues,norm_factor,overlap_factor;
-    delete [] lanczos_eigenvalues,lanczos_hamil;
+    H.init(outer_starts,inner_indices,matrix_elements);
+    outer_starts.clear();
+    inner_indices.clear();
+    matrix_elements.clear();
 }
 
+hamil::~hamil(){}
+
+double hamil::ground_state_energy() {
+    if(psi_0.size()==0) return 0;
+    double E_gs=0;
+    vector<double> psi_t;
+    psi_t=H*psi_0;
+    for(int i=0;i<nHilbert;i++)
+       E_gs+=psi_t[i]*psi_0[i]; 
+    return E_gs;
+}
+
+void hamil::diag(){
+    int i,idx;
+    double *hamiltonian=new double[nHilbert*nHilbert];
+    double *en=new double[nHilbert];
+    memset(hamiltonian,0,sizeof(double)*nHilbert*nHilbert);
+    for(i=0;i<H.outer_starts.size()-1;i++)
+      for(idx=H.outer_starts[i];idx<H.outer_starts[i+1];idx++)
+       hamiltonian[i*nHilbert+H.inner_indices[idx]]=H.value[idx];
+    diag_dsyev(hamiltonian,en,nHilbert);
+    psi_0.assign(nHilbert,0);
+    psi_n0.assign(nHilbert,0);
+    eigenvalues.assign(nHilbert,0);
+    for(i=0;i<nHilbert;i++){
+        eigenvalues[i]=en[i];
+        psi_0[i]=hamiltonian[i];
+        psi_n0[i]=hamiltonian[i*nHilbert];
+    }
+    delete hamiltonian,en;
+}
+
+complex<double> hamil::Greens_function(double E_real,double epsilon) {
+    complex<double> E=complex<double>(E_real,epsilon);
+    complex<double> G=0;
+    for(int i=0; i<nHilbert; i++)
+        G+=psi_n0[i]*psi_n0[i]/(E-eigenvalues[i]);
+    return G;
+}
+
+
+void hamil::print_hamil(){
+   std::cout<<"hamiltonian in CSR format: "<<std::endl;
+   std::cout<<"------------------------------"<<std::endl;
+   H.print(); 
+}
 

@@ -1,99 +1,63 @@
 #include"init.h"
 #include"basis.h"
 #include"hamiltonian.h"
+#include"lanczos_hamiltonian.h"
 #include<ctime>
+#include<chrono>
+#include<sstream>
 #include<cstdlib>
 
 using namespace std;
 
 int main(int argc,char *argv[]) {
-    int nsite,nel;
+    int nsite,nel,lambda;
     int nel_up,nel_down;
-    int nbasis,nbasis_up,nbasis_down;
     int Sz;
+    unsigned seed;
     double t,U;
-    double *wf,energy;
 
     /* initialize parameters */
     nsite=2;
     nel=2;
     t=1.0;
-    U=0.5;
+    U=5;
+    lambda=100;
+    
     init_argv(nsite,nel,t,U,argc,argv);
 
     /* generating basis */
-    int n,i,j,k,l;
-    for(nel_up=1; nel_up<=nel/2; nel_up++) {
+   // for(nel_up=1; nel_up<=nel/2; nel_up++) {
+    nel_up=nel/2;
+    
+        seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
         nel_down=nel-nel_up;
         Sz=(nel_up-nel_down)/2;
-        cout<<"Sz=: "<<Sz<<endl;
+        //cout<<"Sz=: "<<Sz<<endl;
         /* generating basis */
         basis sector(nsite,nel_up,nel_down);
         sector.init();
         /* print basis set */
-        sector.print();
+        //sector.print();
+        //cout<<"sector size=: "<<sector.nbasis_up*sector.nbasis_down<<endl;
+        lambda=sqrt(sector.nbasis_up*sector.nbasis_down)*2;
 
-        diag_hamil(sector,t,U,energy,wf);
-        /* calculating hamiltonian matrix elements */
-        /* 
-        nb_up=sector.nb_up;
-        nb_down=sector.nb_up;
-        n_basis=nb_up*nb_down;
-        double *hamiltonian=new double[n_basis*n_basis];
-       // energy=new double[n_basis];
-        memset(hamiltonian,0,sizeof(double)*n_basis*n_basis);
-        for(i=0;i<nb_up;i++){
-            for(j=0;j<nb_down;j++){
-                for(n=0;n<n_site-1;n++){
-                    k=sector.hopping_up(i,n);
-                    l=sector.hopping_down(j,n);
-                    if(k!=i)
-                        hamiltonian[(i*nb_down+j)*n_basis+k*nb_down+j]+=-t;
-                    if(l!=j)
-                        hamiltonian[(i*nb_down+j)*n_basis+i*nb_down+l]+=-t;
-                }
-                for(n=0;n<n_site;n++)
-                    if(sector.potential(i,j,n))
-                        hamiltonian[(i*nb_down+j)*n_basis+i*nb_down+j]+=U;
-            }
+
+        stringstream sf;
+        string filename;
+        sf<<"sector_"<<Sz;
+        sf>>filename;
+
+        lhamil config(sector,t,U,lambda,seed);
+        config.coeff_explicit_update();
+        config.diag();
+        //config.save_to_file(filename.c_str());
+        double E;
+        complex<double> G;
+        for(int i=0;i<200;i++){
+           E=-10+i/10.0;
+           G=config.Greens_function(E,0.02); 
+           cout<<E<<" "<<G.real()<<" "<<G.imag()<<endl;
         }
-        
-        */
-        /* print hamiltonian matrix */
-        /* 
-        for(i=0;i<n_basis;i++){
-            cout<<setw(3);
-            if(i==0)
-               cout<<"[[ ";
-            else
-               cout<<" [ ";
-            for(j=0;j<n_basis;j++)
-               cout<<hamiltonian[i*n_basis+j]<<", ";
-            if(i==n_basis-1)
-                cout<<"]]"<<endl;
-            else
-                cout<<"] "<<endl;
-        }
-        */ 
-
-        /* print eigenvalues */
-        //diag(hamiltonian,energy,n_basis);
-        /*
-        cout<<"Eigenenergies:"<<endl;
-        for(n=0;n<n_basis;n++)
-            cout<<setprecision(3)<<energy[n]<<endl;
-        */
-        //cout<<"E0=:"<<energy[0]<<endl;
-        // print the wavefunction corresponding to the lowest eigenenergy in the sector
-        /*
-        cout<<"# basis "<<"spin-up"<<" "<<"spin-down"<<" "<<"coefficients"<<endl;
-        for(i=0;i<nb_up;i++)
-            for(j=0;j<nb_down;j++)
-                cout<<i*nb_down+j<<" "<<bitset<8>(sector.relu[i]).to_string()<<" "<<bitset<8>(sector.reld[j]).to_string()<<" "<<hamiltonian[i*nb_down+j]<<endl;
-
-        delete [] hamiltonian;
-        delete [] energy;
-        */
-    }
+    //}
     return 0;
 }
