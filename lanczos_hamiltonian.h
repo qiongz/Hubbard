@@ -26,6 +26,7 @@ public:
     void eigenstates_reconstruction();
 
     void print_hamil(int);
+    void print_eigen(int);
     double ground_state_energy();
     complex<double> Greens_function(double,double);
 

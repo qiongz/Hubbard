@@ -347,6 +347,14 @@ void lhamil::print_hamil( int range) {
     H.print();
 }
 
+void lhamil::print_eigen( int range){
+    if(range>=lambda) range=lambda;
+    cout<<"Eigenvalues:= [";
+    for(int i=0;i<range;i++)
+       cout<<eigenvalues[i]<<", ";
+    cout<<",...]"<<endl;
+}
+
 double lhamil::ground_state_energy() {
     if(Psi_0.value.size()!=0) return Psi_0*(H*Psi_0);
        else   
@@ -354,17 +362,44 @@ double lhamil::ground_state_energy() {
 }
 
 
-/*
 complex<double> lhamil::Greens_function(double E_real,double epsilon) {
-    complex<double> E=complex<double>(E_real,epsilon);
-    complex<double> t=0.5*(E-overlap.back()-sqrt(pow(E-overlap.back(),2)-4*norm[lambda-1]*norm[lambda-1]));
-    for(int n=lambda-2; n>0; n--) {
-        t=E-overlap[n]-norm[lambda-1]*norm[n+1]/t;
+   complex<double> E=complex<double>(E_real,epsilon);
+    // calculation continued fraction using modified Lentz method
+    vector<complex<double>>  f,c,d,delta;
+    complex<double> a,b,G;
+    b=E-overlap[0];
+    if(abs(b)<1e-30)
+      f.push_back(1e-30);
+    else
+      f.push_back(b);
+    c.push_back(f[0]);
+    d.push_back(0);
+    delta.push_back(0);
+    for(int n=1;n<lambda;n++){
+        b=E-overlap[n];
+        a=-norm[n]*norm[n];
+        d.push_back(b+a*d[n-1]);
+        if(abs(d[n])<1e-30)
+            d[n]=1e-30;
+        c.push_back(b+a/c[n-1]);
+        if(abs(c[n])<1e-30)
+            c[n]=1e-30;
+        d[n]=1.0/d[n];
+        delta.push_back(c[n]*d[n]);
+        f.push_back(f[n-1]*delta[n]);
+        if(abs(delta.back()-1)<1e-15)
+           break;
     }
-    return 1.0/(E-overlap[0]-norm[1]*norm[1]/t);
-}
-*/
+    G=1.0/f.back();
+    c.clear();
+    d.clear();
+    f.clear();
+    delta.clear();
+    return G;
 
+}
+
+/*
 complex<double> lhamil::Greens_function(double E_real,double epsilon) {
     complex<double> E=complex<double>(E_real,epsilon);
     complex<double> G=0;
@@ -372,7 +407,7 @@ complex<double> lhamil::Greens_function(double E_real,double epsilon) {
         G+=psi_n0[i]*psi_n0[i]/(E-eigenvalues[i]);
     return G;
 }
-
+*/
 
 void lhamil::save_to_file(const char* filename){
     if(eigenvalues.size()==0) return;
