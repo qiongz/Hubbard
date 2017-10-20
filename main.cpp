@@ -16,48 +16,77 @@ int main(int argc,char *argv[]) {
     unsigned seed;
     double t,U;
 
-    /* initialize parameters */
     nsite=2;
     nel=2;
     t=1.0;
-    U=5;
+    U=1;
     lambda=100;
-    
-    init_argv(nsite,nel,t,U,argc,argv);
+    init_argv(nsite,nel,t,U,lambda,argc,argv);
 
-    /* generating basis */
-   // for(nel_up=1; nel_up<=nel/2; nel_up++) {
     nel_up=nel/2;
-    
-        seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        nel_down=nel-nel_up;
-        Sz=(nel_up-nel_down)/2;
-        //cout<<"Sz=: "<<Sz<<endl;
-        /* generating basis */
-        basis sector(nsite,nel_up,nel_down);
-        sector.init();
-        /* print basis set */
-        //sector.print();
-        //cout<<"sector size=: "<<sector.nbasis_up*sector.nbasis_down<<endl;
-        lambda=sqrt(sector.nbasis_up*sector.nbasis_down)*2;
+    seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    nel_down=nel-nel_up;
+    basis sector(nsite,nel_up,nel_down);
+    sector.init();
+
+    stringstream sf;
+    string filename;
+    sf<<"sector_"<<Sz;
+    sf>>filename;
+
+    lhamil config(sector,t,U,lambda,seed);
+    config.coeff_explicit_update();
+    config.diag();
+    config.eigenstates_reconstruction();
+
+    //config.save_to_file(filename.c_str());
+    //config.eigenstates_reconstruction();
+
+    // for spin-up
+    config.set_onsite_optc(0,0,1);
+    config.coeff_update_wopt();
+    config.diag();
+    vector<double> E,I;
+    for(int i=0; i<200; i++) {
+        E.push_back(i/10.0-10);
+        I.push_back(config.spectral_function(E[i],0.05));
+    }
+    config.set_onsite_optc(0,0,0);
+    config.coeff_update_wopt();
+    config.diag();
+    for(int i=0; i<200; i++) {
+        I[i]+=config.spectral_function(E[i],0.05);
+    }
+
+    // for spin-down
+    config.set_onsite_optc(0,1,1);
+    config.coeff_update_wopt();
+    config.diag();
+    for(int i=0; i<200; i++) {
+        I[i]+=config.spectral_function(E[i],0.05);
+    }
+    config.set_onsite_optc(0,1,0);
+    config.coeff_update_wopt();
+    config.diag();
+    for(int i=0; i<200; i++) {
+        I[i]+=config.spectral_function(E[i],0.05);
+    }
+
+    for(int i=0; i<200; i++)
+        cout<<E[i]<<" "<<I[i]<<endl;
 
 
-        stringstream sf;
-        string filename;
-        sf<<"sector_"<<Sz;
-        sf>>filename;
+    /*
+    //test for eigenvalues convergence
+    for(int l=5;l<lambda;l++){
+       config.diag(l);
+       //config.eigenstates_reconstruction();
+       cout<<l<<" ";
+       for(int i=0;i<5;i++)
+         cout<<config.eigenvalues[i]<<" ";
+       cout<<endl;
+    }
+    */
 
-        lhamil config(sector,t,U,lambda,seed);
-        config.coeff_explicit_update();
-        config.diag();
-        //config.save_to_file(filename.c_str());
-        double E;
-        complex<double> G;
-        for(int i=0;i<200;i++){
-           E=-10+i/10.0;
-           G=config.Greens_function(E,0.02); 
-           cout<<E<<" "<<G.real()<<" "<<G.imag()<<endl;
-        }
-    //}
     return 0;
 }

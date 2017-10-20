@@ -17,5 +17,6 @@ public:
     void diag();
     complex<double> Greens_function(double,double);
     void print_hamil();
+    void print_eigen();
 };
 #endif

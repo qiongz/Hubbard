@@ -1,5 +1,5 @@
 #include"hamiltonian.h"
-hamil::hamil(){}
+hamil::hamil() {}
 
 hamil::hamil(basis &sector,double t, double U) {
     long nsite,nbasis_up,nbasis_down;
@@ -33,7 +33,7 @@ hamil::hamil(basis &sector,double t, double U) {
                     //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+j;
                     /*
                     it=hamil_nonzero.find(matrix_index);
-                    
+
                     if(it==hamil_nonzero.end())
                         hamil_nonzero.insert(pair<int,double>(matrix_index,-t));
                     else
@@ -56,16 +56,16 @@ hamil::hamil(basis &sector,double t, double U) {
                     inner_indices.push_back(i*nbasis_down+l);
                     matrix_elements.push_back(-t);
                 }
-                if(sector.potential(i,j,n)){
-                   row++;
-                   inner_indices.push_back(i*nbasis_down+j);
-                   matrix_elements.push_back(U);
+                if(sector.potential(i,j,n)) {
+                    row++;
+                    inner_indices.push_back(i*nbasis_down+j);
+                    matrix_elements.push_back(U);
                 }
             }
-            if(sector.potential(i,j,nsite-1)){
-                   row++;
-                   inner_indices.push_back(i*nbasis_down+j);
-                   matrix_elements.push_back(U);
+            if(sector.potential(i,j,nsite-1)) {
+                row++;
+                inner_indices.push_back(i*nbasis_down+j);
+                matrix_elements.push_back(U);
             }
             outer_starts.push_back(row);
             /*
@@ -89,31 +89,31 @@ hamil::hamil(basis &sector,double t, double U) {
     matrix_elements.clear();
 }
 
-hamil::~hamil(){}
+hamil::~hamil() {}
 
 double hamil::ground_state_energy() {
     if(psi_0.size()==0) return 0;
     double E_gs=0;
     vector<double> psi_t;
     psi_t=H*psi_0;
-    for(int i=0;i<nHilbert;i++)
-       E_gs+=psi_t[i]*psi_0[i]; 
+    for(int i=0; i<nHilbert; i++)
+        E_gs+=psi_t[i]*psi_0[i];
     return E_gs;
 }
 
-void hamil::diag(){
+void hamil::diag() {
     int i,idx;
     double *hamiltonian=new double[nHilbert*nHilbert];
     double *en=new double[nHilbert];
     memset(hamiltonian,0,sizeof(double)*nHilbert*nHilbert);
-    for(i=0;i<H.outer_starts.size()-1;i++)
-      for(idx=H.outer_starts[i];idx<H.outer_starts[i+1];idx++)
-       hamiltonian[i*nHilbert+H.inner_indices[idx]]=H.value[idx];
+    for(i=0; i<H.outer_starts.size()-1; i++)
+        for(idx=H.outer_starts[i]; idx<H.outer_starts[i+1]; idx++)
+            hamiltonian[i*nHilbert+H.inner_indices[idx]]=H.value[idx];
     diag_dsyev(hamiltonian,en,nHilbert);
     psi_0.assign(nHilbert,0);
     psi_n0.assign(nHilbert,0);
     eigenvalues.assign(nHilbert,0);
-    for(i=0;i<nHilbert;i++){
+    for(i=0; i<nHilbert; i++) {
         eigenvalues[i]=en[i];
         psi_0[i]=hamiltonian[i];
         psi_n0[i]=hamiltonian[i*nHilbert];
@@ -130,9 +130,9 @@ complex<double> hamil::Greens_function(double E_real,double epsilon) {
 }
 
 
-void hamil::print_hamil(){
-   std::cout<<"hamiltonian in CSR format: "<<std::endl;
-   std::cout<<"------------------------------"<<std::endl;
-   H.print(); 
+void hamil::print_hamil() {
+    std::cout<<"hamiltonian in CSR format: "<<std::endl;
+    std::cout<<"------------------------------"<<std::endl;
+    H.print();
 }
 

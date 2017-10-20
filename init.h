@@ -6,6 +6,6 @@
 #include<iostream>
 #include<stdexcept>
 void usage(char *);
-void init_argv(int &, int &, double &, double &, int ,char **);
+void init_argv(int &, int &, double &, double &,int &, int ,char **);
 
 #endif

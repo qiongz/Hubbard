@@ -29,6 +29,7 @@ public:
     void assign(long _size, const double _init);
     void init_random(unsigned);
     void init_random(long,unsigned);
+    void clear();
     double normalize();
 
     // operator overloading
@@ -53,12 +54,13 @@ public:
 
      Mat();
      Mat(const Mat &rhs);
-     virtual ~Mat();
+     ~Mat();
      Mat & operator=(const Mat & rhs);
      // the last const means the object is a constant
      Vec operator*(const Vec &)const;
      vector<double> operator*(const vector<double> &)const;
      void init(const vector<long> &,const vector<long> &,const vector<double> &);
+     void clear();
      void print();
 };
 

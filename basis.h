@@ -1,5 +1,4 @@
-/************************************************
-   Basis generation library for 1D Hubbard model
+/************************************************ Basis generation library for 1D Hubbard model
    @author qiongzhu
    20/1/2017
    Email:qiongzhunow@gmail.com
@@ -30,6 +29,8 @@ public:
     long hopping_up(long,long);
     long hopping_down(long,long);
     long potential(long,long,long);
+    long onsite_potential_up(long,long);
+    long onsite_potential_down(long,long);
     long factorial(long,long);
     void init();
     void generate_up(long);
