@@ -9,52 +9,84 @@ lhamil::lhamil() {}
 lhamil::lhamil(const Mat &_H,long _nHilbert,long _lambda, unsigned _seed):H(_H),nHilbert(_nHilbert),lambda(_lambda),seed(_seed) {}
 
 lhamil::lhamil(basis &_sector,double t, double U,long _lambda,unsigned _seed) {
-    long nsite,nbasis_up,nbasis_down;
     sector=_sector;
     lambda=_lambda;
     seed=_seed;
+    set_hamil(sector,t,U);
+}
+
+lhamil::~lhamil() {
+}
+
+void lhamil::set_hamil(basis & _sector,double t,double U)
+{
+    long nsite,nbasis_up,nbasis_down,signu,signd;
+    sector=_sector;
     nsite=sector.nsite;
     nbasis_up=sector.nbasis_up;
     nbasis_down=sector.nbasis_down;
     nHilbert=nbasis_up*nbasis_down;
     std::vector<long> inner_indices, outer_starts;
     std::vector<double> matrix_elements;
+    std::map<long,double>::iterator it;
     inner_indices.reserve(nHilbert*nsite);
     matrix_elements.reserve(nHilbert*nsite);
     outer_starts.reserve(nHilbert+1);
-    long n,i,j,k,l;
+    long n,m,i,j,k,l,s,nsignu,nsignd;
     long row=0;
     outer_starts.push_back(0);
     for(i=0; i<nbasis_up; i++) {
         for(j=0; j<nbasis_down; j++) {
-            for(n=0; n<nsite-1; n++) {
-                k=sector.hopping_up(i,n);
-                l=sector.hopping_down(j,n);
-                if(k!=i) {
-                    //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+j;
-                    row++;
-                    inner_indices.push_back(k*nbasis_down+j);
-                    matrix_elements.push_back(-t);
+            std::map<long,double> col_indices;
+            for(n=0; n<nsite; n++) {
+                if(n+1>=nsite) {
+                    m=n+1-nsite;
+                    signu=pow(-1,sector.nel_up-1);
+                    signd=pow(-1,sector.nel_down-1);
                 }
-
+                else {
+                    m=n+1;
+                    signu=1;
+                    signd=1;
+                }
+                k=sector.hopping_up(i,n,m);
+                if(k!=i ) {
+                    it=col_indices.find(k*nbasis_down+j);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(k*nbasis_down+j,-t*signu));
+                    else
+                        it->second+=-t*signu;
+                }
+                l=sector.hopping_down(j,n,m);
                 if(l!=j) {
-                    //matrix_index=(i*nbasis_down+j)*nHilbert+i*nbasis_down+l;
-                    row++;
-                    inner_indices.push_back(i*nbasis_down+l);
-                    matrix_elements.push_back(-t);
+                    it=col_indices.find(i*nbasis_down+l);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(i*nbasis_down+l,-t*signd));
+                    else
+                        it->second+=-t*signd;
                 }
                 if(sector.potential(i,j,n)) {
-                    row++;
-                    inner_indices.push_back(i*nbasis_down+j);
-                    matrix_elements.push_back(U);
+                    it=col_indices.find(i*nbasis_down+j);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(i*nbasis_down+j,U));
+                    else
+                        it->second+=U;
                 }
             }
-            if(sector.potential(i,j,nsite-1)) {
-                row++;
-                inner_indices.push_back(i*nbasis_down+j);
-                matrix_elements.push_back(U);
+            for(it=col_indices.begin(); it!=col_indices.end(); it++) {
+                inner_indices.push_back(it->first);
+                matrix_elements.push_back(it->second);
+                /*
+                cout<<"----------------------"<<endl;
+                cout<<bitset<4>(sector.id_up[i])<<" "<<bitset<4>(sector.id_down[j])<<endl;
+                cout<<bitset<4>(sector.id_up[it->first/nbasis_down])<<" "<<bitset<4>(sector.id_down[it->first%nbasis_down])<<endl;
+                cout<<"matrix element:="<<it->second<<endl;
+                */
             }
+
+            row+=col_indices.size();
             outer_starts.push_back(row);
+            col_indices.clear();
         }
     }
     H.init(outer_starts,inner_indices,matrix_elements);
@@ -63,9 +95,60 @@ lhamil::lhamil(basis &_sector,double t, double U,long _lambda,unsigned _seed) {
     matrix_elements.clear();
 }
 
+void lhamil::set_onsite_optc(int r,int alpha,int annil)
+{
+    vector<long> inner_indices, outer_starts;
+    vector<double> matrix_elements;
+    inner_indices.reserve(nHilbert*sector.nsite);
+    matrix_elements.reserve(nHilbert*sector.nsite);
+    outer_starts.reserve(nHilbert+1);
+    long n,i,j,k,l;
+    long row=0;
+    double potential_spin_up,potential_spin_down;
+    outer_starts.push_back(0);
+    for(i=0; i<sector.nbasis_up; i++)
+        for(j=0; j<sector.nbasis_down; j++) {
+            potential_spin_up=0;
+            potential_spin_down=0;
+             
+            if(annil==1) {
+                if(alpha==0 && sector.onsite_up(i,r)==1)
+                    potential_spin_up++;
 
-lhamil::~lhamil() {
+                if(alpha==1 && sector.onsite_down(j,r)==1)
+                    potential_spin_down++;
+            }
+            else {
+                if(alpha==0 && sector.onsite_up(i,r)==0)
+                    potential_spin_up++;
+
+                if(alpha==1 && sector.onsite_down(j,r)==0)
+                    potential_spin_down++;
+            }
+            row++;
+            inner_indices.push_back(i*sector.nbasis_down+j);
+            if(alpha==0)
+                matrix_elements.push_back(potential_spin_up);
+            else
+                matrix_elements.push_back(potential_spin_down);
+            outer_starts.push_back(row);
+            
+            /*
+            cout<<"----------------------"<<endl;
+            cout<<bitset<4>(sector.id_up[i])<<" "<<bitset<4>(sector.id_down[j])<<endl;
+            cout<<"matrix element:="<<potential_spin_up<<endl;
+            cout<<"matrix element:="<<potential_spin_down<<endl;
+            cout<<"alpha="<<alpha<<endl;
+            cout<<"annil="<<annil<<endl;
+            */
+            
+        }
+    O.init(outer_starts,inner_indices,matrix_elements);
+    outer_starts.clear();
+    inner_indices.clear();
+    matrix_elements.clear();
 }
+
 
 void lhamil::coeff_update() {
     double eigenvalues_0=1;
@@ -232,34 +315,8 @@ void lhamil::coeff_explicit_update()
     delete phi_0,phi_1,phi_2,phi_t;
 }
 
-void lhamil::diag() {
-    if(norm.size()==0) coeff_update();
-    int l=lambda;
-    double *e = new double[l];
-    double *h = new double [l * l];
-    memset(h, 0, sizeof(double)*l*l);
-    for(int i = 0; i < l-1; i++) {
-        h[i *l + i + 1] = norm[i+1];
-        h[(i + 1)*l + i] = norm[i+1];
-        h[i * l + i] = overlap[i];
-    }
-    h[(l - 1)*l + l - 1] = overlap[l - 1];
-    diag_dsyev(h,e,l);
-
-    psi_0.assign(l,0);
-    psi_n0.assign(l,0);
-    eigenvalues.assign(l,0);
-
-    for(int i=0; i<l; i++) {
-        psi_0[i]=h[i];
-        psi_n0[i]=h[i*l];
-        eigenvalues[i]=e[i];
-    }
-    delete h,e;
-}
-
-// update version for spectral function calculation
-void lhamil::coeff_update_wopt()
+//Lanczos update version for spectral function calculation
+void lhamil::coeff_update_wopt(vector<double> O_psir_0)
 {
     int i,j,idx;
     double eigenvalues_0=1;
@@ -275,14 +332,9 @@ void lhamil::coeff_update_wopt()
     norm.assign(lambda+1,0);
     overlap.assign(lambda,0);
 
-    // |phi_0>=O|psi_0>;
-    memset(phi_0,0,sizeof(double)*nHilbert);
-    #pragma omp parallel for schedule(static)
-    for(i=0; i<O.outer_starts.size()-1; i++) {
-        #pragma ivdep
-        for(idx=O.outer_starts[i]; idx<O.outer_starts[i+1]; idx++)
-            phi_0[i]+=O.value[idx]*psir_0[O.inner_indices[idx]];
-    }
+    for(i=0;i<nHilbert;i++)
+        phi_0[i]=O_psir_0[i];
+
     norm_factor=0;
     #pragma omp parallel for reduction(+:norm_factor)
     for(i=0; i<nHilbert; i++)
@@ -384,65 +436,16 @@ void lhamil::coeff_update_wopt()
              eigenvalues_0=eigenvalues[0];
         }
         */
-
     }
 
     delete phi_0,phi_1,phi_2,phi_t;
 }
 
 
-// initialize the operator c_i^\dagger/ c_i to be onsite operator
-void lhamil::set_onsite_optc(int r,int alpha,bool annil) {
-    vector<long> inner_indices, outer_starts;
-    vector<double> matrix_elements;
-    inner_indices.reserve(nHilbert*sector.nsite);
-    matrix_elements.reserve(nHilbert*sector.nsite);
-    outer_starts.reserve(nHilbert+1);
-    long n,i,j,k,l;
-    long row=0;
-    outer_starts.push_back(0);
-    for(i=0; i<sector.nbasis_up; i++)
-        for(j=0; j<sector.nbasis_down; j++) {
-            for(n=0; n<sector.nsite; n++) {
-            //n=r;
-            if(annil) {
-                if(alpha==0 && sector.onsite_potential_up(i,n)==0) {
-                    row++;
-                    inner_indices.push_back(i*sector.nbasis_down+j);
-                    matrix_elements.push_back(1);
-                }
-                // alpha=1 for spin-down
-                if(alpha==1 && sector.onsite_potential_down(j,n)==0) {
-                    row++;
-                    inner_indices.push_back(i*sector.nbasis_down+j);
-                    matrix_elements.push_back(1);
-                }
-            }
-            else {
-                if(alpha==0 && sector.onsite_potential_up(i,n)==1) {
-                    row++;
-                    inner_indices.push_back(i*sector.nbasis_down+j);
-                    matrix_elements.push_back(1);
-                }
-                // alpha=1 for spin-down
-                if(alpha==1 && sector.onsite_potential_down(j,n)==1) {
-                    row++;
-                    inner_indices.push_back(i*sector.nbasis_down+j);
-                    matrix_elements.push_back(1);
-                }
-            }
-            }
-            outer_starts.push_back(row);
-        }
-    O.init(outer_starts,inner_indices,matrix_elements);
-    outer_starts.clear();
-    inner_indices.clear();
-    matrix_elements.clear();
-}
-
-void lhamil::diag(int l)
+void lhamil::diag()
 {
     if(norm.size()==0) coeff_update();
+    int l=lambda;
     double *e = new double[l];
     double *h = new double [l * l];
     memset(h, 0, sizeof(double)*l*l);
@@ -466,16 +469,29 @@ void lhamil::diag(int l)
     delete h,e;
 }
 
+void lhamil::diag(int l)
+{
+    if(norm.size()==0) coeff_update();
+    double *e = new double[l];
+    double *h = new double [l * l];
+    memset(h, 0, sizeof(double)*l*l);
+    for(int i = 0; i < l-1; i++) {
+        h[i *l + i + 1] = norm[i+1];
+        h[(i + 1)*l + i] = norm[i+1];
+        h[i * l + i] = overlap[i];
+    }
+    h[(l - 1)*l + l - 1] = overlap[l - 1];
+    diag_dsyev(h,e,l);
+    delete h,e;
+}
 
 // given the seed of phi_0, generate the Lanczos basis again, and transform the eigenstate to the desired eigenstate representation
 void lhamil::eigenstates_reconstruction() {
     int l,n;
     double Norm=0;
     Vec phi_0,phi_1,phi_2;
-
     E0=eigenvalues[0];
-    // repeat the iteration, but with normalization and overlap values
-    // at hand
+    // repeat the iteration, but with normalization and overlap values at hand
     phi_0.init_random(nHilbert,seed);
     phi_1 = H * phi_0;
     phi_1 -= phi_0*overlap[0];
@@ -498,7 +514,43 @@ void lhamil::eigenstates_reconstruction() {
         psir_0[n]/=sqrt(Norm);
 }
 
-void lhamil::print_hamil( int range) {
+void lhamil::psir0_creation_el_up(vector<double> & O_psir_0, long n)
+{
+    if(psir_0.size()==0) return;
+    for(int i=0;i<sector.nbasis_up;i++)
+      if(sector.onsite_up(i,n)==0)
+        for(int j=0;j<sector.nbasis_down;j++) 
+           O_psir_0.push_back(psir_0[i*sector.nbasis_down+j]);
+}
+
+void lhamil::psir0_creation_el_down(vector<double> &O_psir_0,long n)
+{
+    if(psir_0.size()==0) return;
+    for(int i=0;i<sector.nbasis_up;i++)
+        for(int j=0;j<sector.nbasis_down;j++) 
+          if(sector.onsite_down(j,n)==0)
+           O_psir_0.push_back(psir_0[i*sector.nbasis_down+j]);
+}
+
+void lhamil::psir0_annihilation_el_up(vector<double> &O_psir_0,long n)
+{
+    if(psir_0.size()==0) return;
+    for(int i=0;i<sector.nbasis_up;i++)
+      if(sector.onsite_up(i,n)==1)
+        for(int j=0;j<sector.nbasis_down;j++) 
+           O_psir_0.push_back(psir_0[i*sector.nbasis_down+j]);
+}
+
+void lhamil::psir0_annihilation_el_down(vector<double> &O_psir_0,long n)
+{
+    if(psir_0.size()==0) return;
+    for(int i=0;i<sector.nbasis_up;i++)
+     for(int j=0;j<sector.nbasis_down;j++) 
+      if(sector.onsite_down(j,n)==1)
+           O_psir_0.push_back(psir_0[i*sector.nbasis_down+j]);
+}
+
+void lhamil::print_hamil() {
     H.print();
 }
 
@@ -510,15 +562,21 @@ void lhamil::print_eigen( int range) {
     cout<<",...]"<<endl;
 }
 
-/*
+
 double lhamil::ground_state_energy() {
-    if(Psi_0.value.size()!=0) return Psi_0*(H*Psi_0);
-       else
-         return 0;
+    vector<double> H_psir0;
+    double overlap=0;
+    if(psir_0.size()!=0) {
+        H_psir0=H*psir_0;
+        for(int i=0; i<nHilbert; i++)
+            overlap+=psir_0[i]*H_psir0[i];
+    }
+    return overlap;
 }
-*/
+
 
 // continued fraction version
+/*
 double lhamil::spectral_function(double omega, double eta) {
     // calculation continued fraction using modified Lentz method
     complex<double> E(omega+E0,eta);
@@ -558,17 +616,31 @@ double lhamil::spectral_function(double omega, double eta) {
     delta.clear();
     return I;
 }
+*/
 
-/*
 // spectrum decomposition version
-double lhamil::spectral_function(double omega, double eta) {
-    complex<double> E(omega+E0,eta);
+double lhamil::spectral_function(double omega, double eta, int annil) {
+    complex<double> E(omega,eta);
     complex<double> G=0;
-    for(int i=0;i<lambda;i++)
-       G+=psi_n0[i]*psi_n0[i]/(E-eigenvalues[i]); 
+    for(int i=0; i<lambda; i++)
+        if(annil==1)
+            G+=psi_n0[i]*psi_n0[i]/(E-E0+eigenvalues[i]);
+        else
+            G+=psi_n0[i]*psi_n0[i]/(E+E0-eigenvalues[i]);
+
     return -G.imag()/M_PI;
 }
-*/
+
+complex<double> lhamil::Greens_function(double omega, double eta,int annil) {
+    complex<double> E(omega,eta);
+    complex<double> G=0;
+    for(int i=0; i<lambda; i++)
+        if(annil==1)
+            G+=psi_n0[i]*psi_n0[i]/(E-E0+eigenvalues[i]);
+        else
+            G+=psi_n0[i]*psi_n0[i]/(E+E0-eigenvalues[i]);
+    return G;
+}
 
 void lhamil::save_to_file(const char* filename) {
     if(eigenvalues.size()==0) return;

@@ -26,8 +26,8 @@ hamil::hamil(basis &sector,double t, double U) {
     for(i=0; i<nbasis_up; i++) {
         for(j=0; j<nbasis_down; j++) {
             for(n=0; n<nsite-1; n++) {
-                k=sector.hopping_up(i,n);
-                l=sector.hopping_down(j,n);
+                k=sector.hopping_up(i,n,n+1);
+                l=sector.hopping_down(j,n,n+1);
                 //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+l;
                 if(k!=i) {
                     //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+j;
