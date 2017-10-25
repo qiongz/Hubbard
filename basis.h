@@ -35,10 +35,8 @@ public:
     void init();
     void generate_up(long);
     void generate_down(long);
-    void creation_el_up(long);
-    void creation_el_down(long);
-    void annihilation_el_up(long);
-    void annihilation_el_down(long);
+    long creation(long,long);
+    long annihilation(long,long);
     void prlong();
     friend ostream & operator<<(ostream & os, const basis &); 
 };

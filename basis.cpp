@@ -73,25 +73,35 @@ long basis::hopping_up(long i,long n,long m){
    mask=(1<<n)+(1<<m);
    K=mask&id_up[i];
    L=K^mask;
-   if(L!=0 && L!=mask)
+   
+   if(L!=0 && L!=mask){
        b=id_up[i]-K+L;
+       if(basis_up.find(b)!=basis_up.end())
+          return basis_up[b];
+       else 
+          return basis_up[id_up[i]];
+   }
    else
-       b=id_up[i];
-   return basis_up[b];
+       return basis_up[id_up[i]];
 }
 
 long basis::hopping_down(long i,long n,long m){
    long mask,K,L,b;
    if(m<0) m+=nsite;
     else if (m>=nsite) m-=nsite;
+
    mask=(1<<n)+(1<<m);
    K=mask&id_down[i];
    L=K^mask;
-   if(L!=0 && L!=mask)
+   if(L!=0 && L!=mask){
        b=id_down[i]-K+L;
+       if(basis_down.find(b)!=basis_down.end())
+           return basis_down[b];
+       else
+           return basis_down[id_down[i]];
+   }
    else
-       b=id_down[i];
-   return basis_down[b];
+       return basis_down[id_down[i]];
 }
 
 long basis::potential(long i,long j,long n){
@@ -105,7 +115,6 @@ long basis::potential(long i,long j,long n){
        return 0;
 }
 
-// c_i^\dagger c_i terms for spin-up
 long basis::onsite_up(long i,long n){
   long mask,bu;
   mask=(1<<n);
@@ -116,7 +125,6 @@ long basis::onsite_up(long i,long n){
     return 0; 
 }
 
-// c_i^\dagger c_i terms for spin-down
 long basis::onsite_down(long i,long n){
   long mask,bd;
   mask=(1<<n);
@@ -128,83 +136,28 @@ long basis::onsite_down(long i,long n){
 }
 
 
-void basis::creation_el_up(long n)
+long basis::creation(long s,long n)
 {
     long mask,bu;
     mask=(1<<n);
-    std::map<long,long> basis_up_particle;
-    int count=0;
-    for( auto &x:basis_up){
-      bu=x.first&mask;
-      if(bu!=mask) basis_up_particle.insert(pair<long,long>(x.first+mask,count++));
-    } 
-
-    id_up.clear();
-    for(auto &x:basis_up_particle)
-      id_up.push_back(x.first);
-
-    sort(id_up.begin(),id_up.end());     
-
-    basis_up=basis_up_particle;
-    basis_up_particle.clear(); 
-    nbasis_up=basis_up.size();
+    bu=s&mask;
+    if(bu!=mask)
+       return s+mask;
+    else
+       return s;
 }
 
-void basis::creation_el_down(long n){
-    long mask,bd;
-    mask=(1<<n);
-    std::map<long,long> basis_down_particle;
-    int count=0;
-    for( auto &x:basis_down){
-      bd=x.first&mask;
-      if(bd!=mask) basis_down_particle.insert(pair<long,long>(x.first+mask,count++));
-    } 
-    id_down.clear();
-    for(auto &x:basis_down_particle)
-      id_down.push_back(x.first);
-    sort(id_down.begin(),id_down.end());     
-    basis_down=basis_down_particle;
-    basis_down_particle.clear(); 
-    nbasis_down=basis_down.size();
-}
-
-void basis::annihilation_el_up(long n)
+long basis::annihilation(long s,long n)
 {
     long mask,bu;
     mask=(1<<n);
-    std::map<long,long> basis_up_hole;
-    int count=0;
-    for( auto &x:basis_up){
-      bu=x.first&mask;
-      if(bu==mask) basis_up_hole.insert(pair<long,long>(x.first-mask,count++));
-    } 
-    id_up.clear();
-    for(auto &x:basis_up_hole)
-      id_up.push_back(x.first);
-    sort(id_up.begin(),id_up.end());     
-    basis_up=basis_up_hole;
-    basis_up_hole.clear(); 
-    nbasis_up=basis_up.size();
+    bu=s&mask;
+    if(bu==mask)
+       return s-mask;
+    else
+       return s;
 }
 
-void basis::annihilation_el_down(long n)
-{
-    long mask,bd;
-    mask=(1<<n);
-    std::map<long,long> basis_down_hole;
-    int count=0;
-    for( auto &x:basis_down){
-      bd=x.first&mask;
-      if(bd==mask) basis_down_hole.insert(pair<long,long>(x.first-mask,count++));
-    } 
-    id_down.clear();
-    for(auto &x:basis_down_hole)
-      id_down.push_back(x.first);
-    sort(id_down.begin(),id_down.end());     
-    basis_down=basis_down_hole;
-    basis_down_hole.clear(); 
-    nbasis_down=basis_down.size();
-}
 
 void basis::generate_up(long a){
    long mask,K,L,b,j;
@@ -257,6 +210,7 @@ void basis::prlong(){
     cout<<"---------------------------------------"<<endl;
     cout<<"No. basis for spin-up electrons: "<<setw(6)<<nbasis_up<<endl;
     cout<<"No. basis for spin-down electrons: "<<setw(6)<<nbasis_down<<endl;
+    /*
     cout<<"---------------------------------------"<<endl;
     cout<<"Lin's Table:"<<endl;
     cout<<"---------------------------------------"<<endl;
@@ -270,6 +224,7 @@ void basis::prlong(){
     for(auto &x: id_down)
        cout<<x<<endl;
     cout<<"---------------------------------------"<<endl;
+    */
 }
 
 
