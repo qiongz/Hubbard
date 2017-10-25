@@ -1,4 +1,5 @@
-/************************************************ Basis generation library for 1D Hubbard model
+/************************************************ 
+Basis generation library for 1D Hubbard model
    @author qiongzhu
    20/1/2017
    Email:qiongzhunow@gmail.com

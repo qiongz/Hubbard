@@ -71,10 +71,10 @@ int main(int argc,char *argv[]) {
     // for spin-up
     vector<double> IP,IH,EH,EP;
     vector<double> O_psir_0;
-    IP.assign(400,0);
-    IH.assign(400,0);
-    EP.assign(400,0);
-    EH.assign(400,0);
+    IP.assign(1000,0);
+    IH.assign(1000,0);
+    EP.assign(1000,0);
+    EH.assign(1000,0);
        
        
     int r=nsite/2;
@@ -102,9 +102,9 @@ int main(int argc,char *argv[]) {
     //cout<<"E0_N:="<<config.eigenvalues[0]<<endl;
     //cout<<"mu_N:="<<config.E0-config.eigenvalues[0]<<endl;
     double mu_N=config.E0-config.eigenvalues[0]; 
-    for(int i=0; i<400; i++) {
-        IH[i]+=config.spectral_function(i/10.0-20,0.2,1);
-        EH[i]=i/10.0-20;
+    for(int i=0; i<1000; i++) {
+        IH[i]+=config.spectral_function(i/50.0-5,0.2,1);
+        EH[i]=i/50.0-5;
     }
     O_psir_0.clear(); 
     
@@ -132,9 +132,9 @@ int main(int argc,char *argv[]) {
     //cout<<"E0_N+1:="<<config.eigenvalues[0]<<endl;
    //cout<<"mu_N+1:="<<config.eigenvalues[0]-config.E0<<endl;
     double mu_Np=config.eigenvalues[0]-config.E0; 
-    for(int i=0; i<400; i++) {
-       EP[i]=i/10.0-20;
-       IP[i]+=config.spectral_function(i/10.0-20,0.2,0);
+    for(int i=0; i<1000; i++) {
+       EP[i]=i/50.0-5;
+       IH[i]+=config.spectral_function(i/50.0-5,0.2,0);
     }
 
     O_psir_0.clear(); 
@@ -165,9 +165,9 @@ int main(int argc,char *argv[]) {
     O_psir_0.clear(); 
     */
      
-    for(int i=0; i<400; i++)
+    for(int i=0; i<1000; i++)
          //cout<<EH[i]<<" "<<IH[i]<<" "<<EP[i]<<" "<<IP[i]<<endl;
-         cout<<EH[i]-(mu_Np+mu_N)/2.0<<" "<<IH[i]<<" "<<IP[i]<<endl;
+         cout<<EH[i]-(mu_Np+mu_N)/2.0<<" "<<IH[i]<<endl;
 
     /*
     //test for eigenvalues convergence

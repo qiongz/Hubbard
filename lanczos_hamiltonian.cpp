@@ -55,15 +55,6 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
                         col_indices.insert(std::pair<long,double>(k*nbasis_down+j,-t*signu));
                     else
                         it->second+=-t*signu;
-
-                /*
-                cout<<"----------------------"<<endl;
-                cout<<"(n,m)=("<<n<<","<<m<<"): "<<endl; 
-                cout<<"i:="<<bitset<4>(sector.id_up[i])<<endl;
-                cout<<"k:="<<bitset<4>(sector.id_up[k])<<endl;
-                cout<<"matrix element:="<<it->second<<endl;
-                 */
-
                 }
                 l=sector.hopping_down(j,n,m);
                 if(l!=j) {
@@ -84,15 +75,6 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
             for(it=col_indices.begin(); it!=col_indices.end(); it++) {
                 inner_indices.push_back(it->first);
                 matrix_elements.push_back(it->second);
-                
-                /*
-                cout<<"----------------------"<<endl;
-                cout<<"(i,j)=("<<i<<","<<j<<"): "<<endl; 
-                cout<<bitset<5>(sector.id_up[i])<<" "<<bitset<5>(sector.id_down[j])<<endl;
-                cout<<bitset<5>(sector.id_up[it->first/nbasis_down])<<" "<<bitset<5>(sector.id_down[it->first%nbasis_down])<<endl;
-                cout<<"matrix element:="<<it->second<<endl;
-                */
-                
             }
 
             row+=col_indices.size();
@@ -143,14 +125,6 @@ void lhamil::set_onsite_optc(int r,int alpha,int annil)
             else
                 matrix_elements.push_back(potential_spin_down);
             outer_starts.push_back(row);
-            /*
-            cout<<"----------------------"<<endl;
-            cout<<bitset<4>(sector.id_up[i])<<" "<<bitset<4>(sector.id_down[j])<<endl;
-            cout<<"matrix element:="<<potential_spin_up<<endl;
-            cout<<"matrix element:="<<potential_spin_down<<endl;
-            cout<<"alpha="<<alpha<<endl;
-            cout<<"annil="<<annil<<endl;
-            */
         }
     O.init(outer_starts,inner_indices,matrix_elements);
     outer_starts.clear();
@@ -548,8 +522,6 @@ void lhamil::psir0_creation_el_up(basis & sector_i,basis &sector_O,vector<double
         it=sector_O.basis_up.find(Ob);
         if(it!=sector_O.basis_up.end()){
           k=it->second;   
-          //cout<<"i,id_up[i],k,new_id_up[k]:=";
-          //cout<<i<<","<<sector_i.id_up[i]<<","<<k<<","<<sector_O.id_up[k]<<endl; 
        for(j=0;j<sector_i.nbasis_down;j++) 
           O_psir_0[k*sector_i.nbasis_down+j]=psir_0[i*sector_i.nbasis_down+j];
         }
