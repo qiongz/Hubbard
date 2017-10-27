@@ -186,10 +186,15 @@ void lhamil::coeff_explicit_update()
     overlap.assign(lambda,0);
 
     //phi_0.init_random(nHilbert,seed);
+    #if __cplusplus > 199711L
     std::mt19937 rng(seed);
-    #pragma omp parallel for schedule(static)
     for(i=0; i<nHilbert; i++)
         phi_0[i]=rng()*1.0/rng.max()-0.5;
+    #else
+    init_genrand64(seed);
+    for(i=0; i<nHilbert; i++)
+        phi_0[i]=genrand64_real3()-0.5;
+    #endif
 
     norm_factor=0;
     #pragma omp parallel for reduction(+:norm_factor)

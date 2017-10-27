@@ -31,12 +31,19 @@ void Vec::assign(long  _size,const double _init) {
 
 void Vec::init_random(unsigned seed) {
     double norm=0;
+    #if __cplusplus > 199711L
     std::mt19937 rng(seed);
-    #pragma omp parallel for reduction(+:norm)
     for(int i = 0; i < size; i++) {
         value[i] = rng() * 1.0 / rng.max()-0.5 ;
         norm += value[i] * value[i];
     }
+    #else
+    init_genrand64(seed);
+    for(int i = 0; i < size; i++) {
+        value[i]=genrand64_real3()-0.5; 
+        norm += value[i] * value[i];
+    }
+    #endif
     norm = sqrt(norm);
     #pragma omp parallel for schedule(static)
     for(int i = 0; i < size; i++)
@@ -46,13 +53,20 @@ void Vec::init_random(unsigned seed) {
 void Vec::init_random(long _size,unsigned seed) {
     size=_size;
     value.resize(size);
-    std::mt19937 rng(seed);
     double norm=0;
-    #pragma omp parallel for reduction(+:norm)
+    #if __cplusplus > 199711L
+    std::mt19937 rng(seed);
     for(int i = 0; i < size; i++) {
-        value[i] = rng() * 1.0 / rng.max() - 0.5;
+        value[i] = rng() * 1.0 / rng.max()-0.5 ;
         norm += value[i] * value[i];
     }
+    #else
+    init_genrand64(seed);
+    for(int i = 0; i < size; i++) {
+        value[i]=genrand64_real3()-0.5; 
+        norm += value[i] * value[i];
+    }
+    #endif
     norm = sqrt(norm);
     #pragma omp parallel for schedule(static)
     for(int i = 0; i < size; i++)

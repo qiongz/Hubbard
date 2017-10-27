@@ -3,9 +3,11 @@
 #include"hamiltonian.h"
 #include"lanczos_hamiltonian.h"
 #include<ctime>
-#include<chrono>
 #include<sstream>
 #include<cstdlib>
+#if __cplusplus > 199711L
+#include<chrono>
+#endif
 
 using namespace std;
 
@@ -24,8 +26,14 @@ int main(int argc,char *argv[]) {
     init_argv(nsite,nel,t,U,lambda,argc,argv);
 
     nel_up=(nel+1)/2;
+    #if __cplusplus > 199711L
     seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    #else
+    Timer tmr;
+    seed=tmr.nanoseconds();
+    #endif
     nel_down=nel-nel_up;
+    Sz=nel_up-nel_down;
     basis sector(nsite,nel_up,nel_down);
     sector.init();
     //sector.prlong();
