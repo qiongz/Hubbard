@@ -50,10 +50,11 @@ void basis::init(){
        config_init+=(1<<i);
     generate_down(config_init);
     
-    for(auto &x:basis_up)
-      id_up.push_back(x.first);
-    for(auto &x:basis_down)
-      id_down.push_back(x.first);
+    std::map<long,long>::iterator it;
+    for(it=basis_up.begin();it!=basis_up.end();it++)
+      id_up.push_back(it->first);
+    for(it=basis_down.begin();it!=basis_down.end();it++)
+      id_down.push_back(it->first);
 
     sort(id_up.begin(),id_up.end());     
     sort(id_down.begin(),id_down.end());     
@@ -161,7 +162,11 @@ long basis::annihilation(long s,long n)
 
 void basis::generate_up(long a){
    long mask,K,L,b,j;
+   #if __cplusplus > 199711L
    basis_up.emplace(a,a);
+   #else 
+   basis_up[a]=a;
+   #endif
    for(long i=0;i<nsite;i++){
        j=(i+1>=nsite)?i+1-nsite:i+1; 
        mask=(1<<i)+(1<<j);
@@ -180,7 +185,11 @@ void basis::generate_up(long a){
 
 void basis::generate_down(long a){
    long mask,K,L,b,j;
+   #if __cplusplus > 199711L
    basis_down.emplace(a,a);
+   #else 
+   basis_down[a]=a;
+   #endif
    for(long i=0;i<nsite-1;i++){
        j=(i+1>=nsite)?i+1-nsite:i+1; 
        mask=(1<<i)+(1<<j);
@@ -197,16 +206,17 @@ void basis::generate_down(long a){
 }
 
 void basis::prlong(){
+    std::map<long,long>::iterator it;
     cout<<"---------------------------------------"<<endl;
     cout<<"spin-up electrons:"<<endl;
     cout<<"---------------------------------------"<<endl;
-    for(auto &x: basis_up)
-         cout<<bitset<20>(x.first).to_string()<<" "<<setw(6)<<x.first<<" "<<x.second<<endl;
+    for(it=basis_up.begin();it!=basis_up.end();it++)
+         cout<<bitset<20>(it->first).to_string()<<" "<<setw(6)<<it->first<<" "<<it->second<<endl;
     cout<<"---------------------------------------"<<endl;
     cout<<"spin-down electrons:"<<endl;
     cout<<"---------------------------------------"<<endl;
-    for(auto &x: basis_down)
-         cout<<bitset<20>(x.first).to_string()<<" "<<setw(6)<<x.first<<" "<<x.second<<endl;
+    for(it=basis_down.begin();it!=basis_down.end();it++)
+         cout<<bitset<20>(it->first).to_string()<<" "<<setw(6)<<it->first<<" "<<it->second<<endl;
     cout<<"---------------------------------------"<<endl;
     cout<<"No. basis for spin-up electrons: "<<setw(6)<<nbasis_up<<endl;
     cout<<"No. basis for spin-down electrons: "<<setw(6)<<nbasis_down<<endl;
