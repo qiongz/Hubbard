@@ -2,6 +2,8 @@
 #include"basis.h"
 #include"hamiltonian.h"
 #include"lanczos_hamiltonian.h"
+#include<gsl/gsl_integration.h>
+#include <gsl/gsl_sf_bessel.h>
 #include<ctime>
 #include<sstream>
 #include<cstdlib>
@@ -17,6 +19,8 @@ int main(int argc,char *argv[]) {
     int Sz;
     unsigned seed;
     double t,U;
+    double func_Lieb_Wu(double x, void *params);
+    double Integrate_Lieb_Wu(double U);
 
     nsite=2;
     nel=2;
@@ -57,15 +61,16 @@ int main(int argc,char *argv[]) {
     
     //config.save_to_file(filename.c_str());
      
-    /* 
+    
     cout<<"gs energy per site:="<<config.ground_state_energy()/nsite<<endl;
-    cout<<"gs energy tot:="<<config.ground_state_energy()<<endl;
+    //cout<<"gs energy tot:="<<config.ground_state_energy()<<endl;
     double analytic_gs=-4*t/M_PI+U/4.0-0.017*U*U/t;
     cout<<"analytical gs energy(band limit):="<<analytic_gs<<endl;
 
     analytic_gs=-4*t*t*log(2)/U;
     cout<<"analytical gs energy(atomic limit):="<<analytic_gs<<endl;
-    */
+    analytic_gs=-Integrate_Lieb_Wu(U);
+    cout<<"analytical gs energy:="<<analytic_gs<<endl; 
     
     
     /*
@@ -175,7 +180,7 @@ int main(int argc,char *argv[]) {
      
     for(int i=0; i<1000; i++)
          //cout<<EH[i]<<" "<<IH[i]<<" "<<EP[i]<<" "<<IP[i]<<endl;
-         cout<<EH[i]-(mu_Np+mu_N)/2.0<<" "<<IH[i]<<endl;
+//         cout<<EH[i]-(mu_Np+mu_N)/2.0<<" "<<IH[i]<<endl;
 
     /*
     //test for eigenvalues convergence
@@ -190,4 +195,20 @@ int main(int argc,char *argv[]) {
     */
 
     return 0;
+}
+double func_Lieb_Wu(double x, void *params) {
+    double U = *(double *)params;
+    double ret_value = 4*gsl_sf_bessel_J0(x)*gsl_sf_bessel_J1(x)/(1+exp(0.5*x*U))/(x+1e-8);
+    return ret_value;
+}
+double Integrate_Lieb_Wu(double U) {
+    gsl_integration_workspace *w = gsl_integration_workspace_alloc(10000);
+    double result,error;
+
+    gsl_function F;
+    F.function = &func_Lieb_Wu;
+    F.params= & U;
+
+    gsl_integration_qagiu(& F,0,0, 1e-8, 10000,w, &result, & error);
+    return result;
 }
