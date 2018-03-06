@@ -1,0 +1,138 @@
+\hypertarget{classlhamil}{}\section{lhamil Class Reference}
+\label{classlhamil}\index{lhamil@{lhamil}}
+
+
+Collaboration diagram for lhamil\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=172pt]{classlhamil__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries lhamil} (const \hyperlink{classMat}{Mat} \&, long, long, unsigned)\hypertarget{classlhamil_a2ddee02e033269d368705a05fb14efd0}{}\label{classlhamil_a2ddee02e033269d368705a05fb14efd0}
+
+\item 
+{\bfseries lhamil} (\hyperlink{classbasis}{basis} \&, double, double, long, unsigned)\hypertarget{classlhamil_a250d9537be375f85843646cc1d31aed0}{}\label{classlhamil_a250d9537be375f85843646cc1d31aed0}
+
+\item 
+void {\bfseries set\+\_\+hamil} (\hyperlink{classbasis}{basis} \&, double, double)\hypertarget{classlhamil_a26e9de83711358c0ad92a19363eddb11}{}\label{classlhamil_a26e9de83711358c0ad92a19363eddb11}
+
+\item 
+void {\bfseries psir0\+\_\+creation\+\_\+el\+\_\+up} (\hyperlink{classbasis}{basis} \&, \hyperlink{classbasis}{basis} \&, vector$<$ double $>$ \&, long)\hypertarget{classlhamil_ad09d3c2f6fa1fad58e106815fef1e592}{}\label{classlhamil_ad09d3c2f6fa1fad58e106815fef1e592}
+
+\item 
+void {\bfseries psir0\+\_\+creation\+\_\+el\+\_\+down} (\hyperlink{classbasis}{basis} \&, \hyperlink{classbasis}{basis} \&, vector$<$ double $>$ \&, long)\hypertarget{classlhamil_af02ba60d0b23bca49ae084a810243357}{}\label{classlhamil_af02ba60d0b23bca49ae084a810243357}
+
+\item 
+void {\bfseries psir0\+\_\+annihilation\+\_\+el\+\_\+up} (\hyperlink{classbasis}{basis} \&, \hyperlink{classbasis}{basis} \&, vector$<$ double $>$ \&, long)\hypertarget{classlhamil_ac92fecae2024da4c02ac2d257b70dacb}{}\label{classlhamil_ac92fecae2024da4c02ac2d257b70dacb}
+
+\item 
+void {\bfseries psir0\+\_\+annihilation\+\_\+el\+\_\+down} (\hyperlink{classbasis}{basis} \&, \hyperlink{classbasis}{basis} \&, vector$<$ double $>$ \&, long)\hypertarget{classlhamil_ac3062ae288f9e6edcb0ebe322490fe55}{}\label{classlhamil_ac3062ae288f9e6edcb0ebe322490fe55}
+
+\item 
+void {\bfseries set\+\_\+onsite\+\_\+optc} (int r, int alpha, int annil)\hypertarget{classlhamil_a08c5ae8976b11b4673259d7b5e09ebcb}{}\label{classlhamil_a08c5ae8976b11b4673259d7b5e09ebcb}
+
+\item 
+void {\bfseries coeff\+\_\+update} ()\hypertarget{classlhamil_a57ef80505dfd7819444cc86e0f37b640}{}\label{classlhamil_a57ef80505dfd7819444cc86e0f37b640}
+
+\item 
+void {\bfseries coeff\+\_\+explicit\+\_\+update} ()\hypertarget{classlhamil_a747a5dbb742049be4057c3094fd1dffd}{}\label{classlhamil_a747a5dbb742049be4057c3094fd1dffd}
+
+\item 
+void {\bfseries coeff\+\_\+update\+\_\+wopt} (vector$<$ double $>$)\hypertarget{classlhamil_ae04b05c533b0f5fc91dd7ea12075a825}{}\label{classlhamil_ae04b05c533b0f5fc91dd7ea12075a825}
+
+\item 
+void {\bfseries diag} ()\hypertarget{classlhamil_ac9af1b00fc91983e100669171b02b708}{}\label{classlhamil_ac9af1b00fc91983e100669171b02b708}
+
+\item 
+void {\bfseries diag} (int)\hypertarget{classlhamil_a4c5ee9488fea26da2f6020063e8aeccf}{}\label{classlhamil_a4c5ee9488fea26da2f6020063e8aeccf}
+
+\item 
+void {\bfseries eigenstates\+\_\+reconstruction} ()\hypertarget{classlhamil_a8c7fce044a5ce803417ee685915f8bce}{}\label{classlhamil_a8c7fce044a5ce803417ee685915f8bce}
+
+\item 
+double {\bfseries ground\+\_\+state\+\_\+energy} ()\hypertarget{classlhamil_ada058bf85a90c1a1073aedda8303e942}{}\label{classlhamil_ada058bf85a90c1a1073aedda8303e942}
+
+\item 
+double {\bfseries spectral\+\_\+function} (double omega, double eta)\hypertarget{classlhamil_a6ac0b9160a5c8e9f55c1df2a4bc6b565}{}\label{classlhamil_a6ac0b9160a5c8e9f55c1df2a4bc6b565}
+
+\item 
+double {\bfseries spectral\+\_\+function} (double omega, double eta, int annil)\hypertarget{classlhamil_ae49314d086ae17932c1807904c5507bd}{}\label{classlhamil_ae49314d086ae17932c1807904c5507bd}
+
+\item 
+complex$<$ double $>$ {\bfseries Greens\+\_\+function} (double omega, double eta, int annil)\hypertarget{classlhamil_a657968fcec5a5231726184b2817eb8f6}{}\label{classlhamil_a657968fcec5a5231726184b2817eb8f6}
+
+\item 
+complex$<$ double $>$ {\bfseries Greens\+\_\+function\+\_\+ij\+\_\+ab} (int i, int j, int alpha, int beta, double E, double eta)\hypertarget{classlhamil_a02cb040876fa597d0e13486a0c7cfb73}{}\label{classlhamil_a02cb040876fa597d0e13486a0c7cfb73}
+
+\item 
+complex$<$ double $>$ {\bfseries Greens\+\_\+function\+\_\+k} (int k, int alpha, int beta, double E, double eta)\hypertarget{classlhamil_a22e29163bcb08ab415f3814490926d5c}{}\label{classlhamil_a22e29163bcb08ab415f3814490926d5c}
+
+\item 
+void {\bfseries print\+\_\+hamil} ()\hypertarget{classlhamil_ad4fb3d36c5dc5def8509f0a26d400579}{}\label{classlhamil_ad4fb3d36c5dc5def8509f0a26d400579}
+
+\item 
+void {\bfseries print\+\_\+lhamil} (int)\hypertarget{classlhamil_ab68145bc253a27018f0ff75b80a3d230}{}\label{classlhamil_ab68145bc253a27018f0ff75b80a3d230}
+
+\item 
+void {\bfseries print\+\_\+eigen} (int)\hypertarget{classlhamil_a2c26e7bbd48b2d7f46309508fc99854e}{}\label{classlhamil_a2c26e7bbd48b2d7f46309508fc99854e}
+
+\item 
+void {\bfseries save\+\_\+to\+\_\+file} (const char $\ast$)\hypertarget{classlhamil_adf3f7541e5922c3a6f03456edf924d1b}{}\label{classlhamil_adf3f7541e5922c3a6f03456edf924d1b}
+
+\item 
+void {\bfseries read\+\_\+from\+\_\+file} (const char $\ast$)\hypertarget{classlhamil_a0486bea26b7fc3c7544f75f3b70caa3e}{}\label{classlhamil_a0486bea26b7fc3c7544f75f3b70caa3e}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned {\bfseries seed}\hypertarget{classlhamil_a403c4979c8c75a247d526a88ad237d73}{}\label{classlhamil_a403c4979c8c75a247d526a88ad237d73}
+
+\item 
+long {\bfseries n\+Hilbert}\hypertarget{classlhamil_a4196bb19140860780faa0227b2b2d9d5}{}\label{classlhamil_a4196bb19140860780faa0227b2b2d9d5}
+
+\item 
+long {\bfseries lambda}\hypertarget{classlhamil_a19fc0f14305488a0f250b0e6e6541a32}{}\label{classlhamil_a19fc0f14305488a0f250b0e6e6541a32}
+
+\item 
+double {\bfseries E0}\hypertarget{classlhamil_a83f32edb3593b382e2cb3e469d95025e}{}\label{classlhamil_a83f32edb3593b382e2cb3e469d95025e}
+
+\item 
+std\+::vector$<$ double $>$ {\bfseries norm}\hypertarget{classlhamil_ae1e5cf1878aea2198372f64cd038ccc8}{}\label{classlhamil_ae1e5cf1878aea2198372f64cd038ccc8}
+
+\item 
+std\+::vector$<$ double $>$ {\bfseries overlap}\hypertarget{classlhamil_ab312761bed0e3f65e7143e06339e0773}{}\label{classlhamil_ab312761bed0e3f65e7143e06339e0773}
+
+\item 
+std\+::vector$<$ double $>$ {\bfseries psir\+\_\+0}\hypertarget{classlhamil_a30af2fba8c46ff87ec1144986321de93}{}\label{classlhamil_a30af2fba8c46ff87ec1144986321de93}
+
+\item 
+std\+::vector$<$ double $>$ {\bfseries psi\+\_\+0}\hypertarget{classlhamil_ad46e5575cd78453a79a4960d8f050708}{}\label{classlhamil_ad46e5575cd78453a79a4960d8f050708}
+
+\item 
+std\+::vector$<$ double $>$ {\bfseries psi\+\_\+n0}\hypertarget{classlhamil_a8380f1d9b7b9e819b43da1f374cc86b4}{}\label{classlhamil_a8380f1d9b7b9e819b43da1f374cc86b4}
+
+\item 
+std\+::vector$<$ double $>$ {\bfseries eigenvalues}\hypertarget{classlhamil_ae80fe2a6e59632516505e834f64053f2}{}\label{classlhamil_ae80fe2a6e59632516505e834f64053f2}
+
+\item 
+\hyperlink{classbasis}{basis} {\bfseries sector}\hypertarget{classlhamil_a3a5ef09836b4d5a13a6ff3aa62c67036}{}\label{classlhamil_a3a5ef09836b4d5a13a6ff3aa62c67036}
+
+\item 
+\hyperlink{classMat}{Mat} {\bfseries H}\hypertarget{classlhamil_af5eb4f55cd465808850890273b07d16a}{}\label{classlhamil_af5eb4f55cd465808850890273b07d16a}
+
+\item 
+\hyperlink{classMat}{Mat} {\bfseries O}\hypertarget{classlhamil_afa93e49df6f87889602b9fd4e84c511f}{}\label{classlhamil_afa93e49df6f87889602b9fd4e84c511f}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+lanczos\+\_\+hamiltonian.\+h\item 
+lanczos\+\_\+hamiltonian.\+cpp\end{DoxyCompactItemize}
