@@ -2,8 +2,7 @@
 \label{classhamil}\index{hamil@{hamil}}
 
 
-Collaboration diagram for hamil\+:
-\nopagebreak
+Collaboration diagram for hamil\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -13,46 +12,108 @@ Collaboration diagram for hamil\+:
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-{\bfseries hamil} (\hyperlink{classbasis}{basis} \&, double, double)\hypertarget{classhamil_aa2c7a2bcca41a671d7210d3d61fdae9e}{}\label{classhamil_aa2c7a2bcca41a671d7210d3d61fdae9e}
-
+\hyperlink{classhamil_ad94d7476758c98d5b2af73f73d92e295}{hamil} (\hyperlink{classbasis}{basis} \&sector, double t, double U)
 \item 
-double {\bfseries ground\+\_\+state\+\_\+energy} ()\hypertarget{classhamil_a49c2202b93e45e07636a73679c62e55c}{}\label{classhamil_a49c2202b93e45e07636a73679c62e55c}
-
+double \hyperlink{classhamil_a49c2202b93e45e07636a73679c62e55c}{ground\+\_\+state\+\_\+energy} ()
 \item 
-void {\bfseries diag} ()\hypertarget{classhamil_a3e686a737e1019cea6dd3617065a7a7e}{}\label{classhamil_a3e686a737e1019cea6dd3617065a7a7e}
-
+void \hyperlink{classhamil_a3e686a737e1019cea6dd3617065a7a7e}{diag} ()
 \item 
 complex$<$ double $>$ {\bfseries Greens\+\_\+function} (double, double)\hypertarget{classhamil_af3f1cab0e7c3a187df9b48de191c73ef}{}\label{classhamil_af3f1cab0e7c3a187df9b48de191c73ef}
 
 \item 
-void {\bfseries print\+\_\+hamil} ()\hypertarget{classhamil_a607d29abc7e23f3097a546b1affa384b}{}\label{classhamil_a607d29abc7e23f3097a546b1affa384b}
-
+void \hyperlink{classhamil_a607d29abc7e23f3097a546b1affa384b}{print\+\_\+hamil} ()
 \item 
-void {\bfseries print\+\_\+eigen} ()\hypertarget{classhamil_ad0939704cbb18eaac49cce5961a28f9d}{}\label{classhamil_ad0939704cbb18eaac49cce5961a28f9d}
-
+void \hyperlink{classhamil_ad0939704cbb18eaac49cce5961a28f9d}{print\+\_\+eigen} ()
 \end{DoxyCompactItemize}
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-long {\bfseries n\+Hilbert}\hypertarget{classhamil_a8f3ba91f36a6ef7cef1c2248668a9ba4}{}\label{classhamil_a8f3ba91f36a6ef7cef1c2248668a9ba4}
-
+long \hyperlink{classhamil_a8f3ba91f36a6ef7cef1c2248668a9ba4}{n\+Hilbert}
 \item 
-unsigned {\bfseries seed}\hypertarget{classhamil_ad69ef2d8298340ce7c49617f5ffc1b46}{}\label{classhamil_ad69ef2d8298340ce7c49617f5ffc1b46}
-
+unsigned \hyperlink{classhamil_ad69ef2d8298340ce7c49617f5ffc1b46}{seed}
 \item 
-\hyperlink{classMat}{Mat} {\bfseries H}\hypertarget{classhamil_aa440fff2dff9ec215fe5d50976deceae}{}\label{classhamil_aa440fff2dff9ec215fe5d50976deceae}
-
+\hyperlink{classMat}{Mat} \hyperlink{classhamil_aa440fff2dff9ec215fe5d50976deceae}{H}
 \item 
-std\+::vector$<$ double $>$ {\bfseries eigenvalues}\hypertarget{classhamil_a22699c0dd6f460537289842e445d878e}{}\label{classhamil_a22699c0dd6f460537289842e445d878e}
-
+std\+::vector$<$ double $>$ \hyperlink{classhamil_a22699c0dd6f460537289842e445d878e}{eigenvalues}
 \item 
-std\+::vector$<$ double $>$ {\bfseries psi\+\_\+0}\hypertarget{classhamil_a7626c19b1aebcf74f47a6ea77825d464}{}\label{classhamil_a7626c19b1aebcf74f47a6ea77825d464}
-
+std\+::vector$<$ double $>$ \hyperlink{classhamil_a7626c19b1aebcf74f47a6ea77825d464}{psi\+\_\+0}
 \item 
-std\+::vector$<$ double $>$ {\bfseries psi\+\_\+n0}\hypertarget{classhamil_ab301c39efac3bcbd0fa5df20be44643c}{}\label{classhamil_ab301c39efac3bcbd0fa5df20be44643c}
-
+std\+::vector$<$ double $>$ \hyperlink{classhamil_ab301c39efac3bcbd0fa5df20be44643c}{psi\+\_\+n0}
 \end{DoxyCompactItemize}
 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{hamil@{hamil}!hamil@{hamil}}
+\index{hamil@{hamil}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{hamil(basis \&sector, double t, double U)}{hamil(basis &sector, double t, double U)}}]{\setlength{\rightskip}{0pt plus 5cm}hamil\+::hamil (
+\begin{DoxyParamCaption}
+\item[{{\bf basis} \&}]{sector, }
+\item[{double}]{t, }
+\item[{double}]{U}
+\end{DoxyParamCaption}
+)}\hypertarget{classhamil_ad94d7476758c98d5b2af73f73d92e295}{}\label{classhamil_ad94d7476758c98d5b2af73f73d92e295}
+Initialize the hamiltonian matrix elements. 
+\begin{DoxyParams}{Parameters}
+{\em sector} & basis sector, \\
+\hline
+{\em t} & hopping strength, \\
+\hline
+{\em U} & onsite replusive interaction strength \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{hamil@{hamil}!diag@{diag}}
+\index{diag@{diag}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{diag()}{diag()}}]{\setlength{\rightskip}{0pt plus 5cm}void hamil\+::diag (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classhamil_a3e686a737e1019cea6dd3617065a7a7e}{}\label{classhamil_a3e686a737e1019cea6dd3617065a7a7e}
+Diagonalize the full hamiltonian \index{hamil@{hamil}!ground\+\_\+state\+\_\+energy@{ground\+\_\+state\+\_\+energy}}
+\index{ground\+\_\+state\+\_\+energy@{ground\+\_\+state\+\_\+energy}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{ground\+\_\+state\+\_\+energy()}{ground_state_energy()}}]{\setlength{\rightskip}{0pt plus 5cm}double hamil\+::ground\+\_\+state\+\_\+energy (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classhamil_a49c2202b93e45e07636a73679c62e55c}{}\label{classhamil_a49c2202b93e45e07636a73679c62e55c}
+Return the ground state energy of the system \index{hamil@{hamil}!print\+\_\+eigen@{print\+\_\+eigen}}
+\index{print\+\_\+eigen@{print\+\_\+eigen}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{print\+\_\+eigen()}{print_eigen()}}]{\setlength{\rightskip}{0pt plus 5cm}void hamil\+::print\+\_\+eigen (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classhamil_ad0939704cbb18eaac49cce5961a28f9d}{}\label{classhamil_ad0939704cbb18eaac49cce5961a28f9d}
+Print the eigenvalues of the system \index{hamil@{hamil}!print\+\_\+hamil@{print\+\_\+hamil}}
+\index{print\+\_\+hamil@{print\+\_\+hamil}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{print\+\_\+hamil()}{print_hamil()}}]{\setlength{\rightskip}{0pt plus 5cm}void hamil\+::print\+\_\+hamil (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classhamil_a607d29abc7e23f3097a546b1affa384b}{}\label{classhamil_a607d29abc7e23f3097a546b1affa384b}
+Print the hamiltonian matrix 
+
+\subsection{Member Data Documentation}
+\index{hamil@{hamil}!eigenvalues@{eigenvalues}}
+\index{eigenvalues@{eigenvalues}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{eigenvalues}{eigenvalues}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::vector$<$double$>$ hamil\+::eigenvalues}\hypertarget{classhamil_a22699c0dd6f460537289842e445d878e}{}\label{classhamil_a22699c0dd6f460537289842e445d878e}
+Eigenvalues of the hamiltonian \index{hamil@{hamil}!H@{H}}
+\index{H@{H}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{H}{H}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mat} hamil\+::H}\hypertarget{classhamil_aa440fff2dff9ec215fe5d50976deceae}{}\label{classhamil_aa440fff2dff9ec215fe5d50976deceae}
+Hamiltonian matrix in C\+SR format \index{hamil@{hamil}!n\+Hilbert@{n\+Hilbert}}
+\index{n\+Hilbert@{n\+Hilbert}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{n\+Hilbert}{nHilbert}}]{\setlength{\rightskip}{0pt plus 5cm}long hamil\+::n\+Hilbert}\hypertarget{classhamil_a8f3ba91f36a6ef7cef1c2248668a9ba4}{}\label{classhamil_a8f3ba91f36a6ef7cef1c2248668a9ba4}
+Size of the Hilbert space \index{hamil@{hamil}!psi\+\_\+0@{psi\+\_\+0}}
+\index{psi\+\_\+0@{psi\+\_\+0}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{psi\+\_\+0}{psi_0}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::vector$<$double$>$ hamil\+::psi\+\_\+0}\hypertarget{classhamil_a7626c19b1aebcf74f47a6ea77825d464}{}\label{classhamil_a7626c19b1aebcf74f47a6ea77825d464}
+Ground state wave function \index{hamil@{hamil}!psi\+\_\+n0@{psi\+\_\+n0}}
+\index{psi\+\_\+n0@{psi\+\_\+n0}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{psi\+\_\+n0}{psi_n0}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::vector$<$double$>$ hamil\+::psi\+\_\+n0}\hypertarget{classhamil_ab301c39efac3bcbd0fa5df20be44643c}{}\label{classhamil_ab301c39efac3bcbd0fa5df20be44643c}
+First element of all wave functions \index{hamil@{hamil}!seed@{seed}}
+\index{seed@{seed}!hamil@{hamil}}
+\subsubsection[{\texorpdfstring{seed}{seed}}]{\setlength{\rightskip}{0pt plus 5cm}unsigned hamil\+::seed}\hypertarget{classhamil_ad69ef2d8298340ce7c49617f5ffc1b46}{}\label{classhamil_ad69ef2d8298340ce7c49617f5ffc1b46}
+seed for the R\+N\+Gs 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 

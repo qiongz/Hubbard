@@ -4,22 +4,71 @@
 
   \indexspace
 
+  \item {diag}
+    \subitem {hamil}, \hyperpage{7}
+
+  \indexspace
+
+  \item {eigenvalues}
+    \subitem {hamil}, \hyperpage{7}
+
+  \indexspace
+
+  \item {ground\+\_\+state\+\_\+energy}
+    \subitem {hamil}, \hyperpage{7}
+
+  \indexspace
+
+  \item {H}
+    \subitem {hamil}, \hyperpage{7}
   \item {hamil}, \hyperpage{6}
+    \subitem {diag}, \hyperpage{7}
+    \subitem {eigenvalues}, \hyperpage{7}
+    \subitem {ground\+\_\+state\+\_\+energy}, \hyperpage{7}
+    \subitem {H}, \hyperpage{7}
+    \subitem {hamil}, \hyperpage{6}
+    \subitem {n\+Hilbert}, \hyperpage{7}
+    \subitem {print\+\_\+eigen}, \hyperpage{7}
+    \subitem {print\+\_\+hamil}, \hyperpage{7}
+    \subitem {psi\+\_\+0}, \hyperpage{7}
+    \subitem {psi\+\_\+n0}, \hyperpage{7}
+    \subitem {seed}, \hyperpage{7}
 
   \indexspace
 
-  \item {lhamil}, \hyperpage{7}
+  \item {lhamil}, \hyperpage{8}
 
   \indexspace
 
-  \item {Mat}, \hyperpage{8}
+  \item {Mat}, \hyperpage{9}
 
   \indexspace
 
-  \item {Timer}, \hyperpage{9}
+  \item {n\+Hilbert}
+    \subitem {hamil}, \hyperpage{7}
 
   \indexspace
 
-  \item {Vec}, \hyperpage{9}
+  \item {print\+\_\+eigen}
+    \subitem {hamil}, \hyperpage{7}
+  \item {print\+\_\+hamil}
+    \subitem {hamil}, \hyperpage{7}
+  \item {psi\+\_\+0}
+    \subitem {hamil}, \hyperpage{7}
+  \item {psi\+\_\+n0}
+    \subitem {hamil}, \hyperpage{7}
+
+  \indexspace
+
+  \item {seed}
+    \subitem {hamil}, \hyperpage{7}
+
+  \indexspace
+
+  \item {Timer}, \hyperpage{10}
+
+  \indexspace
+
+  \item {Vec}, \hyperpage{10}
 
 \end{theindex}

@@ -2,8 +2,7 @@
 \label{classlhamil}\index{lhamil@{lhamil}}
 
 
-Collaboration diagram for lhamil\+:
-\nopagebreak
+Collaboration diagram for lhamil\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -13,123 +12,268 @@ Collaboration diagram for lhamil\+:
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-{\bfseries lhamil} (const \hyperlink{classMat}{Mat} \&, long, long, unsigned)\hypertarget{classlhamil_a2ddee02e033269d368705a05fb14efd0}{}\label{classlhamil_a2ddee02e033269d368705a05fb14efd0}
+\hyperlink{classlhamil_af343dc2e4bfd934b75c9fcc937e61541}{lhamil} ()\hypertarget{classlhamil_af343dc2e4bfd934b75c9fcc937e61541}{}\label{classlhamil_af343dc2e4bfd934b75c9fcc937e61541}
+
+\begin{DoxyCompactList}\small\item\em Empty constructor. \end{DoxyCompactList}\item 
+\hyperlink{classlhamil_a56a9ef60b6e49e9b16c9bac3a16c5ef3}{lhamil} (const \hyperlink{classMat}{Mat} \&\+\_\+H, long \+\_\+n\+Hilbert, long \+\_\+lambda, unsigned \+\_\+seed)
+\begin{DoxyCompactList}\small\item\em Constructor with hamiltonian matrix as input. \end{DoxyCompactList}\item 
+\hyperlink{classlhamil_ad72484031ce3deeaae33010586b43a57}{lhamil} (\hyperlink{classbasis}{basis} \&\+\_\+sector, double t, double U, long \+\_\+lambda, unsigned \+\_\+seed)
+\begin{DoxyCompactList}\small\item\em Constructor with basis sector as input. \end{DoxyCompactList}\item 
+\hyperlink{classlhamil_a1ecb745a224ee151b17dd1ab0e685837}{$\sim$lhamil} ()\hypertarget{classlhamil_a1ecb745a224ee151b17dd1ab0e685837}{}\label{classlhamil_a1ecb745a224ee151b17dd1ab0e685837}
+
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_ac7b1eb29c1383cc9569360d8b59e8c00}{set\+\_\+hamil} (\hyperlink{classbasis}{basis} \&\+\_\+sector, double t, double U)
+\begin{DoxyCompactList}\small\item\em Initialize hamiltonian matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_aca9b0a900976caca5177816d8d6d9523}{psir0\+\_\+creation\+\_\+el\+\_\+up} (\hyperlink{classbasis}{basis} \&sector\+\_\+i, \hyperlink{classbasis}{basis} \&sector\+\_\+O, vector$<$ double $>$ \&O\+\_\+\+Psir\+\_\+0, long r)
+\item 
+void {\bfseries psir0\+\_\+creation\+\_\+el\+\_\+down} (\hyperlink{classbasis}{basis} \&sector\+\_\+i, \hyperlink{classbasis}{basis} \&sector\+\_\+O, vector$<$ double $>$ \&O\+\_\+\+Psir\+\_\+0, long r)\hypertarget{classlhamil_a7465d5adfdcb843f7eeb511491028073}{}\label{classlhamil_a7465d5adfdcb843f7eeb511491028073}
 
 \item 
-{\bfseries lhamil} (\hyperlink{classbasis}{basis} \&, double, double, long, unsigned)\hypertarget{classlhamil_a250d9537be375f85843646cc1d31aed0}{}\label{classlhamil_a250d9537be375f85843646cc1d31aed0}
+void {\bfseries psir0\+\_\+annihilation\+\_\+el\+\_\+up} (\hyperlink{classbasis}{basis} \&sector\+\_\+i, \hyperlink{classbasis}{basis} \&sector\+\_\+O, vector$<$ double $>$ \&O\+\_\+\+Psir\+\_\+0, long r)\hypertarget{classlhamil_a221f7496d72322c8a602e8458f950701}{}\label{classlhamil_a221f7496d72322c8a602e8458f950701}
 
 \item 
-void {\bfseries set\+\_\+hamil} (\hyperlink{classbasis}{basis} \&, double, double)\hypertarget{classlhamil_a26e9de83711358c0ad92a19363eddb11}{}\label{classlhamil_a26e9de83711358c0ad92a19363eddb11}
+void {\bfseries psir0\+\_\+annihilation\+\_\+el\+\_\+down} (\hyperlink{classbasis}{basis} \&sector\+\_\+i, \hyperlink{classbasis}{basis} \&sector\+\_\+O, vector$<$ double $>$ \&O\+\_\+\+Psir\+\_\+0, long r)\hypertarget{classlhamil_aeb0a40a3d327745b15babd8e221a1caf}{}\label{classlhamil_aeb0a40a3d327745b15babd8e221a1caf}
 
 \item 
-void {\bfseries psir0\+\_\+creation\+\_\+el\+\_\+up} (\hyperlink{classbasis}{basis} \&, \hyperlink{classbasis}{basis} \&, vector$<$ double $>$ \&, long)\hypertarget{classlhamil_ad09d3c2f6fa1fad58e106815fef1e592}{}\label{classlhamil_ad09d3c2f6fa1fad58e106815fef1e592}
+void \hyperlink{classlhamil_a08c5ae8976b11b4673259d7b5e09ebcb}{set\+\_\+onsite\+\_\+optc} (int r, int alpha, int annil)\hypertarget{classlhamil_a08c5ae8976b11b4673259d7b5e09ebcb}{}\label{classlhamil_a08c5ae8976b11b4673259d7b5e09ebcb}
 
+\begin{DoxyCompactList}\small\item\em Set-\/up operator O matrix. \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_a57ef80505dfd7819444cc86e0f37b640}{coeff\+\_\+update} ()\hypertarget{classlhamil_a57ef80505dfd7819444cc86e0f37b640}{}\label{classlhamil_a57ef80505dfd7819444cc86e0f37b640}
+
+\begin{DoxyCompactList}\small\item\em Lanczos update implemenation utilizing the \hyperlink{classMat}{Mat} class. \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_a747a5dbb742049be4057c3094fd1dffd}{coeff\+\_\+explicit\+\_\+update} ()\hypertarget{classlhamil_a747a5dbb742049be4057c3094fd1dffd}{}\label{classlhamil_a747a5dbb742049be4057c3094fd1dffd}
+
+\begin{DoxyCompactList}\small\item\em Lanczos update implemenation written in explicit arrays. \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_a0f6c80dc2b5c0f260d6d095751b1a252}{coeff\+\_\+update\+\_\+wopt} (vector$<$ double $>$ O\+\_\+psir\+\_\+0)
 \item 
-void {\bfseries psir0\+\_\+creation\+\_\+el\+\_\+down} (\hyperlink{classbasis}{basis} \&, \hyperlink{classbasis}{basis} \&, vector$<$ double $>$ \&, long)\hypertarget{classlhamil_af02ba60d0b23bca49ae084a810243357}{}\label{classlhamil_af02ba60d0b23bca49ae084a810243357}
+void \hyperlink{classlhamil_ac9af1b00fc91983e100669171b02b708}{diag} ()\hypertarget{classlhamil_ac9af1b00fc91983e100669171b02b708}{}\label{classlhamil_ac9af1b00fc91983e100669171b02b708}
 
-\item 
-void {\bfseries psir0\+\_\+annihilation\+\_\+el\+\_\+up} (\hyperlink{classbasis}{basis} \&, \hyperlink{classbasis}{basis} \&, vector$<$ double $>$ \&, long)\hypertarget{classlhamil_ac92fecae2024da4c02ac2d257b70dacb}{}\label{classlhamil_ac92fecae2024da4c02ac2d257b70dacb}
+\begin{DoxyCompactList}\small\item\em Diagonalize the full Lanczos hamiltonian. \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_ad145f068e46c4a10f268a85fbdbb49e3}{diag} (int l)\hypertarget{classlhamil_ad145f068e46c4a10f268a85fbdbb49e3}{}\label{classlhamil_ad145f068e46c4a10f268a85fbdbb49e3}
 
-\item 
-void {\bfseries psir0\+\_\+annihilation\+\_\+el\+\_\+down} (\hyperlink{classbasis}{basis} \&, \hyperlink{classbasis}{basis} \&, vector$<$ double $>$ \&, long)\hypertarget{classlhamil_ac3062ae288f9e6edcb0ebe322490fe55}{}\label{classlhamil_ac3062ae288f9e6edcb0ebe322490fe55}
+\begin{DoxyCompactList}\small\item\em Diagonalize the Lanczos hamiltonain with first lxl elements. \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_a8c7fce044a5ce803417ee685915f8bce}{eigenstates\+\_\+reconstruction} ()\hypertarget{classlhamil_a8c7fce044a5ce803417ee685915f8bce}{}\label{classlhamil_a8c7fce044a5ce803417ee685915f8bce}
 
-\item 
-void {\bfseries set\+\_\+onsite\+\_\+optc} (int r, int alpha, int annil)\hypertarget{classlhamil_a08c5ae8976b11b4673259d7b5e09ebcb}{}\label{classlhamil_a08c5ae8976b11b4673259d7b5e09ebcb}
+\begin{DoxyCompactList}\small\item\em Transform $\vert$psi\+\_\+0$>$ to $\vert$psir\+\_\+0$>$ \end{DoxyCompactList}\item 
+double \hyperlink{classlhamil_ada058bf85a90c1a1073aedda8303e942}{ground\+\_\+state\+\_\+energy} ()\hypertarget{classlhamil_ada058bf85a90c1a1073aedda8303e942}{}\label{classlhamil_ada058bf85a90c1a1073aedda8303e942}
 
-\item 
-void {\bfseries coeff\+\_\+update} ()\hypertarget{classlhamil_a57ef80505dfd7819444cc86e0f37b640}{}\label{classlhamil_a57ef80505dfd7819444cc86e0f37b640}
+\begin{DoxyCompactList}\small\item\em Ground state energy. \end{DoxyCompactList}\item 
+double \hyperlink{classlhamil_ae49314d086ae17932c1807904c5507bd}{spectral\+\_\+function} (double omega, double eta, int annil)\hypertarget{classlhamil_ae49314d086ae17932c1807904c5507bd}{}\label{classlhamil_ae49314d086ae17932c1807904c5507bd}
 
-\item 
-void {\bfseries coeff\+\_\+explicit\+\_\+update} ()\hypertarget{classlhamil_a747a5dbb742049be4057c3094fd1dffd}{}\label{classlhamil_a747a5dbb742049be4057c3094fd1dffd}
+\begin{DoxyCompactList}\small\item\em Spectral moments with spin. \end{DoxyCompactList}\item 
+double \hyperlink{classlhamil_af01389bc6a2dffaf39964654f2bcdb6f}{spectral\+\_\+function\+\_\+\+CF} (double omega, double eta, int annil)\hypertarget{classlhamil_af01389bc6a2dffaf39964654f2bcdb6f}{}\label{classlhamil_af01389bc6a2dffaf39964654f2bcdb6f}
 
-\item 
-void {\bfseries coeff\+\_\+update\+\_\+wopt} (vector$<$ double $>$)\hypertarget{classlhamil_ae04b05c533b0f5fc91dd7ea12075a825}{}\label{classlhamil_ae04b05c533b0f5fc91dd7ea12075a825}
+\begin{DoxyCompactList}\small\item\em Spectral function with spin, continued fraction version. \end{DoxyCompactList}\item 
+complex$<$ double $>$ \hyperlink{classlhamil_a657968fcec5a5231726184b2817eb8f6}{Greens\+\_\+function} (double omega, double eta, int annil)\hypertarget{classlhamil_a657968fcec5a5231726184b2817eb8f6}{}\label{classlhamil_a657968fcec5a5231726184b2817eb8f6}
 
-\item 
-void {\bfseries diag} ()\hypertarget{classlhamil_ac9af1b00fc91983e100669171b02b708}{}\label{classlhamil_ac9af1b00fc91983e100669171b02b708}
+\begin{DoxyCompactList}\small\item\em Green\textquotesingle{}s function. \end{DoxyCompactList}\item 
+complex$<$ double $>$ \hyperlink{classlhamil_a22e29163bcb08ab415f3814490926d5c}{Greens\+\_\+function\+\_\+k} (int k, int alpha, int beta, double E, double eta)\hypertarget{classlhamil_a22e29163bcb08ab415f3814490926d5c}{}\label{classlhamil_a22e29163bcb08ab415f3814490926d5c}
 
-\item 
-void {\bfseries diag} (int)\hypertarget{classlhamil_a4c5ee9488fea26da2f6020063e8aeccf}{}\label{classlhamil_a4c5ee9488fea26da2f6020063e8aeccf}
+\begin{DoxyCompactList}\small\item\em Green\textquotesingle{}s function in k-\/space. \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_ad4fb3d36c5dc5def8509f0a26d400579}{print\+\_\+hamil} ()\hypertarget{classlhamil_ad4fb3d36c5dc5def8509f0a26d400579}{}\label{classlhamil_ad4fb3d36c5dc5def8509f0a26d400579}
 
-\item 
-void {\bfseries eigenstates\+\_\+reconstruction} ()\hypertarget{classlhamil_a8c7fce044a5ce803417ee685915f8bce}{}\label{classlhamil_a8c7fce044a5ce803417ee685915f8bce}
+\begin{DoxyCompactList}\small\item\em print the full hamiltonian matrix \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_a88e4fa99cf2905aec1301781a1b9cb4d}{print\+\_\+lhamil} (int n)\hypertarget{classlhamil_a88e4fa99cf2905aec1301781a1b9cb4d}{}\label{classlhamil_a88e4fa99cf2905aec1301781a1b9cb4d}
 
-\item 
-double {\bfseries ground\+\_\+state\+\_\+energy} ()\hypertarget{classlhamil_ada058bf85a90c1a1073aedda8303e942}{}\label{classlhamil_ada058bf85a90c1a1073aedda8303e942}
+\begin{DoxyCompactList}\small\item\em print the Lanczos hamiltonian matrix with first n x n elements \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_a34d0966a2d370ef1140f5246648e8f65}{print\+\_\+eigen} (int n)\hypertarget{classlhamil_a34d0966a2d370ef1140f5246648e8f65}{}\label{classlhamil_a34d0966a2d370ef1140f5246648e8f65}
 
-\item 
-double {\bfseries spectral\+\_\+function} (double omega, double eta)\hypertarget{classlhamil_a6ac0b9160a5c8e9f55c1df2a4bc6b565}{}\label{classlhamil_a6ac0b9160a5c8e9f55c1df2a4bc6b565}
+\begin{DoxyCompactList}\small\item\em print the first n eigenvalues \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_a33bd144e6229561d16d5c6fa8ab88a1e}{save\+\_\+to\+\_\+file} (const char $\ast$filename)\hypertarget{classlhamil_a33bd144e6229561d16d5c6fa8ab88a1e}{}\label{classlhamil_a33bd144e6229561d16d5c6fa8ab88a1e}
 
-\item 
-double {\bfseries spectral\+\_\+function} (double omega, double eta, int annil)\hypertarget{classlhamil_ae49314d086ae17932c1807904c5507bd}{}\label{classlhamil_ae49314d086ae17932c1807904c5507bd}
+\begin{DoxyCompactList}\small\item\em save object to file \char`\"{}filename\char`\"{} \end{DoxyCompactList}\item 
+void \hyperlink{classlhamil_a0486bea26b7fc3c7544f75f3b70caa3e}{read\+\_\+from\+\_\+file} (const char $\ast$)\hypertarget{classlhamil_a0486bea26b7fc3c7544f75f3b70caa3e}{}\label{classlhamil_a0486bea26b7fc3c7544f75f3b70caa3e}
 
-\item 
-complex$<$ double $>$ {\bfseries Greens\+\_\+function} (double omega, double eta, int annil)\hypertarget{classlhamil_a657968fcec5a5231726184b2817eb8f6}{}\label{classlhamil_a657968fcec5a5231726184b2817eb8f6}
-
-\item 
-complex$<$ double $>$ {\bfseries Greens\+\_\+function\+\_\+ij\+\_\+ab} (int i, int j, int alpha, int beta, double E, double eta)\hypertarget{classlhamil_a02cb040876fa597d0e13486a0c7cfb73}{}\label{classlhamil_a02cb040876fa597d0e13486a0c7cfb73}
-
-\item 
-complex$<$ double $>$ {\bfseries Greens\+\_\+function\+\_\+k} (int k, int alpha, int beta, double E, double eta)\hypertarget{classlhamil_a22e29163bcb08ab415f3814490926d5c}{}\label{classlhamil_a22e29163bcb08ab415f3814490926d5c}
-
-\item 
-void {\bfseries print\+\_\+hamil} ()\hypertarget{classlhamil_ad4fb3d36c5dc5def8509f0a26d400579}{}\label{classlhamil_ad4fb3d36c5dc5def8509f0a26d400579}
-
-\item 
-void {\bfseries print\+\_\+lhamil} (int)\hypertarget{classlhamil_ab68145bc253a27018f0ff75b80a3d230}{}\label{classlhamil_ab68145bc253a27018f0ff75b80a3d230}
-
-\item 
-void {\bfseries print\+\_\+eigen} (int)\hypertarget{classlhamil_a2c26e7bbd48b2d7f46309508fc99854e}{}\label{classlhamil_a2c26e7bbd48b2d7f46309508fc99854e}
-
-\item 
-void {\bfseries save\+\_\+to\+\_\+file} (const char $\ast$)\hypertarget{classlhamil_adf3f7541e5922c3a6f03456edf924d1b}{}\label{classlhamil_adf3f7541e5922c3a6f03456edf924d1b}
-
-\item 
-void {\bfseries read\+\_\+from\+\_\+file} (const char $\ast$)\hypertarget{classlhamil_a0486bea26b7fc3c7544f75f3b70caa3e}{}\label{classlhamil_a0486bea26b7fc3c7544f75f3b70caa3e}
-
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em load object from file \char`\"{}filename\char`\"{} \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-unsigned {\bfseries seed}\hypertarget{classlhamil_a403c4979c8c75a247d526a88ad237d73}{}\label{classlhamil_a403c4979c8c75a247d526a88ad237d73}
+unsigned \hyperlink{classlhamil_a403c4979c8c75a247d526a88ad237d73}{seed}\hypertarget{classlhamil_a403c4979c8c75a247d526a88ad237d73}{}\label{classlhamil_a403c4979c8c75a247d526a88ad237d73}
+
+\begin{DoxyCompactList}\small\item\em Seed for R\+N\+Gs. \end{DoxyCompactList}\item 
+long \hyperlink{classlhamil_a4196bb19140860780faa0227b2b2d9d5}{n\+Hilbert}\hypertarget{classlhamil_a4196bb19140860780faa0227b2b2d9d5}{}\label{classlhamil_a4196bb19140860780faa0227b2b2d9d5}
+
+\begin{DoxyCompactList}\small\item\em Hilbert space size. \end{DoxyCompactList}\item 
+long \hyperlink{classlhamil_a19fc0f14305488a0f250b0e6e6541a32}{lambda}\hypertarget{classlhamil_a19fc0f14305488a0f250b0e6e6541a32}{}\label{classlhamil_a19fc0f14305488a0f250b0e6e6541a32}
+
+\begin{DoxyCompactList}\small\item\em Lanczos update steps. \end{DoxyCompactList}\item 
+double {\bfseries t}\hypertarget{classlhamil_abd2a5a29e72a358e5dd25dd5ea42f75f}{}\label{classlhamil_abd2a5a29e72a358e5dd25dd5ea42f75f}
 
 \item 
-long {\bfseries n\+Hilbert}\hypertarget{classlhamil_a4196bb19140860780faa0227b2b2d9d5}{}\label{classlhamil_a4196bb19140860780faa0227b2b2d9d5}
+double {\bfseries U}\hypertarget{classlhamil_a67b185d444f0e1d5804a5669b4213350}{}\label{classlhamil_a67b185d444f0e1d5804a5669b4213350}
 
 \item 
-long {\bfseries lambda}\hypertarget{classlhamil_a19fc0f14305488a0f250b0e6e6541a32}{}\label{classlhamil_a19fc0f14305488a0f250b0e6e6541a32}
+double \hyperlink{classlhamil_a83f32edb3593b382e2cb3e469d95025e}{E0}\hypertarget{classlhamil_a83f32edb3593b382e2cb3e469d95025e}{}\label{classlhamil_a83f32edb3593b382e2cb3e469d95025e}
 
+\begin{DoxyCompactList}\small\item\em Ground state eigen energy. \end{DoxyCompactList}\item 
+\hyperlink{classbasis}{basis} \hyperlink{classlhamil_a3a5ef09836b4d5a13a6ff3aa62c67036}{sector}\hypertarget{classlhamil_a3a5ef09836b4d5a13a6ff3aa62c67036}{}\label{classlhamil_a3a5ef09836b4d5a13a6ff3aa62c67036}
+
+\begin{DoxyCompactList}\small\item\em Basis. \end{DoxyCompactList}\item 
+\hyperlink{classMat}{Mat} \hyperlink{classlhamil_af5eb4f55cd465808850890273b07d16a}{H}\hypertarget{classlhamil_af5eb4f55cd465808850890273b07d16a}{}\label{classlhamil_af5eb4f55cd465808850890273b07d16a}
+
+\begin{DoxyCompactList}\small\item\em Hamiltonian matrix in C\+SR format. \end{DoxyCompactList}\item 
+\hyperlink{classMat}{Mat} \hyperlink{classlhamil_afa93e49df6f87889602b9fd4e84c511f}{O}\hypertarget{classlhamil_afa93e49df6f87889602b9fd4e84c511f}{}\label{classlhamil_afa93e49df6f87889602b9fd4e84c511f}
+
+\begin{DoxyCompactList}\small\item\em Operator matrix in C\+SR format. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \hyperlink{classlhamil_ae1e5cf1878aea2198372f64cd038ccc8}{norm}\hypertarget{classlhamil_ae1e5cf1878aea2198372f64cd038ccc8}{}\label{classlhamil_ae1e5cf1878aea2198372f64cd038ccc8}
+
+\begin{DoxyCompactList}\small\item\em Normalization coefficients vector in Lanczos update. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \hyperlink{classlhamil_ab312761bed0e3f65e7143e06339e0773}{overlap}\hypertarget{classlhamil_ab312761bed0e3f65e7143e06339e0773}{}\label{classlhamil_ab312761bed0e3f65e7143e06339e0773}
+
+\begin{DoxyCompactList}\small\item\em Overlap coefficients vector in Lanczos update. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \hyperlink{classlhamil_a30af2fba8c46ff87ec1144986321de93}{psir\+\_\+0}\hypertarget{classlhamil_a30af2fba8c46ff87ec1144986321de93}{}\label{classlhamil_a30af2fba8c46ff87ec1144986321de93}
+
+\begin{DoxyCompactList}\small\item\em Ground state wave function in real-\/space. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \hyperlink{classlhamil_ad46e5575cd78453a79a4960d8f050708}{psi\+\_\+0}\hypertarget{classlhamil_ad46e5575cd78453a79a4960d8f050708}{}\label{classlhamil_ad46e5575cd78453a79a4960d8f050708}
+
+\begin{DoxyCompactList}\small\item\em Ground state eigenvector in Krylov subspace. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \hyperlink{classlhamil_a8380f1d9b7b9e819b43da1f374cc86b4}{psi\+\_\+n0}\hypertarget{classlhamil_a8380f1d9b7b9e819b43da1f374cc86b4}{}\label{classlhamil_a8380f1d9b7b9e819b43da1f374cc86b4}
+
+\begin{DoxyCompactList}\small\item\em First element of eigenvectors in Krylov subspace. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \hyperlink{classlhamil_ae80fe2a6e59632516505e834f64053f2}{eigenvalues}\hypertarget{classlhamil_ae80fe2a6e59632516505e834f64053f2}{}\label{classlhamil_ae80fe2a6e59632516505e834f64053f2}
+
+\begin{DoxyCompactList}\small\item\em Eigenvalues. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
 \item 
-double {\bfseries E0}\hypertarget{classlhamil_a83f32edb3593b382e2cb3e469d95025e}{}\label{classlhamil_a83f32edb3593b382e2cb3e469d95025e}
-
-\item 
-std\+::vector$<$ double $>$ {\bfseries norm}\hypertarget{classlhamil_ae1e5cf1878aea2198372f64cd038ccc8}{}\label{classlhamil_ae1e5cf1878aea2198372f64cd038ccc8}
-
-\item 
-std\+::vector$<$ double $>$ {\bfseries overlap}\hypertarget{classlhamil_ab312761bed0e3f65e7143e06339e0773}{}\label{classlhamil_ab312761bed0e3f65e7143e06339e0773}
-
-\item 
-std\+::vector$<$ double $>$ {\bfseries psir\+\_\+0}\hypertarget{classlhamil_a30af2fba8c46ff87ec1144986321de93}{}\label{classlhamil_a30af2fba8c46ff87ec1144986321de93}
-
-\item 
-std\+::vector$<$ double $>$ {\bfseries psi\+\_\+0}\hypertarget{classlhamil_ad46e5575cd78453a79a4960d8f050708}{}\label{classlhamil_ad46e5575cd78453a79a4960d8f050708}
-
-\item 
-std\+::vector$<$ double $>$ {\bfseries psi\+\_\+n0}\hypertarget{classlhamil_a8380f1d9b7b9e819b43da1f374cc86b4}{}\label{classlhamil_a8380f1d9b7b9e819b43da1f374cc86b4}
-
-\item 
-std\+::vector$<$ double $>$ {\bfseries eigenvalues}\hypertarget{classlhamil_ae80fe2a6e59632516505e834f64053f2}{}\label{classlhamil_ae80fe2a6e59632516505e834f64053f2}
-
-\item 
-\hyperlink{classbasis}{basis} {\bfseries sector}\hypertarget{classlhamil_a3a5ef09836b4d5a13a6ff3aa62c67036}{}\label{classlhamil_a3a5ef09836b4d5a13a6ff3aa62c67036}
-
-\item 
-\hyperlink{classMat}{Mat} {\bfseries H}\hypertarget{classlhamil_af5eb4f55cd465808850890273b07d16a}{}\label{classlhamil_af5eb4f55cd465808850890273b07d16a}
-
-\item 
-\hyperlink{classMat}{Mat} {\bfseries O}\hypertarget{classlhamil_afa93e49df6f87889602b9fd4e84c511f}{}\label{classlhamil_afa93e49df6f87889602b9fd4e84c511f}
-
+void \hyperlink{classlhamil_a2c8c4d8142ad8859c3a9819ea4c7f2fe}{Greens\+\_\+function\+\_\+r\+\_\+uu} (\hyperlink{classlhamil}{lhamil} \&config, long r, double omega, double eta)
 \end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{lhamil@{lhamil}!lhamil@{lhamil}}
+\index{lhamil@{lhamil}!lhamil@{lhamil}}
+\subsubsection[{\texorpdfstring{lhamil(const Mat \&\+\_\+\+H, long \+\_\+n\+Hilbert, long \+\_\+lambda, unsigned \+\_\+seed)}{lhamil(const Mat &_H, long _nHilbert, long _lambda, unsigned _seed)}}]{\setlength{\rightskip}{0pt plus 5cm}lhamil\+::lhamil (
+\begin{DoxyParamCaption}
+\item[{const {\bf Mat} \&}]{\+\_\+H, }
+\item[{long}]{\+\_\+n\+Hilbert, }
+\item[{long}]{\+\_\+lambda, }
+\item[{unsigned}]{\+\_\+seed}
+\end{DoxyParamCaption}
+)}\hypertarget{classlhamil_a56a9ef60b6e49e9b16c9bac3a16c5ef3}{}\label{classlhamil_a56a9ef60b6e49e9b16c9bac3a16c5ef3}
+
+
+Constructor with hamiltonian matrix as input. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+H} & hamiltonian matrix \\
+\hline
+{\em \+\_\+n\+Hilbert} & Hilbert space size \\
+\hline
+{\em \+\_\+lambda} & Lanczos update steps \\
+\hline
+{\em \+\_\+seed} & Seed for R\+N\+Gs \\
+\hline
+\end{DoxyParams}
+\index{lhamil@{lhamil}!lhamil@{lhamil}}
+\index{lhamil@{lhamil}!lhamil@{lhamil}}
+\subsubsection[{\texorpdfstring{lhamil(basis \&\+\_\+sector, double t, double U, long \+\_\+lambda, unsigned \+\_\+seed)}{lhamil(basis &_sector, double t, double U, long _lambda, unsigned _seed)}}]{\setlength{\rightskip}{0pt plus 5cm}lhamil\+::lhamil (
+\begin{DoxyParamCaption}
+\item[{{\bf basis} \&}]{\+\_\+sector, }
+\item[{double}]{t, }
+\item[{double}]{U, }
+\item[{long}]{\+\_\+lambda, }
+\item[{unsigned}]{\+\_\+seed}
+\end{DoxyParamCaption}
+)}\hypertarget{classlhamil_ad72484031ce3deeaae33010586b43a57}{}\label{classlhamil_ad72484031ce3deeaae33010586b43a57}
+
+
+Constructor with basis sector as input. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+sector} & Basis sector \\
+\hline
+{\em t} & Hopping strength \\
+\hline
+{\em U} & Onsite replusive interaction strength \\
+\hline
+{\em \+\_\+lambda} & Lanczos update steps \\
+\hline
+{\em \+\_\+seed} & Seed for R\+N\+Gs \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{lhamil@{lhamil}!coeff\+\_\+update\+\_\+wopt@{coeff\+\_\+update\+\_\+wopt}}
+\index{coeff\+\_\+update\+\_\+wopt@{coeff\+\_\+update\+\_\+wopt}!lhamil@{lhamil}}
+\subsubsection[{\texorpdfstring{coeff\+\_\+update\+\_\+wopt(vector$<$ double $>$ O\+\_\+psir\+\_\+0)}{coeff_update_wopt(vector< double > O_psir_0)}}]{\setlength{\rightskip}{0pt plus 5cm}void lhamil\+::coeff\+\_\+update\+\_\+wopt (
+\begin{DoxyParamCaption}
+\item[{vector$<$ double $>$}]{O\+\_\+psir\+\_\+0}
+\end{DoxyParamCaption}
+)}\hypertarget{classlhamil_a0f6c80dc2b5c0f260d6d095751b1a252}{}\label{classlhamil_a0f6c80dc2b5c0f260d6d095751b1a252}
+Lanczos update scheme for spectral function calculation 
+\begin{DoxyParams}{Parameters}
+{\em O\+\_\+psir\+\_\+0} & Ground state wave function with creation/annihilation operators applied \\
+\hline
+\end{DoxyParams}
+\index{lhamil@{lhamil}!psir0\+\_\+creation\+\_\+el\+\_\+up@{psir0\+\_\+creation\+\_\+el\+\_\+up}}
+\index{psir0\+\_\+creation\+\_\+el\+\_\+up@{psir0\+\_\+creation\+\_\+el\+\_\+up}!lhamil@{lhamil}}
+\subsubsection[{\texorpdfstring{psir0\+\_\+creation\+\_\+el\+\_\+up(basis \&sector\+\_\+i, basis \&sector\+\_\+\+O, vector$<$ double $>$ \&\+O\+\_\+\+Psir\+\_\+0, long r)}{psir0_creation_el_up(basis &sector_i, basis &sector_O, vector< double > &O_Psir_0, long r)}}]{\setlength{\rightskip}{0pt plus 5cm}void lhamil\+::psir0\+\_\+creation\+\_\+el\+\_\+up (
+\begin{DoxyParamCaption}
+\item[{{\bf basis} \&}]{sector\+\_\+i, }
+\item[{{\bf basis} \&}]{sector\+\_\+O, }
+\item[{vector$<$ double $>$ \&}]{O\+\_\+\+Psir\+\_\+0, }
+\item[{long}]{r}
+\end{DoxyParamCaption}
+)}\hypertarget{classlhamil_aca9b0a900976caca5177816d8d6d9523}{}\label{classlhamil_aca9b0a900976caca5177816d8d6d9523}
+Generate basis sector with creation operator performed on site r for spin-\/up electrons 
+\begin{DoxyParams}{Parameters}
+{\em sector\+\_\+i} & Input basis sector \\
+\hline
+{\em sector\+\_\+O} & Output basis sector \\
+\hline
+{\em O\+\_\+\+Psir\+\_\+0} & The ground state wave function, return with creation operator applied \\
+\hline
+{\em r} & Position at which creation operator is applied \\
+\hline
+\end{DoxyParams}
+\index{lhamil@{lhamil}!set\+\_\+hamil@{set\+\_\+hamil}}
+\index{set\+\_\+hamil@{set\+\_\+hamil}!lhamil@{lhamil}}
+\subsubsection[{\texorpdfstring{set\+\_\+hamil(basis \&\+\_\+sector, double t, double U)}{set_hamil(basis &_sector, double t, double U)}}]{\setlength{\rightskip}{0pt plus 5cm}void lhamil\+::set\+\_\+hamil (
+\begin{DoxyParamCaption}
+\item[{{\bf basis} \&}]{\+\_\+sector, }
+\item[{double}]{t, }
+\item[{double}]{U}
+\end{DoxyParamCaption}
+)}\hypertarget{classlhamil_ac7b1eb29c1383cc9569360d8b59e8c00}{}\label{classlhamil_ac7b1eb29c1383cc9569360d8b59e8c00}
+
+
+Initialize hamiltonian matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+sector} & Basis sector \\
+\hline
+{\em t} & Hopping strength \\
+\hline
+{\em U} & Onsite replusive interaction strength \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Friends And Related Function Documentation}
+\index{lhamil@{lhamil}!Greens\+\_\+function\+\_\+r\+\_\+uu@{Greens\+\_\+function\+\_\+r\+\_\+uu}}
+\index{Greens\+\_\+function\+\_\+r\+\_\+uu@{Greens\+\_\+function\+\_\+r\+\_\+uu}!lhamil@{lhamil}}
+\subsubsection[{\texorpdfstring{Greens\+\_\+function\+\_\+r\+\_\+uu}{Greens_function_r_uu}}]{\setlength{\rightskip}{0pt plus 5cm}void Greens\+\_\+function\+\_\+r\+\_\+uu (
+\begin{DoxyParamCaption}
+\item[{{\bf lhamil} \&}]{config, }
+\item[{long}]{r, }
+\item[{double}]{omega, }
+\item[{double}]{eta}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}\hypertarget{classlhamil_a2c8c4d8142ad8859c3a9819ea4c7f2fe}{}\label{classlhamil_a2c8c4d8142ad8859c3a9819ea4c7f2fe}
+spin-\/up Green\textquotesingle{}s function in real-\/space G\+\_\+\{ij\}(omega) 
+\begin{DoxyParams}{Parameters}
+{\em r} & $\vert$j-\/i$\vert$ \\
+\hline
+{\em omega} & Omega \\
+\hline
+{\em eta} & eta \\
+\hline
+\end{DoxyParams}
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}

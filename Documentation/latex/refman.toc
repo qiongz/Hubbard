@@ -4,8 +4,22 @@
 \contentsline {chapter}{\numberline {3}Class Documentation}{5}{chapter.3}
 \contentsline {section}{\numberline {3.1}basis Class Reference}{5}{section.3.1}
 \contentsline {section}{\numberline {3.2}hamil Class Reference}{6}{section.3.2}
-\contentsline {section}{\numberline {3.3}lhamil Class Reference}{7}{section.3.3}
-\contentsline {section}{\numberline {3.4}Mat Class Reference}{8}{section.3.4}
-\contentsline {section}{\numberline {3.5}Timer Class Reference}{9}{section.3.5}
-\contentsline {section}{\numberline {3.6}Vec Class Reference}{9}{section.3.6}
-\contentsline {chapter}{Index}{11}{section*.17}
+\contentsline {subsection}{\numberline {3.2.1}Constructor \& Destructor Documentation}{6}{subsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.1.1}hamil(basis \&sector, double t, double U)}{6}{subsubsection.3.2.1.1}
+\contentsline {subsection}{\numberline {3.2.2}Member Function Documentation}{7}{subsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.2.1}diag()}{7}{subsubsection.3.2.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2.2}ground\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}\_\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}state\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}\_\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}energy()}{7}{subsubsection.3.2.2.2}
+\contentsline {subsubsection}{\numberline {3.2.2.3}print\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}\_\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}eigen()}{7}{subsubsection.3.2.2.3}
+\contentsline {subsubsection}{\numberline {3.2.2.4}print\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}\_\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}hamil()}{7}{subsubsection.3.2.2.4}
+\contentsline {subsection}{\numberline {3.2.3}Member Data Documentation}{7}{subsection.3.2.3}
+\contentsline {subsubsection}{\numberline {3.2.3.1}eigenvalues}{7}{subsubsection.3.2.3.1}
+\contentsline {subsubsection}{\numberline {3.2.3.2}H}{7}{subsubsection.3.2.3.2}
+\contentsline {subsubsection}{\numberline {3.2.3.3}n\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}Hilbert}{7}{subsubsection.3.2.3.3}
+\contentsline {subsubsection}{\numberline {3.2.3.4}psi\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}\_\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}0}{7}{subsubsection.3.2.3.4}
+\contentsline {subsubsection}{\numberline {3.2.3.5}psi\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}\_\discretionary {\unhbox \voidb@x \hbox {\relax \fontsize {7}{8}\selectfont $\leftarrow \joinrel \rhook $}}{}{}n0}{7}{subsubsection.3.2.3.5}
+\contentsline {subsubsection}{\numberline {3.2.3.6}seed}{8}{subsubsection.3.2.3.6}
+\contentsline {section}{\numberline {3.3}lhamil Class Reference}{8}{section.3.3}
+\contentsline {section}{\numberline {3.4}Mat Class Reference}{9}{section.3.4}
+\contentsline {section}{\numberline {3.5}Timer Class Reference}{10}{section.3.5}
+\contentsline {section}{\numberline {3.6}Vec Class Reference}{10}{section.3.6}
+\contentsline {chapter}{Index}{13}{section*.17}
