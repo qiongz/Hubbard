@@ -89,6 +89,7 @@ public:
       \param omega Omega
       \param eta  eta
     */
-    friend void Greens_function_r_uu(lhamil & config,long r,double omega,double eta);
+    friend void Greens_function_r_uu(lhamil & config,long r,double eta);
+    friend void Greens_function_k_uu(lhamil & config,long k,long nsite,double eta);
 };
 #endif

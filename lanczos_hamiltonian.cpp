@@ -532,6 +532,7 @@ void lhamil::psir0_creation_el_up(basis & sector_i,basis &sector_O,vector<double
         //apply operator O on basis id_up[i]
         Ob=sector_i.creation(sector_i.id_up[i],r);
         // if the operator could be applied
+        // there's no electron on this orbit
         if(Ob!=sector_i.id_up[i]) {
             // find the corresponding index in the _sector basis set
             it=sector_O.basis_up.find(Ob);
@@ -667,6 +668,7 @@ complex<double> lhamil::Greens_function(double omega, double eta,int annil) {
     complex<double> E(omega,eta);
     complex<double> G=0;
     for(int i=0; i<lambda; i++)
+        // annil==1 creation operator
         if(annil==1)
             G+=psi_n0[i]*psi_n0[i]/(E-E0+eigenvalues[i]);
         else
@@ -675,7 +677,7 @@ complex<double> lhamil::Greens_function(double omega, double eta,int annil) {
 }
 
 
-void Greens_function_r_uu(lhamil & config,long r,double E, double eta){
+void Greens_function_r_uu(lhamil & config,long r, double eta){
     vector<double> creation_psir_0;
     basis sector_creation(config.sector.nsite,config.sector.nel_up+1,config.sector.nel_down);
     sector_creation.init();
@@ -706,6 +708,48 @@ void Greens_function_r_uu(lhamil & config,long r,double E, double eta){
       }
 }
 
+void Greens_function_k_uu(lhamil & config, long k, long nsite,double eta){
+
+    vector<double> creation_psir_0;
+    basis sector_creation(config.sector.nsite,config.sector.nel_up+1,config.sector.nel_down);
+    sector_creation.init();
+    lhamil config_creation(sector_creation,config.t,config.U,config.lambda,config.seed);
+    config_creation.E0=config.E0;
+    vector<double> annihilation_psir_0;
+    basis sector_annihilation(config.sector.nsite,config.sector.nel_up-1,config.sector.nel_down);
+    sector_annihilation.init();
+    lhamil config_annihilation(sector_annihilation,config.t,config.U,config.lambda,config.seed);
+    config_annihilation.E0=config.E0;
+
+    vector<double> Ev,Sv;
+    for(int i=0;i<1000;i++)
+        Ev.push_back(i/50.0-10);
+    Sv.assign(1000,0);
+    for(int r=0;r<nsite;r++){
+    creation_psir_0.assign(config_creation.nHilbert,0);
+    // config contains the original wavefunction
+    config.psir0_creation_el_up(config.sector,sector_creation,creation_psir_0,r);
+    config_creation.coeff_update_wopt(creation_psir_0);
+    config_creation.diag();
+
+    annihilation_psir_0.assign(config_annihilation.nHilbert,0);
+    // config contains the original wavefunction
+    config.psir0_annihilation_el_up(config.sector,sector_annihilation,annihilation_psir_0,r);
+    config_annihilation.coeff_update_wopt(annihilation_psir_0);
+    config_annihilation.diag();
+
+    for(int i=0;i<1000;i++){
+        complex<double> Gk;
+        Gk=complex<double>(cos(r*k*M_PI*2.0/nsite),sin(r*k*M_PI*2.0/nsite))*config_creation.Greens_function(Ev[i],eta,0)/nsite;
+        Gk+=complex<double>(cos(r*k*M_PI*2.0/nsite),-sin(r*k*M_PI*2.0/nsite))*config_annihilation.Greens_function(Ev[i],eta,1)/nsite;
+        Sv[i]+=-Gk.imag()/M_PI;
+      }
+    }
+    double mu_p=config.E0-config_annihilation.eigenvalues[0];
+    double mu_m=config_creation.eigenvalues[0]-config.E0;
+    for(int i=0;i<1000;i++)
+        cout<<Ev[i]-(mu_p+mu_m)/2.0<<" "<<Sv[i]<<endl;
+}
 
 void lhamil::save_to_file(const char* filename) {
     if(eigenvalues.size()==0) return;
