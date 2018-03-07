@@ -1,4 +1,4 @@
-/************************************************ 
+/************************************************
 Basis generation library for 1D Hubbard model
    @author qiongzhu
    20/1/2017
@@ -16,13 +16,13 @@ Basis generation library for 1D Hubbard model
 #include<algorithm>
 using namespace std;
 
-class basis{
+class basis {
 public:
     long nsite,nel_up,nel_down;  // No. of sites, spin-up/down electrons
     map<long,long> basis_up,basis_down; // basis set of spin-up/down electrons, I-J table
 
     long nbasis_up,nbasis_down;     // No. of basis for spin-up/down electrons
-    vector<long> id_up,id_down;     // reversal table, J->I, Lin's Table is a 2D array 
+    vector<long> id_up,id_down;     // reversal table, J->I, Lin's Table is a 2D array
     explicit basis();
     basis(long,long,long);
     const basis & operator=(const basis &);
@@ -39,7 +39,7 @@ public:
     long creation(long,long);
     long annihilation(long,long);
     void prlong();
-    friend ostream & operator<<(ostream & os, const basis &); 
+    friend ostream & operator<<(ostream & os, const basis &);
 };
 
-#endif 
+#endif
