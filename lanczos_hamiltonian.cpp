@@ -8,10 +8,12 @@ lhamil::lhamil() {}
 
 lhamil::lhamil(const Mat &_H,long _nHilbert,long _lambda, unsigned _seed):H(_H),nHilbert(_nHilbert),lambda(_lambda),seed(_seed) {}
 
-lhamil::lhamil(basis &_sector,double t, double U,long _lambda,unsigned _seed) {
+lhamil::lhamil(basis &_sector,double _t, double _U,long _lambda,unsigned _seed) {
     sector=_sector;
     lambda=_lambda;
     seed=_seed;
+    t=_t;
+    U=_U;
     set_hamil(sector,t,U);
 }
 
@@ -87,7 +89,7 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
     inner_indices.clear();
     matrix_elements.clear();
 }
-
+/*
 void lhamil::set_onsite_optc(int r,int alpha,int annil)
 {
     vector<long> inner_indices, outer_starts;
@@ -103,7 +105,7 @@ void lhamil::set_onsite_optc(int r,int alpha,int annil)
         for(j=0; j<sector.nbasis_down; j++) {
             potential_spin_up=0;
             potential_spin_down=0;
-             
+
             if(annil==1) {
                 if(alpha==0 && sector.onsite_up(i,r)==1)
                     potential_spin_up++;
@@ -131,7 +133,7 @@ void lhamil::set_onsite_optc(int r,int alpha,int annil)
     inner_indices.clear();
     matrix_elements.clear();
 }
-
+*/
 
 void lhamil::coeff_update() {
     double eigenvalues_0=1;
@@ -288,7 +290,7 @@ void lhamil::coeff_explicit_update()
 
         // checking if the iteration is converged
         // the overhead of diagonalization is small
-        /* 
+        /*
         if(j>10 and j%5==0){
           diag(j);
           if(abs((eigenvalues[0]-eigenvalues_0)/(abs(eigenvalues_0)+1e-8))<epsilon){
@@ -299,7 +301,6 @@ void lhamil::coeff_explicit_update()
              eigenvalues_0=eigenvalues[0];
         }
         */
-        
     }
     delete phi_0,phi_1,phi_2,phi_t;
 }
@@ -321,7 +322,7 @@ void lhamil::coeff_update_wopt(vector<double> O_psir_0)
     norm.assign(lambda+1,0);
     overlap.assign(lambda,0);
 
-    for(i=0;i<nHilbert;i++)
+    for(i=0; i<nHilbert; i++)
         phi_0[i]=O_psir_0[i];
 
     norm_factor=0;
@@ -428,10 +429,8 @@ void lhamil::coeff_update_wopt(vector<double> O_psir_0)
         }
         */
     }
-
     delete phi_0,phi_1,phi_2,phi_t;
 }
-
 
 void lhamil::diag()
 {
@@ -513,138 +512,6 @@ void lhamil::eigenstates_reconstruction() {
         psir_0[n]/=sqrt(Norm);
 }
 
-void lhamil::psir0_creation_el_up(basis & sector_i,basis &sector_O,vector<double> & O_psir_0, long n)
-{
-    long i,j,k,Ob;
-    map<long,long>::iterator it;
-    if(psir_0.size()==0) return;
-    for(i=0;i<sector_i.nbasis_up;i++){
-       //apply operator O on basis id_up[i]
-       Ob=sector_i.creation(sector_i.id_up[i],n);
-       // if the operator could be applied
-       if(Ob!=sector_i.id_up[i]){
-        // find the corresponding index in the _sector basis set
-        it=sector_O.basis_up.find(Ob);
-        if(it!=sector_O.basis_up.end()){
-          k=it->second;   
-       for(j=0;j<sector_i.nbasis_down;j++) 
-          O_psir_0[k*sector_i.nbasis_down+j]=psir_0[i*sector_i.nbasis_down+j];
-        }
-      } 
-    }
-}
-
-void lhamil::psir0_creation_el_down(basis & sector_i,basis &sector_O,vector<double> &O_psir_0,long n)
-{
-    long i,j,k,Ob;
-    map<long,long>::iterator it;
-    if(psir_0.size()==0) return;
-    for(j=0;j<sector_i.nbasis_down;j++) {
-       //apply operator O on basis id_down[j]
-       Ob=sector_i.creation(sector_i.id_down[j],n);
-       // if the operator could be applied
-       if(Ob!=sector_i.id_down[j]){
-           // find the corresponding index in the _sector basis set
-           it=sector_O.basis_down.find(Ob);
-           if(it!=sector_O.basis_down.end()){
-              k=it->second;   
-          for(i=0;i<sector_i.nbasis_up;i++)
-           O_psir_0[i*sector_O.nbasis_down+k]=psir_0[i*sector_i.nbasis_down+j];
-           }
-       }
-    }
-}
-
-void lhamil::psir0_annihilation_el_up(basis &sector_i,basis &sector_O,vector<double> &O_psir_0,long n)
-{
-    long i,j,k,Ob;
-    map<long,long>::iterator it;
-    if(psir_0.size()==0) return;
-    for(i=0;i<sector_i.nbasis_up;i++){
-       //apply operator O on basis id_up[i]
-       Ob=sector_i.annihilation(sector_i.id_up[i],n);
-       // if the operator could be applied
-       if(Ob!=sector_i.id_up[i]){
-        // find the corresponding index in the _sector basis set
-        it=sector_O.basis_up.find(Ob);
-        if(it!=sector_O.basis_up.end())
-          k=it->second;   
-        for(j=0;j<sector_i.nbasis_down;j++) 
-          O_psir_0[k*sector_i.nbasis_down+j]=psir_0[i*sector_i.nbasis_down+j];
-       }
-    }
-}
-
-void lhamil::psir0_annihilation_el_down(basis & sector_i,basis &sector_O,vector<double> &O_psir_0,long n)
-{
-    long i,j,k,Ob;
-    map<long,long>::iterator it;
-    if(psir_0.size()==0) return;
-    for(j=0;j<sector_i.nbasis_down;j++) {
-       //apply operator O on basis id_down[j]
-       Ob=sector_i.annihilation(sector_i.id_down[j],n);
-       // if the operator could be applied
-       if(Ob!=sector_i.id_down[j]){
-         // find the corresponding index in the _sector basis set
-         it=sector_O.basis_down.find(Ob);
-         if(it!=sector_O.basis_down.end())
-           k=it->second;   
-         for(i=0;i<sector_i.nbasis_up;i++)
-           O_psir_0[i*sector_O.nbasis_down+k]=psir_0[i*sector_i.nbasis_down+j];
-       }
-    }
-}
-
-
-void lhamil::print_lhamil(int range){
-    for(int i=0;i<range;i++){
-       if(i==0)
-         cout<<"[[";
-       else cout<<" [";
-       for(int j=0;j<nHilbert;j++){
-          if(j==i+1)
-            cout<<norm[j]<<",";
-          else if(j==i-1)
-            cout<<norm[i]<<",";
-          else if(j==i)
-            cout<<overlap[i]<<",";
-          else
-            cout<<0<<",";
-         }
-       if(i==range-1)
-         cout<<"]]"<<endl; 
-       else cout<<"]"<<endl;
-    }
-}
-
-
-void lhamil::print_hamil() {
-    int i,j,count;
-    for(i=0;i<nHilbert;i++){
-       if(i==0)
-         cout<<"[[";
-       else cout<<" [";
-       count=0;
-       for(j=0;j<nHilbert;j++){
-          if(j==H.inner_indices[H.outer_starts[i]+count])
-            cout<<H.value[H.outer_starts[i]+count++]<<",";
-          else
-            cout<<0<<",";
-         }
-       if(i==nHilbert-1)
-         cout<<"]]"<<endl; 
-       else cout<<"]"<<endl;
-    } 
-}
-
-void lhamil::print_eigen( int range) {
-    if(range>=lambda) range=lambda;
-    cout<<"Eigenvalues:= [";
-    for(int i=0; i<range; i++)
-        cout<<eigenvalues[i]<<", ";
-    cout<<",...]"<<endl;
-}
-
 double lhamil::ground_state_energy() {
     vector<double> H_psir0;
     double overlap=0;
@@ -656,17 +523,97 @@ double lhamil::ground_state_energy() {
     return overlap;
 }
 
+void lhamil::psir0_creation_el_up(basis & sector_i,basis &sector_O,vector<double> & O_psir_0, long r)
+{
+    long i,j,k,Ob;
+    map<long,long>::iterator it;
+    if(psir_0.size()==0) return;
+    for(i=0; i<sector_i.nbasis_up; i++) {
+        //apply operator O on basis id_up[i]
+        Ob=sector_i.creation(sector_i.id_up[i],r);
+        // if the operator could be applied
+        if(Ob!=sector_i.id_up[i]) {
+            // find the corresponding index in the _sector basis set
+            it=sector_O.basis_up.find(Ob);
+            if(it!=sector_O.basis_up.end()) {
+                k=it->second;
+                for(j=0; j<sector_i.nbasis_down; j++)
+                    O_psir_0[k*sector_i.nbasis_down+j]=psir_0[i*sector_i.nbasis_down+j];
+            }
+        }
+    }
+}
 
-// continued fraction version
-/*
-double lhamil::spectral_function(double omega, double eta, int annihil) {
+void lhamil::psir0_creation_el_down(basis & sector_i,basis &sector_O,vector<double> &O_psir_0,long n)
+{
+    long i,j,k,Ob;
+    map<long,long>::iterator it;
+    if(psir_0.size()==0) return;
+    for(j=0; j<sector_i.nbasis_down; j++) {
+        //apply operator O on basis id_down[j]
+        Ob=sector_i.creation(sector_i.id_down[j],n);
+        // if the operator could be applied
+        if(Ob!=sector_i.id_down[j]) {
+            // find the corresponding index in the _sector basis set
+            it=sector_O.basis_down.find(Ob);
+            if(it!=sector_O.basis_down.end()) {
+                k=it->second;
+                for(i=0; i<sector_i.nbasis_up; i++)
+                    O_psir_0[i*sector_O.nbasis_down+k]=psir_0[i*sector_i.nbasis_down+j];
+            }
+        }
+    }
+}
+
+void lhamil::psir0_annihilation_el_up(basis &sector_i,basis &sector_O,vector<double> &O_psir_0,long n)
+{
+    long i,j,k,Ob;
+    map<long,long>::iterator it;
+    if(psir_0.size()==0) return;
+    for(i=0; i<sector_i.nbasis_up; i++) {
+        //apply operator O on basis id_up[i]
+        Ob=sector_i.annihilation(sector_i.id_up[i],n);
+        // if the operator could be applied
+        if(Ob!=sector_i.id_up[i]) {
+            // find the corresponding index in the _sector basis set
+            it=sector_O.basis_up.find(Ob);
+            if(it!=sector_O.basis_up.end())
+                k=it->second;
+            for(j=0; j<sector_i.nbasis_down; j++)
+                O_psir_0[k*sector_i.nbasis_down+j]=psir_0[i*sector_i.nbasis_down+j];
+        }
+    }
+}
+
+void lhamil::psir0_annihilation_el_down(basis & sector_i,basis &sector_O,vector<double> &O_psir_0,long n)
+{
+    long i,j,k,Ob;
+    map<long,long>::iterator it;
+    if(psir_0.size()==0) return;
+    for(j=0; j<sector_i.nbasis_down; j++) {
+        //apply operator O on basis id_down[j]
+        Ob=sector_i.annihilation(sector_i.id_down[j],n);
+        // if the operator could be applied
+        if(Ob!=sector_i.id_down[j]) {
+            // find the corresponding index in the _sector basis set
+            it=sector_O.basis_down.find(Ob);
+            if(it!=sector_O.basis_down.end())
+                k=it->second;
+            for(i=0; i<sector_i.nbasis_up; i++)
+                O_psir_0[i*sector_O.nbasis_down+k]=psir_0[i*sector_i.nbasis_down+j];
+        }
+    }
+}
+
+// spectral function continued fraction version
+double lhamil::spectral_function_CF(double omega, double eta, int annihil) {
     // calculation continued fraction using modified Lentz method
     complex<double> E;
     if(annihil==1)
        E=complex<double>(omega+E0,eta);
     else
        E=complex<double>(omega-E0,eta);
-    vector<complex<double>>  f,c,d,delta;
+    vector< complex<double> >  f,c,d,delta;
     complex<double> a,b,G;
     double I;
     b=E-overlap[0];
@@ -702,7 +649,6 @@ double lhamil::spectral_function(double omega, double eta, int annihil) {
     delta.clear();
     return I;
 }
-*/
 
 // spectrum decomposition version
 double lhamil::spectral_function(double omega, double eta, int annil) {
@@ -717,7 +663,6 @@ double lhamil::spectral_function(double omega, double eta, int annil) {
     return -G.imag()/M_PI;
 }
 
-
 complex<double> lhamil::Greens_function(double omega, double eta,int annil) {
     complex<double> E(omega,eta);
     complex<double> G=0;
@@ -728,6 +673,39 @@ complex<double> lhamil::Greens_function(double omega, double eta,int annil) {
             G+=psi_n0[i]*psi_n0[i]/(E+E0-eigenvalues[i]);
     return G;
 }
+
+
+void Greens_function_r_uu(lhamil & config,long r,double E, double eta){
+    vector<double> creation_psir_0;
+    basis sector_creation(config.sector.nsite,config.sector.nel_up+1,config.sector.nel_down);
+    sector_creation.init();
+    lhamil config_creation(sector_creation,config.t,config.U,config.lambda,config.seed);
+    creation_psir_0.assign(config_creation.nHilbert,0);
+    // config contains the original wavefunction
+    config.psir0_creation_el_up(config.sector,sector_creation,creation_psir_0,r);
+    config_creation.coeff_update_wopt(creation_psir_0);
+    config_creation.diag();
+    config_creation.E0=config.E0;
+
+    vector<double> annihilation_psir_0;
+    basis sector_annihilation(config.sector.nsite,config.sector.nel_up-1,config.sector.nel_down);
+    sector_annihilation.init();
+    lhamil config_annihilation(sector_annihilation,config.t,config.U,config.lambda,config.seed);
+    annihilation_psir_0.assign(config_annihilation.nHilbert,0);
+    // config contains the original wavefunction
+    config.psir0_annihilation_el_up(config.sector,sector_annihilation,annihilation_psir_0,r);
+    config_annihilation.coeff_update_wopt(annihilation_psir_0);
+    config_annihilation.diag();
+    config_annihilation.E0=config.E0;
+
+    double mu_p=config.E0-config_annihilation.eigenvalues[0];
+    double mu_m=config_creation.eigenvalues[0]-config.E0;
+    for(int i=0;i<1000;i++){
+        double E_i=i/50.0-10;
+        std::cout<<E_i-(mu_p+mu_m)/2.0<<" "<<config_creation.spectral_function(E_i,eta,0)+config_annihilation.spectral_function(E_i,eta,1)<<std::endl;
+      }
+}
+
 
 void lhamil::save_to_file(const char* filename) {
     if(eigenvalues.size()==0) return;
@@ -810,4 +788,52 @@ void lhamil::read_from_file(const char* filename) {
         psi_n0.push_back(value);
     }
     idf.close();
+}
+
+void lhamil::print_hamil() {
+    int i,j,count;
+    for(i=0; i<nHilbert; i++) {
+        if(i==0)
+            cout<<"[[";
+        else cout<<" [";
+        count=0;
+        for(j=0; j<nHilbert; j++) {
+            if(j==H.inner_indices[H.outer_starts[i]+count])
+                cout<<H.value[H.outer_starts[i]+count++]<<",";
+            else
+                cout<<0<<",";
+        }
+        if(i==nHilbert-1)
+            cout<<"]]"<<endl;
+        else cout<<"]"<<endl;
+    }
+}
+
+void lhamil::print_lhamil(int range) {
+    for(int i=0; i<range; i++) {
+        if(i==0)
+            cout<<"[[";
+        else cout<<" [";
+        for(int j=0; j<nHilbert; j++) {
+            if(j==i+1)
+                cout<<norm[j]<<",";
+            else if(j==i-1)
+                cout<<norm[i]<<",";
+            else if(j==i)
+                cout<<overlap[i]<<",";
+            else
+                cout<<0<<",";
+        }
+        if(i==range-1)
+            cout<<"]]"<<endl;
+        else cout<<"]"<<endl;
+    }
+}
+
+void lhamil::print_eigen( int range) {
+    if(range>=lambda) range=lambda;
+    cout<<"Eigenvalues:= [";
+    for(int i=0; i<range; i++)
+        cout<<eigenvalues[i]<<", ";
+    cout<<",...]"<<endl;
 }
