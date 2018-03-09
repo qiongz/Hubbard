@@ -44,16 +44,14 @@ public:
         \param U Onsite replusive interaction strength
     */
     void set_hamil(basis & _sector ,double t ,double U);  //!< Initialize hamiltonian matrix
-    /** Generate basis sector with creation operator performed on site r for spin-up electrons
-    \param sector_i Input basis sector
-    \param sector_O Output basis sector
+    /** return |O_psir> = O |psir_0>
     \param O_Psir_0 The ground state wave function, return with creation operator applied
     \param r Position at which creation operator is applied
     */
-    void psir0_creation_el_up(basis & sector_i,basis & sector_O,vector<double> &O_Psir_0,long r);
-    void psir0_creation_el_down(basis& sector_i,basis & sector_O,vector<double> & O_Psir_0,long r);
-    void psir0_annihilation_el_up(basis&sector_i,basis &sector_O,vector<double> & O_Psir_0,long r);
-    void psir0_annihilation_el_down(basis&sector_i,basis &sector_O,vector<double> & O_Psir_0,long r);
+    void psir0_creation_el_up(basis & _sector,vector<double> & _phi,vector<double> & O_phi_0,long r);
+    void psir0_creation_el_down(basis & _sector,vector<double> & _phi,vector<double> & O_phi_0,long r);
+    void psir0_annihilation_el_up(basis & _sector,vector<double> & _phi,vector<double> & O_phi_0,long r);
+    void psir0_annihilation_el_down(basis & _sector,vector<double> &_phi,vector<double> & O_phi_0,long r);
     void set_onsite_optc(int r,int alpha,int annil); //!< Set-up operator O matrix
     void coeff_update(); //!< Lanczos update implemenation utilizing the Mat class
     void coeff_explicit_update(); //!< Lanczos update implemenation written in explicit arrays
@@ -61,7 +59,7 @@ public:
     /** Lanczos update scheme for spectral function calculation
     \param O_psir_0 Ground state wave function with creation/annihilation operators applied
     */
-    void coeff_update_wopt(vector<double> O_psir_0);
+    void coeff_update_wopt(vector<double> O_phi_0);
 
     void diag();  //!< Diagonalize the full Lanczos hamiltonian
     void diag(int l); //!< Diagonalize the Lanczos hamiltonain with first lxl elements
@@ -69,10 +67,10 @@ public:
     void eigenstates_reconstruction(); //!< Transform |psi_0> to |psir_0>
     double ground_state_energy();    //!< Ground state energy
 
-    double spectral_function(double omega,double eta, int annil); //!< Spectral moments with spin
-    double spectral_function_CF(double omega,double eta,int annil); //!< Spectral function with spin, continued fraction version
+    double spectral_function(double omega,double _E0,double eta, int annil); //!< Spectral moments with spin
+    double spectral_function_CF(double omega,double _E0,double eta,int annil); //!< Spectral function with spin, continued fraction version
 
-    complex<double> Greens_function(double omega,double eta,int annil);  //!< Green's function
+    complex<double> Greens_function(double omega,double _E0,double eta,int annil);  //!< Green's function
     // k-space Green's function with spin
     // G_k^{\alpha\beta}(\omega)
     complex<double> Greens_function_k(int k,int alpha, int beta,double E,double eta);  //!< Green's function in k-space
@@ -89,7 +87,7 @@ public:
       \param omega Omega
       \param eta  eta
     */
-    friend void Greens_function_r_uu(lhamil & config,long r,double eta);
-    friend void Greens_function_k_uu(lhamil & config,long k,long nsite,double eta);
+    void Greens_function_r_uu(long r,double eta);
+    void Greens_function_k_uu(long k,long nsite,double eta);
 };
 #endif
