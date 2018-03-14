@@ -13,7 +13,7 @@ public:
     double E0;      //!< Ground state eigen energy
     basis sector;   //!< Basis
     Mat H;  //!< Hamiltonian matrix in CSR format
-    Mat O;  //!< Operator matrix in CSR format
+    //Mat O;  //!< Operator matrix in CSR format
     std::vector<double> norm; //!< Normalization coefficients vector in Lanczos update
     std::vector<double> overlap; //!< Overlap coefficients vector in Lanczos update
     std::vector<double> psir_0; //!< Ground state wave function in real-space
@@ -39,6 +39,9 @@ public:
     lhamil(basis & _sector,double t, double U,long _lambda,unsigned _seed); //!< Constructor with basis sector as input
     ~lhamil(); //!< Destructor
 
+    void init(basis &_sector,double t, double U, long _lambda,unsigned _seed);
+
+   const lhamil & operator=(const lhamil &);
     /** \param _sector Basis sector
         \param t Hopping strength
         \param U Onsite replusive interaction strength
@@ -66,28 +69,12 @@ public:
 
     void eigenstates_reconstruction(); //!< Transform |psi_0> to |psir_0>
     double ground_state_energy();    //!< Ground state energy
-
-    double spectral_function(double omega,double _E0,double eta, int annil); //!< Spectral moments with spin
+    complex<double> Greens_function(double omega,double _E0,double eta, int annil); //!< Spectral moments with spin
     double spectral_function_CF(double omega,double _E0,double eta,int annil); //!< Spectral function with spin, continued fraction version
-
-    complex<double> Greens_function(double omega,double _E0,double eta,int annil);  //!< Green's function
-    // k-space Green's function with spin
-    // G_k^{\alpha\beta}(\omega)
-    complex<double> Greens_function_k(int k,int alpha, int beta,double E,double eta);  //!< Green's function in k-space
-
-
     void print_hamil(); //!< print the full hamiltonian matrix
     void print_lhamil(int n);  //!< print the Lanczos hamiltonian matrix with first n x n elements
     void print_eigen(int n);  //!< print the first n eigenvalues
     void save_to_file(const char* filename);  //!< save object to file "filename"
     void read_from_file(const char*);        //!< load object from file "filename"
-
-    /** spin-up Green's function in real-space G_{ij}(omega)
-      \param r |j-i|
-      \param omega Omega
-      \param eta  eta
-    */
-    void Greens_function_r_uu(long r,double eta);
-    void Greens_function_k_uu(long k,long nsite,double eta);
 };
 #endif

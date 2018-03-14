@@ -20,6 +20,33 @@ lhamil::lhamil(basis &_sector,double _t, double _U,long _lambda,unsigned _seed) 
 lhamil::~lhamil() {
 }
 
+void lhamil::init(basis &_sector,double _t, double _U,long _lambda,unsigned _seed) {
+    sector=_sector;
+    lambda=_lambda;
+    seed=_seed;
+    t=_t;
+    U=_U;
+    set_hamil(sector,t,U);
+}
+const lhamil & lhamil::operator =(const lhamil & _config) {
+    if(this !=&_config) {
+        nHilbert=_config.nHilbert;
+        sector=_config.sector;
+        H=_config.H;
+        seed=_config.seed;
+        t=_config.t;
+        U=_config.U;
+        lambda=_config.lambda;
+        E0=_config.E0;
+        norm.assign(_config.norm.begin(),_config.norm.end());
+        overlap.assign(_config.overlap.begin(),_config.overlap.end());
+        psir_0.assign(_config.psir_0.begin(),_config.psir_0.end());
+        psi_n0.assign(_config.psi_n0.begin(),_config.psi_n0.end());
+        eigenvalues.assign(_config.eigenvalues.begin(),_config.eigenvalues.end());
+    }
+    return *this;
+}
+
 void lhamil::set_hamil(basis & _sector,double t,double U)
 {
     long nsite,nbasis_up,nbasis_down,signu,signd;
@@ -523,52 +550,12 @@ double lhamil::ground_state_energy() {
     return overlap;
 }
 
-void lhamil::psir0_creation_el_up(basis & _sector , vector<double> & _phi,vector<double> &O_phi_0, long r)
-{
-    long i,j,k,Ob;
-    map<long,long>::iterator it;
-    for(i=0; i<_sector.nbasis_up; i++){
-        // _sector has N electrons, sector has N+1 electrons
-        //apply operator c_r on basis id_up[i]
-        Ob=_sector.creation(_sector.id_up[i],r);
-        // if site r has no electron, then the returned value is different
-        if(Ob!=_sector.id_up[i]){
-           // find the corresponding index in the N+1 electron sector
-           it=sector.basis_up.find(Ob);
-           if(it!=sector.basis_up.end()){
-             k=it->second;
-             for(j=0;j<sector.nbasis_down;j++)
-                O_phi_0[k*sector.nbasis_down+j]=_phi[i*sector.nbasis_down+j];
-           }
-        }
-    }
-}
-
-void lhamil::psir0_annihilation_el_up(basis & _sector, vector<double> &_phi,vector<double> & O_phi_0,long r)
-{
-    long i,j,k,Ob;
-    map<long,long>::iterator it;
-    for(i=0; i<_sector.nbasis_up; i++){
-          // _sector has N electrons, sector has N-1 electrons
-          Ob=_sector.annihilation(_sector.id_up[i],r);
-          if(Ob!=_sector.id_up[i]){
-             it=sector.basis_up.find(Ob);
-             if(it!=sector.basis_up.end()){
-               k=it->second;
-               for(j=0;j<sector.nbasis_down;j++)
-                  O_phi_0[k*sector.nbasis_down+j]=_phi[i*_sector.nbasis_down+j];
-             }
-          }
-    }
-}
-
 // spectral function continued fraction version
 double lhamil::spectral_function_CF(double omega,double _E0, double eta, int annihil) {
     // calculation continued fraction using modified Lentz method
     complex<double> E;
+    E=complex<double>(omega+E0,eta);
     if(annihil==1)
-       E=complex<double>(omega+_E0,eta);
-    else
        E=complex<double>(omega-_E0,eta);
     vector< complex<double> >  f,c,d,delta;
     complex<double> a,b,G;
@@ -608,7 +595,7 @@ double lhamil::spectral_function_CF(double omega,double _E0, double eta, int ann
 }
 
 // spectrum decomposition version
-double lhamil::spectral_function(double omega,double _E0, double eta, int annil) {
+complex<double> lhamil::Greens_function(double omega,double _E0, double eta, int annil) {
     complex<double> E(omega,eta);
     complex<double> G=0;
     for(int i=0; i<lambda; i++)
@@ -621,98 +608,7 @@ double lhamil::spectral_function(double omega,double _E0, double eta, int annil)
             G+=psi_n0[i]*psi_n0[i]/(E-(-_E0+eigenvalues[i]));
           }
 
-    return -G.imag()/M_PI;
-}
-
-complex<double> lhamil::Greens_function(double omega,double _E0, double eta,int annil) {
-    complex<double> E(omega,eta);
-    complex<double> G=0;
-    for(int i=0; i<lambda; i++)
-        // annil==1 creation operator
-        if(annil==1)
-            G+=psi_n0[i]*psi_n0[i]/(E-_E0+eigenvalues[i]);
-        else
-            G+=psi_n0[i]*psi_n0[i]/(E+_E0-eigenvalues[i]);
     return G;
-}
-
-
-void lhamil::Greens_function_r_uu(long r, double eta){
-    vector<double> Ev,Av;
-    for(int i=0;i<2000;i++)
-      Ev.push_back(i/100.0-10);
-    Av.assign(2000,0);
-    vector<double> O_phi_0;
-
-    basis hole_sector(sector.nsite,sector.nel_up-1,sector.nel_down);
-    hole_sector.init();
-    lhamil hole_config(hole_sector,t,U,lambda,seed);
-    O_phi_0.assign(hole_config.nHilbert,0);
-    hole_config.psir0_annihilation_el_up(sector,psir_0,O_phi_0,r);
-    hole_config.coeff_update_wopt(O_phi_0);
-    hole_config.diag();
-
-    double mu_p=E0-hole_config.eigenvalues[0];
-    for(int i=0;i<2000;i++)
-        Av[i]+=hole_config.spectral_function(Ev[i],E0,eta,1);
-
-    basis particle_sector(sector.nsite,sector.nel_up+1,sector.nel_down);
-    particle_sector.init();
-    lhamil particle_config(particle_sector,t,U,lambda,seed);
-    O_phi_0.assign(particle_config.nHilbert,0);
-    particle_config.psir0_creation_el_up(sector,psir_0,O_phi_0,r);
-    particle_config.coeff_update_wopt(O_phi_0);
-    particle_config.diag();
-    double mu_m=particle_config.eigenvalues[0]-E0;
-    for(int i=0;i<2000;i++)
-        Av[i]+=particle_config.spectral_function(Ev[i],E0,eta,0);
-    for(int i=0;i<2000;i++)
-         cout<<Ev[i]-(mu_m+mu_p)/2.0<<" "<<Av[i]<<endl;
-}
-
-
-void lhamil::Greens_function_k_uu(long k, long nsite,double eta){
-    vector<double> Ev,Ak;
-    for(int i=0;i<2000;i++)
-        Ev.push_back(i/100.0-10);
-    Ak.assign(2000,0);
-
-    vector<double> hole_phi_0,particle_phi_0,O_phi_0;
-    basis hole_sector(sector.nsite,sector.nel_up-1,sector.nel_down);
-    hole_sector.init();
-    lhamil hole_config(hole_sector,t,U,lambda,seed);
-    hole_phi_0.assign(hole_config.nHilbert,0);
-    basis particle_sector(sector.nsite,sector.nel_up+1,sector.nel_down);
-    particle_sector.init();
-    lhamil particle_config(particle_sector,t,U,lambda,seed);
-    particle_phi_0.assign(particle_config.nHilbert,0);
-    // initialize the operator applied wave function |O_phi_0>
-    // C_k perform Fourier-transform and sum over r-space operators
-    for(int r=0;r<nsite;r++){
-      O_phi_0.assign(particle_config.nHilbert,0);
-      particle_config.psir0_creation_el_up(sector,psir_0,O_phi_0,r);
-      for(int i=0;i<particle_config.nHilbert;i++)
-          particle_phi_0[i]+=O_phi_0[i]*cos(r*k*M_PI*2.0/nsite)/nsite;
-
-      O_phi_0.assign(hole_config.nHilbert,0);
-      hole_config.psir0_annihilation_el_up(sector,psir_0,O_phi_0,r);
-      for(int i=0;i<hole_config.nHilbert;i++)
-          hole_phi_0[i]+=O_phi_0[i]*cos(r*k*M_PI*2.0/nsite)/nsite;
-    }
-
-    particle_config.coeff_update_wopt(particle_phi_0);
-    particle_config.diag();
-    double mu_p=particle_config.eigenvalues[0]-E0;
-    for(int i=0;i<2000;i++)
-        Ak[i]+=particle_config.spectral_function(Ev[i],E0,eta,0);
-
-    hole_config.coeff_update_wopt(hole_phi_0);
-    hole_config.diag();
-    double mu_m=E0-hole_config.eigenvalues[0];
-    for(int i=0;i<2000;i++)
-        Ak[i]+=hole_config.spectral_function(Ev[i],E0,eta,1);
-    for(int i=0;i<2000;i++)
-        cout<<Ev[i]<<" "<<Ak[i]<<endl;
 }
 
 
