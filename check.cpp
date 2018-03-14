@@ -2,6 +2,7 @@
 #include"basis.h"
 #include"hamiltonian.h"
 #include"lanczos_hamiltonian.h"
+#include"Greens_function.h"
 #include<gsl/gsl_integration.h>
 #include <gsl/gsl_sf_bessel.h>
 #include<ctime>
@@ -18,15 +19,17 @@ int main(int argc,char *argv[]) {
     int nel_up,nel_down;
     int Sz;
     unsigned seed;
-    double t,U;
+    double t,U,K,mu;
     double func_Lieb_Wu(double x, void *params);
     double Integrate_Lieb_Wu(double U);
 
-    nsite=2;
-    nel=2;
-    t=1.0;
+    nsite=8;
+    nel=8;
+    t=1;
     U=5;
+    K=1.0;
     lambda=200;
+
     init_argv(nsite,nel,t,U,lambda,argc,argv);
 
     nel_up=(nel+1)/2;
@@ -50,9 +53,15 @@ int main(int argc,char *argv[]) {
     config.coeff_explicit_update();
     config.diag();
     config.eigenstates_reconstruction();
-    //config.Greens_function_r_uu(0,0.05);
 
-    config.Greens_function_k_uu(0,nsite,0.05);
+    Greens_func spectral(config);
+    vector<double> E,A;
+    for(int i=0;i<2000;i++)
+       E.push_back(i/100.0-10);
+    //spectral.spectral_function_ij_uu(1,1,0.1,E,A,mu);
+    spectral.spectral_function_kk_uu(K,0.2,E,A,mu);
+    for(int i=0;i<2000;i++)
+       cout<<E[i]-mu<<" "<<A[i]<<endl;
 
     /* basis check */
     /*
