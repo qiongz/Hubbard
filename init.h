@@ -6,16 +6,18 @@
 #include<iostream>
 #include<stdexcept>
 void usage(char *);
-void init_argv(int &, int &, double &, double &,int &, int ,char **);
+void init_argv(int &,int &, double &, double &,int &, int ,char **);
 class Timer
 {
 public:
-    Timer() { clock_gettime(CLOCK_REALTIME, &beg_); }
+    Timer() {
+        clock_gettime(CLOCK_REALTIME, &beg_);
+    }
 
     double elapsed() {
         clock_gettime(CLOCK_REALTIME, &end_);
         return (end_.tv_sec - beg_.tv_sec) +
-            (end_.tv_nsec - beg_.tv_nsec)/1000000000.0;
+               (end_.tv_nsec - beg_.tv_nsec)/1000000000.0;
     }
 
     unsigned long nanoseconds() {
@@ -23,7 +25,9 @@ public:
         return (end_.tv_nsec - beg_.tv_nsec);
     }
 
-    void reset() { clock_gettime(CLOCK_REALTIME, &beg_); }
+    void reset() {
+        clock_gettime(CLOCK_REALTIME, &beg_);
+    }
 
 private:
     timespec beg_, end_;

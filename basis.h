@@ -34,6 +34,7 @@ public:
     long onsite_down(long,long);
     long factorial(long,long);
     void init();
+    void init(long,long,long);
     void generate_up(long);
     void generate_down(long);
     long creation(long,long);

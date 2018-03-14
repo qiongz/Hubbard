@@ -66,6 +66,13 @@ void basis::init() {
         basis_down[id_down[i]]=i;
 }
 
+void basis::init(long _nsite, long _nel_up, long _nel_down){
+   nsite=_nsite;
+   nel_up=_nel_up;
+   nel_down=_nel_down;
+   init();
+}
+
 long basis::hopping_up(long i,long n,long m) {
     long mask,K,L,b;
     if(m<0) m+=nsite;
@@ -142,8 +149,11 @@ long basis::creation(long s,long n)
     long mask,bu;
     mask=(1<<n);
     bu=s&mask;
+    // there's no electron on site n
+    // which means s_n=0
     if(bu!=mask)
         return s+mask;
+    // there's already electron on site n
     else
         return s;
 }
@@ -236,5 +246,3 @@ void basis::prlong() {
     cout<<"---------------------------------------"<<endl;
     */
 }
-
-

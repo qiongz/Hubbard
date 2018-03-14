@@ -53,20 +53,20 @@ public:
 
 class Mat {
 public:
-     // doublehe compressed Sparse Row (CSR) Data Structure
-     std::vector<long> outer_starts,inner_indices;
-     std::vector<double> value;
+    // doublehe compressed Sparse Row (CSR) Data Structure
+    std::vector<long> outer_starts,inner_indices;
+    std::vector<double> value;
 
-     Mat();
-     Mat(const Mat &rhs);
-     ~Mat();
-     Mat & operator=(const Mat & rhs);
-     // the last const means the object is a constant
-     Vec operator*(const Vec &)const;
-     vector<double> operator*(const vector<double> &)const;
-     void init(const vector<long> &,const vector<long> &,const vector<double> &);
-     void clear();
-     void print();
+    Mat();
+    Mat(const Mat &rhs);
+    ~Mat();
+    Mat & operator=(const Mat & rhs);
+    // the last const means the object is a constant
+    Vec operator*(const Vec &)const;
+    vector<double> operator*(const vector<double> &)const;
+    void init(const vector<long> &,const vector<long> &,const vector<double> &);
+    void clear();
+    void print();
 };
 
 #endif
