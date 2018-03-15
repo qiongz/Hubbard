@@ -116,51 +116,6 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
     inner_indices.clear();
     matrix_elements.clear();
 }
-/*
-void lhamil::set_onsite_optc(int r,int alpha,int annil)
-{
-    vector<long> inner_indices, outer_starts;
-    vector<double> matrix_elements;
-    inner_indices.reserve(nHilbert*sector.nsite);
-    matrix_elements.reserve(nHilbert*sector.nsite);
-    outer_starts.reserve(nHilbert+1);
-    long n,i,j,k,l;
-    long row=0;
-    double potential_spin_up,potential_spin_down;
-    outer_starts.push_back(0);
-    for(i=0; i<sector.nbasis_up; i++)
-        for(j=0; j<sector.nbasis_down; j++) {
-            potential_spin_up=0;
-            potential_spin_down=0;
-
-            if(annil==1) {
-                if(alpha==0 && sector.onsite_up(i,r)==1)
-                    potential_spin_up++;
-
-                if(alpha==1 && sector.onsite_down(j,r)==1)
-                    potential_spin_down++;
-            }
-            else {
-                if(alpha==0 && sector.onsite_up(i,r)==0)
-                    potential_spin_up++;
-
-                if(alpha==1 && sector.onsite_down(j,r)==0)
-                    potential_spin_down++;
-            }
-            row++;
-            inner_indices.push_back(i*sector.nbasis_down+j);
-            if(alpha==0)
-                matrix_elements.push_back(potential_spin_up);
-            else
-                matrix_elements.push_back(potential_spin_down);
-            outer_starts.push_back(row);
-        }
-    O.init(outer_starts,inner_indices,matrix_elements);
-    outer_starts.clear();
-    inner_indices.clear();
-    matrix_elements.clear();
-}
-*/
 
 void lhamil::coeff_update() {
     double eigenvalues_0=1;
@@ -555,8 +510,6 @@ double lhamil::spectral_function_CF(double omega,double _E0, double eta, int ann
     // calculation continued fraction using modified Lentz method
     complex<double> E;
     E=complex<double>(omega+E0,eta);
-    if(annihil==1)
-       E=complex<double>(omega-_E0,eta);
     vector< complex<double> >  f,c,d,delta;
     complex<double> a,b,G;
     double I;
@@ -586,7 +539,6 @@ double lhamil::spectral_function_CF(double omega,double _E0, double eta, int ann
     G=1.0/f.back();
 
     I=-G.imag()/M_PI;
-
     c.clear();
     d.clear();
     f.clear();
@@ -595,7 +547,7 @@ double lhamil::spectral_function_CF(double omega,double _E0, double eta, int ann
 }
 
 // spectrum decomposition version
-complex<double> lhamil::Greens_function(double omega,double _E0, double eta, int annil) {
+double lhamil::spectral_function(double omega,double _E0, double eta, int annil) {
     complex<double> E(omega,eta);
     complex<double> G=0;
     for(int i=0; i<lambda; i++)
@@ -608,7 +560,7 @@ complex<double> lhamil::Greens_function(double omega,double _E0, double eta, int
             G+=psi_n0[i]*psi_n0[i]/(E-(-_E0+eigenvalues[i]));
           }
 
-    return G;
+    return -G.imag()/M_PI;
 }
 
 

@@ -8,6 +8,7 @@ public:
     long nHilbert;
     /** seed for the RNGs */
     unsigned seed;
+    double t,U;
     /** Hamiltonian matrix in CSR format */
     Mat H;
     /** Eigenvalues of the hamiltonian */
@@ -24,13 +25,15 @@ public:
      \param t hopping strength,
      \param U onsite replusive interaction strength
      */
-    hamil(basis & sector,double t, double U);
+    hamil(basis & sector,double _t, double _U);
+    void init(basis & sector,double _t, double _U);
+    const hamil & operator=(const hamil &);
     /** Return the ground state energy of the system */
     double ground_state_energy();
     /** Diagonalize the full hamiltonian */
     void diag();
 
-    complex<double> Greens_function(double,double);
+    double spectral_function(double omega,double _E0,double eta, int annil); //!< Spectral moments with spin
     /** Print the hamiltonian matrix */
     void print_hamil();
     /** Print the eigenvalues of the system */

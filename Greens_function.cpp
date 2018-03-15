@@ -11,6 +11,15 @@ Greens_func::Greens_func(lhamil & _gs_config){
     particle_config.init(particle_sector,gs_config.t,gs_config.U,gs_config.lambda,gs_config.seed);
 }
 
+Greens_func::Greens_func(hamil & _gs_hconfig,basis &_gs_sector){
+    gs_hconfig=_gs_hconfig;
+    gs_sector=_gs_sector;
+    hole_sector.init(gs_sector.nsite,gs_sector.nel_up-1,gs_sector.nel_down);
+    particle_sector.init(gs_sector.nsite,gs_sector.nel_up+1,gs_sector.nel_down);
+    hole_hconfig.init(hole_sector,gs_hconfig.t,gs_hconfig.U);
+    particle_hconfig.init(particle_sector,gs_hconfig.t,gs_hconfig.U);
+}
+
 Greens_func::~Greens_func(){}
 
 void Greens_func::creation_u(long r,double coeff)
@@ -52,89 +61,128 @@ void Greens_func::annihilation_u(long r,double coeff)
     }
 }
 
-void Greens_func::spectral_function_ii_uu(int r_i,double eta,vector<double> &E, vector<double> &A,double &mu){
+void Greens_func::spectral_function_ii_uu_hole(long r_i, double eta, vector<double> &E, vector<double> &A,double &mu){
     A.assign(E.size(),0);
     hole_phi_0.assign(hole_config.nHilbert,0);
     annihilation_u(r_i,1);
     hole_config.coeff_update_wopt(hole_phi_0);
     hole_config.diag();
-    double mu_h=gs_config.E0-hole_config.eigenvalues[0];
+    mu=gs_config.E0-hole_config.eigenvalues[0];
     for(int i=0;i<E.size();i++)
-        A[i]+=-hole_config.Greens_function(E[i],gs_config.E0,eta,1).imag()/M_PI;
+        A[i]+=hole_config.spectral_function(E[i],gs_config.E0,eta,1);
+}
+
+void Greens_func::spectral_function_ii_uu_particle(long r_i, double eta, vector<double> &E, vector<double> &A,double &mu){
+    A.assign(E.size(),0);
     particle_phi_0.assign(particle_config.nHilbert,0);
     creation_u(r_i,1);
     particle_config.coeff_update_wopt(particle_phi_0);
     particle_config.diag();
-    double mu_p=particle_config.eigenvalues[0]-gs_config.E0;
+    mu=particle_config.eigenvalues[0]-gs_config.E0;
     for(int i=0;i<E.size();i++)
-        A[i]+=-particle_config.Greens_function(E[i],gs_config.E0,eta,0).imag()/M_PI;
-    mu=(mu_h+mu_p)/2.0;
+        A[i]+=particle_config.spectral_function(E[i],gs_config.E0,eta,0);
 }
 
-void Greens_func::spectral_function_ij_uu(int r_i,long r_j, double eta,vector<double> &E,vector<double> &A,double &mu)
+void Greens_func::spectral_function_ij_uu_hole(long r_i,long r_j, double eta,vector<double> &E,vector<double> &A,double &mu)
 {
     A.assign(E.size(),0);
     // O_ij=O_{i+j}-1/2(O_i+O_j)
     // operator O_{i+j}=1/sqrt{2}(c_i+c_j)
     hole_phi_0.assign(hole_config.nHilbert,0);
-    particle_phi_0.assign(particle_config.nHilbert,0);
     annihilation_u(r_i,1.0/sqrt(2));
     annihilation_u(r_j,1.0/sqrt(2));
-    creation_u(r_i,1.0/sqrt(2));
-    creation_u(r_j,1.0/sqrt(2));
     hole_config.coeff_update_wopt(hole_phi_0);
     hole_config.diag();
-    particle_config.coeff_update_wopt(particle_phi_0);
-    particle_config.diag();
-    double mu_h=gs_config.E0-hole_config.eigenvalues[0];
-    double mu_p=particle_config.eigenvalues[0]-gs_config.E0;
-    for(int i=0;i<E.size();i++){
-        A[i]+=-hole_config.Greens_function(E[i],gs_config.E0,eta,1).imag()/M_PI;
-        A[i]+=-particle_config.Greens_function(E[i],gs_config.E0,eta,0).imag()/M_PI;
-    }
-    // calculate O_i=c_i
-    vector<double> A_ii,A_jj;
-    spectral_function_ii_uu(r_i,eta,E,A_ii,mu);
-    spectral_function_ii_uu(r_j,eta,E,A_jj,mu);
+    mu=gs_config.E0-hole_config.eigenvalues[0];
     for(int i=0;i<E.size();i++)
-        A[i]-=0.5*(A_ii[i]+A_jj[i]);
-
-    mu=(mu_h+mu_p)/2.0;
+        A[i]+=0.5*hole_config.spectral_function_CF(E[i],gs_config.E0,eta,1);
+    // calculate O_i=c_i
+    hole_phi_0.assign(hole_config.nHilbert,0);
+    annihilation_u(r_i,1.0/sqrt(2));
+    annihilation_u(r_j,-1.0/sqrt(2));
+    hole_config.coeff_update_wopt(hole_phi_0);
+    hole_config.diag();
+    for(int i=0;i<E.size();i++)
+        A[i]-=0.5*hole_config.spectral_function_CF(E[i],gs_config.E0,eta,1);
 }
 
-
-void Greens_func::spectral_function_kk_uu(double k, double eta,vector<double> & E, vector<double> &A,double &mu){
+void Greens_func::spectral_function_ij_uu_particle(long r_i,long r_j, double eta,vector<double> &E,vector<double> &A,double &mu)
+{
     A.assign(E.size(),0);
+    // O_ij=O_{i+j}-1/2(O_i+O_j)
+    // operator O_{i+j}=1/sqrt{2}(c_i+c_j)
+    particle_phi_0.assign(particle_config.nHilbert,0);
+    creation_u(r_i,1.0/sqrt(2));
+    creation_u(r_j,1.0/sqrt(2));
+    particle_config.coeff_update_wopt(particle_phi_0);
+    particle_config.diag();
+    mu=particle_config.eigenvalues[0]-gs_config.E0;
+    for(int i=0;i<E.size();i++)
+        A[i]+=0.5*particle_config.spectral_function_CF(E[i],gs_config.E0,eta,0);
+    // operator O_{i-j}=1/sqrt{2}(c_i-c_j)
+    particle_phi_0.assign(particle_config.nHilbert,0);
+    creation_u(r_i,1.0/sqrt(2));
+    creation_u(r_j,-1.0/sqrt(2));
+    particle_config.coeff_update_wopt(particle_phi_0);
+    particle_config.diag();
+    for(int i=0;i<E.size();i++)
+        A[i]-=0.5*particle_config.spectral_function_CF(E[i],gs_config.E0,eta,0);
+}
 
+void Greens_func::spectral_function_kk_uu_hole(double k, double eta,vector<double> & E, vector<double> &A,double &mu){
+    A.assign(E.size(),0);
+    // initialize the operator applied wave function |O_phi_0>
+    // C_k perform Fourier-transform and sum over r-space operators
+    hole_phi_0.assign(hole_config.nHilbert,0);
+    for(int r=0;r<gs_sector.nsite;r++)
+      annihilation_u(r,cos(r*k));
+    hole_config.coeff_update_wopt(hole_phi_0);
+    hole_config.diag();
+    mu=gs_config.E0-hole_config.eigenvalues[0];
+    for(int i=0;i<E.size();i++)
+        A[i]+=hole_config.spectral_function_CF(E[i],gs_config.E0,eta,1);
+}
+
+void Greens_func::spectral_function_kk_uu_particle(double k, double eta,vector<double> & E, vector<double> &A,double &mu){
+    A.assign(E.size(),0);
     // initialize the operator applied wave function |O_phi_0>
     // C_k perform Fourier-transform and sum over r-space operators
     particle_phi_0.assign(particle_config.nHilbert,0);
-    hole_phi_0.assign(hole_config.nHilbert,0);
-    for(int r=0;r<gs_sector.nsite;r++){
-      creation_u(r,cos(r*k)/sqrt(gs_sector.nsite));
-      annihilation_u(r,cos(r*k)/sqrt(gs_sector.nsite));
-    }
+    for(int r=0;r<gs_sector.nsite;r++)
+      creation_u(r,cos(r*k));
     particle_config.coeff_update_wopt(particle_phi_0);
-    hole_config.coeff_update_wopt(hole_phi_0);
     particle_config.diag();
-    hole_config.diag();
-    double mu_p=particle_config.eigenvalues[0]-gs_config.E0;
-    double mu_h=gs_config.E0-hole_config.eigenvalues[0];
-    for(int i=0;i<E.size();i++){
-        A[i]+=-particle_config.Greens_function(E[i],gs_config.E0,eta,0).imag()/M_PI;
-        A[i]+=-hole_config.Greens_function(E[i],gs_config.E0,eta,1).imag()/M_PI;
-    }
-    mu=(mu_h+mu_p)/2.0;
+    mu=particle_config.eigenvalues[0]-gs_config.E0;
+    for(int i=0;i<E.size();i++)
+        A[i]+=particle_config.spectral_function_CF(E[i],gs_config.E0,eta,0);
 }
 
 /*
-void Greens_func::spectral_function_kk_uu(double k, double eta,vector<double> & E, vector<double> &A, double &mu){
+void Greens_func::spectral_function_kk_uu_hole(double k, double eta,vector<double> & E, vector<double> &A, double &mu){
     vector<double> Ar;
     A.assign(E.size(),0);
     for(int r=0;r<gs_sector.nsite;r++){
-        spectral_function_ij_uu(0,r,eta,E,Ar,mu);
+        if(r==0)
+           spectral_function_ii_uu_hole(0,eta,E,Ar,mu);
+        else
+           //spectral_function_ii_uu_hole(r,eta,E,Ar,mu);
+           spectral_function_ij_uu_hole(0,r,eta,E,Ar,mu);
         for(int i=0;i<E.size();i++)
-            A[i]+=cos(k*r)/sqrt(gs_sector.nsite)*Ar[i];
+            A[i]+=cos(k*r)*Ar[i];
+    }
+}
+
+void Greens_func::spectral_function_kk_uu_particle(double k, double eta,vector<double> & E, vector<double> &A, double &mu){
+    vector<double> Ar;
+    A.assign(E.size(),0);
+    for(int r=0;r<gs_sector.nsite;r++){
+        if(r==0)
+           spectral_function_ii_uu_particle(0,eta,E,Ar,mu);
+        else
+           spectral_function_ij_uu_particle(0,r,eta,E,Ar,mu);
+           //spectral_function_ii_uu_particle(r,eta,E,Ar,mu);
+        for(int i=0;i<E.size();i++)
+            A[i]+=cos(k*r)*Ar[i];
     }
 }
 */
