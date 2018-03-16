@@ -2,87 +2,66 @@
 hamil::hamil() {}
 
 hamil::hamil(basis &sector,double _t, double _U) {
-    long nsite,nbasis_up,nbasis_down;
+    long nsite,nbasis_up,nbasis_down,signu,signd;
     t=_t;
     U=_U;
     nsite=sector.nsite;
     nbasis_up=sector.nbasis_up;
     nbasis_down=sector.nbasis_down;
     nHilbert=nbasis_up*nbasis_down;
-    // CSR format of matrix storage
     std::vector<long> inner_indices, outer_starts;
     std::vector<double> matrix_elements;
+    std::map<long,double>::iterator it;
     inner_indices.reserve(nHilbert*nsite);
     matrix_elements.reserve(nHilbert*nsite);
     outer_starts.reserve(nHilbert+1);
-
-    /*
-    std::map<int,double> hamil_nonzero;
-    std::map<int,double>::iterator it;
-    std::vector<int> row_index,col_index;
-    int matrix_index;
-    */
-    long n,i,j,k,l;
+    long n,m,i,j,k,l,s,nsignu,nsignd;
     long row=0;
     outer_starts.push_back(0);
     for(i=0; i<nbasis_up; i++) {
         for(j=0; j<nbasis_down; j++) {
-            for(n=0; n<nsite-1; n++) {
-                k=sector.hopping_up(i,n,n+1);
-                l=sector.hopping_down(j,n,n+1);
-                //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+l;
+            std::map<long,double> col_indices;
+            for(n=0; n<nsite; n++) {
+                if(n+1>=nsite) {
+                    signu=pow(-1,sector.nel_up-1);
+                    signd=pow(-1,sector.nel_down-1);
+                }
+                else {
+                    signu=1;
+                    signd=1;
+                }
+                m=n+1;
+                k=sector.hopping_up(i,n,m);
                 if(k!=i) {
-                    //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+j;
-                    /*
-                    it=hamil_nonzero.find(matrix_index);
-
-                    if(it==hamil_nonzero.end())
-                        hamil_nonzero.insert(pair<int,double>(matrix_index,-t));
+                    it=col_indices.find(k*nbasis_down+j);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(k*nbasis_down+j,-t*signu));
                     else
-                        it->second=it->second-t;
-                    */
-                    row++;
-                    inner_indices.push_back(k*nbasis_down+j);
-                    matrix_elements.push_back(-t);
+                        it->second+=-t*signu;
                 }
-
+                l=sector.hopping_down(j,n,m);
                 if(l!=j) {
-                    /*matrix_index=(i*nbasis_down+j)*nHilbert+i*nbasis_down+l;
-                    it=hamil_nonzero.find(matrix_index);
-                    if(it==hamil_nonzero.end())
-                        hamil_nonzero.insert(pair<int,double>(matrix_index,-t));
+                    it=col_indices.find(i*nbasis_down+l);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(i*nbasis_down+l,-t*signd));
                     else
-                        it->second=it->second-t;
-                    */
-                    row++;
-                    inner_indices.push_back(i*nbasis_down+l);
-                    matrix_elements.push_back(-t);
+                        it->second+=-t*signd;
                 }
                 if(sector.potential(i,j,n)) {
-                    row++;
-                    inner_indices.push_back(i*nbasis_down+j);
-                    matrix_elements.push_back(U);
+                    it=col_indices.find(i*nbasis_down+j);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(i*nbasis_down+j,U));
+                    else
+                        it->second+=U;
                 }
             }
-            if(sector.potential(i,j,nsite-1)) {
-                row++;
-                inner_indices.push_back(i*nbasis_down+j);
-                matrix_elements.push_back(U);
+            for(it=col_indices.begin(); it!=col_indices.end(); it++) {
+                inner_indices.push_back(it->first);
+                matrix_elements.push_back(it->second);
             }
+            row+=col_indices.size();
             outer_starts.push_back(row);
-            /*
-            for(n=0; n<nsite; n++)
-                if(sector.potential(i,j,n)) {
-                    matrix_index=(i*nbasis_down+j)*nHilbert+i*nbasis_down+j;
-                    full_hamil[matrix_index]+=U;
-
-                    it=hamil_nonzero.find(matrix_index);
-                    if(it==hamil_nonzero.end())
-                        hamil_nonzero.insert(pair<int,double>(matrix_index,U));
-                    else
-                        it->second=it->second+U;
-                }
-            */
+            col_indices.clear();
         }
     }
     H.init(outer_starts,inner_indices,matrix_elements);
@@ -94,88 +73,67 @@ hamil::hamil(basis &sector,double _t, double _U) {
 hamil::~hamil() {}
 
 void hamil::init(basis &sector,double _t,double _U){
-{
-    long nsite,nbasis_up,nbasis_down;
+    long nsite,nbasis_up,nbasis_down,signu,signd;
     t=_t;
     U=_U;
     nsite=sector.nsite;
     nbasis_up=sector.nbasis_up;
     nbasis_down=sector.nbasis_down;
     nHilbert=nbasis_up*nbasis_down;
-    // CSR format of matrix storage
     std::vector<long> inner_indices, outer_starts;
     std::vector<double> matrix_elements;
+    std::map<long,double>::iterator it;
     inner_indices.reserve(nHilbert*nsite);
     matrix_elements.reserve(nHilbert*nsite);
     outer_starts.reserve(nHilbert+1);
-
-    /*
-    std::map<int,double> hamil_nonzero;
-    std::map<int,double>::iterator it;
-    std::vector<int> row_index,col_index;
-    int matrix_index;
-    */
-    long n,i,j,k,l;
+    long n,m,i,j,k,l,s,nsignu,nsignd;
     long row=0;
     outer_starts.push_back(0);
     for(i=0; i<nbasis_up; i++) {
         for(j=0; j<nbasis_down; j++) {
-            for(n=0; n<nsite-1; n++) {
-                k=sector.hopping_up(i,n,n+1);
-                l=sector.hopping_down(j,n,n+1);
-                //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+l;
+            std::map<long,double> col_indices;
+            for(n=0; n<nsite; n++) {
+                if(n+1>=nsite) {
+                    signu=pow(-1,sector.nel_up-1);
+                    signd=pow(-1,sector.nel_down-1);
+                }
+                else {
+                    signu=1;
+                    signd=1;
+                }
+                m=n+1;
+                k=sector.hopping_up(i,n,m);
                 if(k!=i) {
-                    //matrix_index=(i*nbasis_down+j)*nHilbert+k*nbasis_down+j;
-                    /*
-                    it=hamil_nonzero.find(matrix_index);
-
-                    if(it==hamil_nonzero.end())
-                        hamil_nonzero.insert(pair<int,double>(matrix_index,-t));
+                    it=col_indices.find(k*nbasis_down+j);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(k*nbasis_down+j,-t*signu));
                     else
-                        it->second=it->second-t;
-                    */
-                    row++;
-                    inner_indices.push_back(k*nbasis_down+j);
-                    matrix_elements.push_back(-t);
+                        it->second+=-t*signu;
                 }
-
+                l=sector.hopping_down(j,n,m);
                 if(l!=j) {
-                    /*matrix_index=(i*nbasis_down+j)*nHilbert+i*nbasis_down+l;
-                    it=hamil_nonzero.find(matrix_index);
-                    if(it==hamil_nonzero.end())
-                        hamil_nonzero.insert(pair<int,double>(matrix_index,-t));
+                    it=col_indices.find(i*nbasis_down+l);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(i*nbasis_down+l,-t*signd));
                     else
-                        it->second=it->second-t;
-                    */
-                    row++;
-                    inner_indices.push_back(i*nbasis_down+l);
-                    matrix_elements.push_back(-t);
+                        it->second+=-t*signd;
                 }
                 if(sector.potential(i,j,n)) {
-                    row++;
-                    inner_indices.push_back(i*nbasis_down+j);
-                    matrix_elements.push_back(U);
+                    it=col_indices.find(i*nbasis_down+j);
+                    if(it==col_indices.end())
+                        col_indices.insert(std::pair<long,double>(i*nbasis_down+j,U));
+                    else
+                        it->second+=U;
                 }
             }
-            if(sector.potential(i,j,nsite-1)) {
-                row++;
-                inner_indices.push_back(i*nbasis_down+j);
-                matrix_elements.push_back(U);
+            for(it=col_indices.begin(); it!=col_indices.end(); it++) {
+                inner_indices.push_back(it->first);
+                matrix_elements.push_back(it->second);
             }
-            outer_starts.push_back(row);
-            /*
-            for(n=0; n<nsite; n++)
-                if(sector.potential(i,j,n)) {
-                    matrix_index=(i*nbasis_down+j)*nHilbert+i*nbasis_down+j;
-                    full_hamil[matrix_index]+=U;
 
-                    it=hamil_nonzero.find(matrix_index);
-                    if(it==hamil_nonzero.end())
-                        hamil_nonzero.insert(pair<int,double>(matrix_index,U));
-                    else
-                        it->second=it->second+U;
-                }
-            */
+            row+=col_indices.size();
+            outer_starts.push_back(row);
+            col_indices.clear();
         }
     }
     H.init(outer_starts,inner_indices,matrix_elements);
@@ -183,8 +141,9 @@ void hamil::init(basis &sector,double _t,double _U){
     inner_indices.clear();
     matrix_elements.clear();
 }
+
 const hamil & hamil::operator =(const hamil & _gs_hconfig) {
-    if(this !=&_basis) {
+    if(this !=&_gs_hconfig) {
         seed=_gs_hconfig.seed;
         nHilbert=_gs_hconfig.nHilbert;
         H=_gs_hconfig.H;
@@ -198,17 +157,19 @@ const hamil & hamil::operator =(const hamil & _gs_hconfig) {
 }
 
 
-double hamil::spectral_function(double omega,double _E0, double eta, int annil) {
-    complex<double> E(omega,eta);
+double hamil::spectral_function(vector<double> &O_phi_0,double omega,double _E0, double eta, int annil) {
+    complex<double> E;
     complex<double> G=0;
-    for(int i=0; i<lambda; i++)
+    for(int i=0; i<nHilbert; i++)
         // set annil==1, which gives hole-sector
         if(annil==1){
-            G+=psi_n0[i]*psi_n0[i]/(E-(_E0-eigenvalues[i]));
+            E=complex<double>(omega,eta);
+            G+=pow(psi_n0[i]*O_phi_0[i],2)/(E+eigenvalues[i]-_E0);
           }
         // else particle-sector
         else{
-            G+=psi_n0[i]*psi_n0[i]/(E-(-_E0+eigenvalues[i]));
+            E=complex<double>(omega,eta);
+            G+=pow(psi_n0[i]*O_phi_0[i],2)/(E+_E0-eigenvalues[i]);
           }
 
     return -G.imag()/M_PI;
@@ -244,17 +205,18 @@ void hamil::diag() {
     delete hamiltonian,en;
 }
 
-complex<double> hamil::Greens_function(double E_real,double epsilon) {
-    complex<double> E=complex<double>(E_real,epsilon);
-    complex<double> G=0;
-    for(int i=0; i<nHilbert; i++)
-        G+=psi_n0[i]*psi_n0[i]/(E-eigenvalues[i]);
-    return G;
-}
-
 
 void hamil::print_hamil() {
     std::cout<<"hamiltonian in CSR format: "<<std::endl;
     std::cout<<"------------------------------"<<std::endl;
     H.print();
+}
+
+void hamil::print_eigen(){
+  std::cout<<"Eigenvalues:=[ ";
+   for(int i=0;i<nHilbert;i++)
+      if(i!=nHilbert-1)
+        std::cout<<eigenvalues[i]<<", ";
+      else
+         std::cout<<eigenvalues[i]<<" ]"<<std::endl;
 }
