@@ -55,19 +55,20 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
     nbasis_up=sector.nbasis_up;
     nbasis_down=sector.nbasis_down;
     nHilbert=nbasis_up*nbasis_down;
-    std::vector<long> inner_indices, outer_starts;
     std::vector<double> matrix_elements;
-    std::map<long,double>::iterator it;
-    inner_indices.reserve(nHilbert*nsite);
     matrix_elements.reserve(nHilbert*nsite);
-    outer_starts.reserve(nHilbert+1);
-    long n,m,i,j,k,l,s,nsignu,nsignd;
+    H.clear();
+    H.inner_indices.reserve(nHilbert*nsite);
+    H.value.reserve(nHilbert*nsite);
+    H.outer_starts.reserve(nHilbert+1);
+    long n,m,i,j,k,l,s;
     long row=0;
-    outer_starts.push_back(0);
+    H.outer_starts.push_back(0);
     for(i=0; i<nbasis_up; i++) {
         for(j=0; j<nbasis_down; j++) {
-            std::map<long,double> col_indices;
+            matrix_elements.assign(nHilbert,0);
             for(n=0; n<nsite; n++) {
+                // add sign only cross boundary
                 if(n+1>=nsite) {
                     signu=pow(-1,sector.nel_up-1);
                     signd=pow(-1,sector.nel_down-1);
@@ -77,43 +78,29 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
                     signd=1;
                 }
                 m=n+1;
+                t=(n%2==1?t1:t2);
                 k=sector.hopping_up(i,n,m);
-                if(k!=i) {
-                    it=col_indices.find(k*nbasis_down+j);
-                    if(it==col_indices.end())
-                        col_indices.insert(std::pair<long,double>(k*nbasis_down+j,-t*signu));
-                    else
-                        it->second+=-t*signu;
-                }
-                l=sector.hopping_down(j,n,m);
-                if(l!=j) {
-                    it=col_indices.find(i*nbasis_down+l);
-                    if(it==col_indices.end())
-                        col_indices.insert(std::pair<long,double>(i*nbasis_down+l,-t*signd));
-                    else
-                        it->second+=-t*signd;
-                }
-                if(sector.potential(i,j,n)) {
-                    it=col_indices.find(i*nbasis_down+j);
-                    if(it==col_indices.end())
-                        col_indices.insert(std::pair<long,double>(i*nbasis_down+j,U));
-                    else
-                        it->second+=U;
-                }
-            }
-            for(it=col_indices.begin(); it!=col_indices.end(); it++) {
-                inner_indices.push_back(it->first);
-                matrix_elements.push_back(it->second);
-            }
+                if(k!=i)
+                    matrix_elements[k*nbasis_down+j]+=-t*signu;
 
-            row+=col_indices.size();
-            outer_starts.push_back(row);
-            col_indices.clear();
+                l=sector.hopping_down(j,n,m);
+                if(l!=j)
+                    matrix_elements[i*nbasis_down+l]+=-t*signd;
+
+                if(sector.potential(i,j,n))
+                    matrix_elements[i*nbasis_down+j]+=U;
+            }
+            long count=0;
+            for(n=0;n<nHilbert;n++)
+              if(abs(matrix_elements[n])>1e-10){
+                 H.inner_indices.push_back(n);
+                H.value.push_back(matrix_elements[n]);
+                count++;
+              }
+              row+=count;
+              H.outer_starts.push_back(row);
         }
     }
-    H.init(outer_starts,inner_indices,matrix_elements);
-    outer_starts.clear();
-    inner_indices.clear();
     matrix_elements.clear();
 }
 
@@ -185,6 +172,8 @@ void lhamil::coeff_explicit_update()
     for(i=0; i<nHilbert; i++)
         norm_factor+=phi_0[i]*phi_0[i];
     norm_factor=sqrt(norm_factor);
+    if(norm_factor<1e-30)
+       norm_factor+=1e-30;
 
     #pragma omp parallel for schedule(static)
     for(i=0; i<nHilbert; i++)
@@ -218,6 +207,8 @@ void lhamil::coeff_explicit_update()
     for(i=0; i<nHilbert; i++)
         norm_factor+=phi_1[i]*phi_1[i];
     norm_factor=sqrt(norm_factor);
+    if(norm_factor<1e-30)
+       norm_factor+=1e-30;
 
     #pragma omp parallel for schedule(static)
     for(i=0; i<nHilbert; i++)
@@ -259,6 +250,8 @@ void lhamil::coeff_explicit_update()
         for(i=0; i<nHilbert; i++)
             norm_factor+=phi_2[i]*phi_2[i];
         norm_factor=sqrt(norm_factor);
+        if(norm_factor<1e-30)
+          norm_factor+=1e-30;
 
         #pragma omp parallel for schedule(static)
         for(i=0; i<nHilbert; i++)
@@ -311,7 +304,9 @@ void lhamil::coeff_update_wopt(vector<double> O_phi_0)
     #pragma omp parallel for reduction(+:norm_factor)
     for(i=0; i<nHilbert; i++)
         norm_factor+=phi_0[i]*phi_0[i];
-    norm_factor=sqrt(norm_factor)+1e-24;
+    norm_factor=sqrt(norm_factor);
+    if(norm_factor<1e-30)
+        norm_factor+=1e-30;
     #pragma omp parallel for schedule(static)
     for(i=0; i<nHilbert; i++)
         phi_0[i]/=norm_factor;
@@ -345,6 +340,8 @@ void lhamil::coeff_update_wopt(vector<double> O_phi_0)
     for(i=0; i<nHilbert; i++)
         norm_factor+=phi_1[i]*phi_1[i];
     norm_factor=sqrt(norm_factor);
+    if(norm_factor<1e-30)
+        norm_factor+=1e-30;
 
     #pragma omp parallel for schedule(static)
     for(i=0; i<nHilbert; i++)
@@ -386,6 +383,8 @@ void lhamil::coeff_update_wopt(vector<double> O_phi_0)
         for(i=0; i<nHilbert; i++)
             norm_factor+=phi_2[i]*phi_2[i];
         norm_factor=sqrt(norm_factor);
+        if(norm_factor<1e-30)
+          norm_factor+=1e-30;
 
         #pragma omp parallel for schedule(static)
         for(i=0; i<nHilbert; i++)
@@ -502,20 +501,21 @@ double lhamil::ground_state_energy() {
         for(int i=0; i<nHilbert; i++)
             overlap+=psir_0[i]*H_psir0[i];
     }
+    H_psir0.clear();
     return overlap;
 }
 
+
 // spectral function continued fraction version
-double lhamil::spectral_function_CF(double omega,double _E0, double eta, int annihil) {
+double lhamil::spectral_function(double omega, double eta) {
     // calculation continued fraction using modified Lentz method
-    complex<double> E;
-    E=complex<double>(omega+E0,eta);
+    complex<double> E(omega,eta);
     vector< complex<double> >  f,c,d,delta;
     complex<double> a,b,G;
     double I;
     b=E-overlap[0];
-    if(abs(b)<1e-30)
-        f.push_back(1e-30);
+    if(abs(b)<1e-25)
+        f.push_back(1e-25);
     else
         f.push_back(b);
     c.push_back(f[0]);
@@ -525,11 +525,11 @@ double lhamil::spectral_function_CF(double omega,double _E0, double eta, int ann
         b=E-overlap[n];
         a=-norm[n]*norm[n];
         d.push_back(b+a*d[n-1]);
-        if(abs(d[n])<1e-30)
-            d[n]=1e-30;
+        if(abs(d[n])<1e-25)
+            d[n]=1e-25;
         c.push_back(b+a/c[n-1]);
-        if(abs(c[n])<1e-30)
-            c[n]=1e-30;
+        if(abs(c[n])<1e-25)
+            c[n]=1e-25;
         d[n]=1.0/d[n];
         delta.push_back(c[n]*d[n]);
         f.push_back(f[n-1]*delta[n]);
@@ -544,23 +544,6 @@ double lhamil::spectral_function_CF(double omega,double _E0, double eta, int ann
     f.clear();
     delta.clear();
     return I;
-}
-
-// spectrum decomposition version
-double lhamil::spectral_function(double omega,double _E0, double eta, int annil) {
-    complex<double> E(omega,eta);
-    complex<double> G=0;
-    for(int i=0; i<lambda; i++)
-        // set annil==1, which gives hole-sector
-        if(annil==1){
-            G+=psi_n0[i]*psi_n0[i]/(E-(_E0-eigenvalues[i]));
-          }
-        // else particle-sector
-        else{
-            G+=psi_n0[i]*psi_n0[i]/(E-(-_E0+eigenvalues[i]));
-          }
-
-    return -G.imag()/M_PI;
 }
 
 

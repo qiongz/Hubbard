@@ -53,8 +53,7 @@ public:
 
     void eigenstates_reconstruction(); //!< Transform |psi_0> to |psir_0>
     double ground_state_energy();    //!< Ground state energy
-    double spectral_function(double omega,double _E0,double eta, int annil); //!< Spectral moments with spin
-    double spectral_function_CF(double omega,double _E0,double eta,int annil); //!< Spectral function with spin, continued fraction version
+    double spectral_function(double omega,double eta); //!< Spectral function with spin, continued fraction version
     void print_hamil(); //!< print the full hamiltonian matrix
     void print_lhamil(int n);  //!< print the Lanczos hamiltonian matrix with first n x n elements
     void print_eigen(int n);  //!< print the first n eigenvalues
