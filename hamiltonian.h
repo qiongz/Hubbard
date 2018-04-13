@@ -7,10 +7,9 @@ public:
     /** Size of the Hilbert space */
     long nHilbert;
     /** seed for the RNGs */
-    unsigned seed;
     double t,U;
     /** Hamiltonian matrix in CSR format */
-    Mat H;
+    double *hamiltonian;
     /** Eigenvalues of the hamiltonian */
     std::vector<double> eigenvalues;
     /** Ground state wave function */
@@ -33,10 +32,10 @@ public:
     /** Diagonalize the full hamiltonian */
     void diag();
 
-    double spectral_function(double omega,double _E0,double eta, int annil); //!< Spectral moments with spin
+    double spectral_function(vector<double> & O_phi_0,double omega,double _E0,double eta, int annil); //!< Spectral moments with spin
     /** Print the hamiltonian matrix */
-    void print_hamil();
+    void print_hamil(int range);
     /** Print the eigenvalues of the system */
-    void print_eigen();
+    void print_eigen(int range);
 };
 #endif
