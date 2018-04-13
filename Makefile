@@ -3,7 +3,7 @@ CC =  icpc
 CFLAGS = -openmp
 LIBS= -llapack -lpthread
 
-check:main.cpp basis.o matrix.o init.o lanczos_hamiltonian.o hamiltonian.o mt19937-64.o 
+check:check.cpp basis.o matrix.o init.o lanczos_hamiltonian.o hamiltonian.o mt19937-64.o  Greens_function.o
 	$(CC) $(CFLAGS) $^ -O2 -o $@ ${LIBS} $(CFLAGS) -lgsl
 
 hubbard:main.cpp basis.o matrix.o init.o lanczos_hamiltonian.o hamiltonian.o mt19937-64.o 
@@ -23,6 +23,9 @@ hamiltonian.o:hamiltonian.cpp hamiltonian.h matrix.h
 
 lanczos_hamiltonian.o:lanczos_hamiltonian.cpp lanczos_hamiltonian.h matrix.h
 	$(CC) $(CFLAGS) -c lanczos_hamiltonian.cpp
+
+Greens_function.o:Greens_function.h Greens_function.cpp
+	$(CC) $(CFLAGS) -c Greens_function.cpp
 
 mt19937-64.o:mt19937-64.c mt19937-64.h
 	$(CC) -c mt19937-64.c 	

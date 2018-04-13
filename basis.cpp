@@ -57,6 +57,8 @@ void basis::init() {
         basis_up[id_up[i]]=i;
     for(i=0; i<id_down.size(); i++)
         basis_down[id_down[i]]=i;
+    nbasis_up=basis_up.size();
+    nbasis_down=basis_down.size();
 }
 
 void basis::init(long _nsite, long _nel_up, long _nel_down){
