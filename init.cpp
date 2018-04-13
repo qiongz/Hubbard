@@ -7,15 +7,15 @@ void usage(char *target) {
     std::cout<<"  -t                       Hopping strength\n";
     std::cout<<"  -U                       Onsite replusion energy\n";
     std::cout<<"  -m                       Lambda\n";
-    std::cout<<"Default: (l,n,t,U) = (2,2,1.0,0.5)\n";
+    std::cout<<"Default: (l,n,t,U,k,lambda) = (2,2,1.0,0.5,0,200)\n";
 }
 
-void init_argv(int& nsite, int& nel, double &t, double &U, int &lambda, int argc,char *argv[])
+void init_argv(int& nsite,int& nel, double &t, double &U, int &lambda, double &k, int argc,char *argv[])
 {
     extern char *optarg;
     int ch,errFlag;
     errFlag=0;
-    while((ch=getopt(argc,argv,"l:n:t:U:m:h:"))!=-1) {
+    while((ch=getopt(argc,argv,"l:n:t:U:m:k:h:"))!=-1) {
         switch(ch) {
         case 'l':
             nsite=atoi(optarg);
@@ -31,6 +31,9 @@ void init_argv(int& nsite, int& nel, double &t, double &U, int &lambda, int argc
             break;
         case 'm':
             lambda=atoi(optarg);
+            break;
+        case 'k':
+            k=atof(optarg);
             break;
         case 'h':
             errFlag++;
@@ -66,4 +69,3 @@ void init_argv(int& nsite, int& nel, double &t, double &U, int &lambda, int argc
         exit(0);
     }
 }
-

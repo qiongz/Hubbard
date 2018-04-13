@@ -78,7 +78,6 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
                     signd=1;
                 }
                 m=n+1;
-                t=(n%2==1?t1:t2);
                 k=sector.hopping_up(i,n,m);
                 if(k!=i)
                     matrix_elements[k*nbasis_down+j]+=-t*signu;
@@ -138,6 +137,9 @@ void lhamil::coeff_update() {
                 eigenvalues_0=eigenvalues[0];
         }
     }
+    phi_0.clear();
+    phi_1.clear();
+    phi_2.clear();
 }
 
 void lhamil::coeff_explicit_update()
@@ -262,20 +264,6 @@ void lhamil::coeff_explicit_update()
         phi_0=phi_1;
         phi_1=phi_2;
         phi_2=phi_s;
-
-        // checking if the iteration is converged
-        // the overhead of diagonalization is small
-        /*
-        if(j>10 and j%5==0){
-          diag(j);
-          if(abs((eigenvalues[0]-eigenvalues_0)/(abs(eigenvalues_0)+1e-8))<epsilon){
-              lambda=j+1;
-              break;
-          }
-          else
-             eigenvalues_0=eigenvalues[0];
-        }
-        */
     }
     delete phi_0,phi_1,phi_2,phi_t;
 }
@@ -395,20 +383,6 @@ void lhamil::coeff_update_wopt(vector<double> O_phi_0)
         phi_0=phi_1;
         phi_1=phi_2;
         phi_2=phi_s;
-
-        // checking if the iteration is converged
-        // the overhead of diagonalization is small
-        /*
-        if(j>10 and j%5==0){
-          diag(j);
-          if(abs((eigenvalues[0]-eigenvalues_0)/(abs(eigenvalues_0)+1e-8))<epsilon){
-              lambda=j+1;
-              break;
-          }
-          else
-             eigenvalues_0=eigenvalues[0];
-        }
-        */
     }
     delete phi_0,phi_1,phi_2,phi_t;
 }
@@ -491,6 +465,10 @@ void lhamil::eigenstates_reconstruction() {
         Norm+=psir_0[n]*psir_0[n];
     for(n=0; n<nHilbert; n++)
         psir_0[n]/=sqrt(Norm);
+
+    phi_0.clear();
+    phi_1.clear();
+    phi_2.clear();
 }
 
 double lhamil::ground_state_energy() {
@@ -630,20 +608,25 @@ void lhamil::read_from_file(const char* filename) {
     idf.close();
 }
 
-void lhamil::print_hamil() {
-    int i,j,count;
-    for(i=0; i<nHilbert; i++) {
+void lhamil::print_hamil(int range) {
+    int i,k,row_starts,col_index;
+    if(range>=nHilbert)
+       range=nHilbert;
+    for(i=0; i<range; i++) {
         if(i==0)
             cout<<"[[";
         else cout<<" [";
-        count=0;
-        for(j=0; j<nHilbert; j++) {
-            if(j==H.inner_indices[H.outer_starts[i]+count])
-                cout<<H.value[H.outer_starts[i]+count++]<<",";
+        row_starts=H.outer_starts[i];
+        for(k=0; k<range; k++) {
+            col_index=H.inner_indices[row_starts];
+            if(k==col_index && row_starts<H.outer_starts[i+1]){
+                cout<<setw(4)<<setprecision(2)<<H.value[row_starts]<<",";
+                row_starts++;
+            }
             else
-                cout<<0<<",";
+                cout<<setw(4)<<setprecision(2)<<0<<",";
         }
-        if(i==nHilbert-1)
+        if(i==range-1)
             cout<<"]]"<<endl;
         else cout<<"]"<<endl;
     }

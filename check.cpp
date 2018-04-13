@@ -23,14 +23,14 @@ int main(int argc,char *argv[]) {
     double func_Lieb_Wu(double x, void *params);
     double Integrate_Lieb_Wu(double U);
 
-    nsite=8;
-    nel=8;
+    nsite=10;
+    nel=10;
     t=1;
     U=5;
-    K=1.0;
-    lambda=200;
+    K=0.5;
+    lambda=300;
 
-    init_argv(nsite,nel,t,U,lambda,argc,argv);
+    init_argv(nsite,nel,t,U,lambda,K,argc,argv);
 
     nel_up=(nel+1)/2;
     #if __cplusplus > 199711L
@@ -54,22 +54,37 @@ int main(int argc,char *argv[]) {
     config.diag();
     config.eigenstates_reconstruction();
 
-    Greens_func spectral(config);
-    vector<double> E,A;
-    for(int i=0;i<2000;i++)
-       E.push_back(i/100.0-10);
-    //spectral.spectral_function_ij_uu(1,1,0.1,E,A,mu);
-    spectral.spectral_function_kk_uu(K,0.2,E,A,mu);
-    for(int i=0;i<2000;i++)
-       cout<<E[i]-mu<<" "<<A[i]<<endl;
+    vector<double> E,A_h,A_p,Ah,Ap;
+    double mu_h,mu_p;
+    for(int i=0;i<4000;i++)
+       E.push_back(i/200.0-10);
+
+    Greens_func lspectral(config);
+    lspectral.spectral_function_ii_uu_hole(0,0.1,E,Ah,mu_h);
+    lspectral.spectral_function_ii_uu_particle(0,0.1,E,Ap,mu_p);
+
+    //spectral.spectral_function_ii_uu_hole_full_hamil(1,0.05,E,A_h,mu_h);
+    //spectral.spectral_function_ii_uu_particle_full_hamil(1,0.05,E,A_p,mu_p);
+
+    //lspectral.spectral_function_ij_uu_hole(3,5,0.05,E,Ah,mu_h);
+    //lspectral.spectral_function_ij_uu_particle(3,5,0.05,E,Ap,mu_p);
+    //lspectral.spectral_function_kk_uu_hole(K,0.01,E,Ah,mu_h);
+    //lspectral.spectral_function_kk_uu_particle(K,0.01,E,Ap,mu_p);
+
+    mu=(mu_h+mu_p)/2.0;
+    for(int i=0;i<4000;i++)
+       cout<<E[i]-mu<<" "<<-Ah[i]+Ap[i]<<endl;
+
+      // cout<<E[i]-mu_h/2.0<<" "<<Ah[i]<<endl;
+     // print dos
 
     /* basis check */
-    /*
-    config.print_hamil();
-    config.print_lhamil(6);
-    config.print_eigen(6);
-    onfig.save_to_file(filename.c_str());
-    */
+
+    //config.print_hamil();
+    //config.print_lhamil(6);
+    //config.print_eigen(6);
+    // config.save_to_file(filename.c_str());
+
     /* ground-state energy check */
     //cout<<"#U  Lanczos Lieb-Wu "<<endl;
     //cout<<U<<" "<<config.ground_state_energy()/nsite<<" "<<-Integrate_Lieb_Wu(U)<<endl;
