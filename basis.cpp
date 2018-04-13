@@ -37,20 +37,13 @@ long basis::factorial(long N, long m) {
 }
 
 void basis::init() {
-    long i,config_init;
-    nbasis_up=factorial(nsite,nel_up);
-    nbasis_down=factorial(nsite,nel_down);
-    config_init=0;
-    for(i=0; i<nel_up; i++)
-        config_init+=(1<<i);
-    generate_up(config_init);
-
-    config_init=0;
-    for(i=0; i<nel_down; i++)
-        config_init+=(1<<i);
-    generate_down(config_init);
-
+    long i,j,count,config;
     std::map<long,long>::iterator it;
+    count=j=config=0;
+    generate_up(count,j,config);
+    count=j=config=0;
+    generate_down(count,j,config);
+
     for(it=basis_up.begin(); it!=basis_up.end(); it++)
         id_up.push_back(it->first);
     for(it=basis_down.begin(); it!=basis_down.end(); it++)
@@ -60,9 +53,9 @@ void basis::init() {
     sort(id_down.begin(),id_down.end());
     basis_up.clear();
     basis_down.clear();
-    for(i=0; i<nbasis_up; i++)
+    for(i=0; i<id_up.size(); i++)
         basis_up[id_up[i]]=i;
-    for(i=0; i<nbasis_down; i++)
+    for(i=0; i<id_down.size(); i++)
         basis_down[id_down[i]]=i;
 }
 
@@ -170,49 +163,32 @@ long basis::annihilation(long s,long n)
 }
 
 
-void basis::generate_up(long a) {
-    long mask,K,L,b,j;
-#if __cplusplus > 199711L
-    basis_up.emplace(a,a);
-#else
-    basis_up[a]=a;
-#endif
-    for(long i=0; i<nsite; i++) {
-        j=(i+1>=nsite)?i+1-nsite:i+1;
-        mask=(1<<i)+(1<<j);
-        K=mask&a;
-        L=K^mask;
-        if(L!=0 && L!=mask) {
-            b=a-K+L;
-            if(basis_up.find(b)==basis_up.end())
-                generate_up(b);
-            if(basis_up.size()==nbasis_up)
-                return;
-        }
-    }
-    return;
+void basis::generate_up(long count,long j, long config){
+  long i,id,k,c;
+  count++;
+  config=(count==1?0:config);
+  j=(count==1?0:j+1);
+  for(i=j;i<nsite-(nel_up-count);i++){
+    c=config+(1<<i);
+    if(count<nel_up)
+       generate_up(count,i,c);
+    else
+        basis_up[c]=c;
+  }
 }
 
-void basis::generate_down(long a) {
-    long mask,K,L,b,j;
-#if __cplusplus > 199711L
-    basis_down.emplace(a,a);
-#else
-    basis_down[a]=a;
-#endif
-    for(long i=0; i<nsite-1; i++) {
-        j=(i+1>=nsite)?i+1-nsite:i+1;
-        mask=(1<<i)+(1<<j);
-        K=mask&a;
-        L=K^mask;
-        if(L!=0 && L!=mask) {
-            b=a-K+L;
-            if(basis_down.find(b)==basis_down.end())
-                generate_down(b);
-            if(basis_down.size()==nbasis_down)
-                return;
-        }
-    }
+void basis::generate_down(long count,long j, long config) {
+  long i,id,k,c;
+  count++;
+  config=(count==1?0:config);
+  j=(count==1?0:j+1);
+  for(i=j;i<nsite-(nel_down-count);i++){
+    c=config+(1<<i);
+    if(count<nel_down)
+       generate_down(count,i,c);
+    else
+        basis_down[c]=c;
+  }
 }
 
 void basis::prlong() {

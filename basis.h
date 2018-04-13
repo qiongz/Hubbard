@@ -35,8 +35,8 @@ public:
     long factorial(long,long);
     void init();
     void init(long,long,long);
-    void generate_up(long);
-    void generate_down(long);
+    void generate_up(long,long,long);
+    void generate_down(long,long,long);
     long creation(long,long);
     long annihilation(long,long);
     void prlong();
