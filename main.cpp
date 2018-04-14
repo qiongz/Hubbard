@@ -16,16 +16,17 @@ int main(int argc,char *argv[]) {
     int nel_up,nel_down;
     int Sz;
     unsigned seed;
-    double t,U;
+    double t,U,V;
     double func_Lieb_Wu(double x, void *params);
     double Integrate_Lieb_Wu(double U);
 
     nsite=2;
     nel=2;
     t=1.0;
+    V=0;
     U=5;
     lambda=200;
-    init_argv(nsite,nel,t,U,lambda,argc,argv);
+    init_argv(nsite,nel,V,t,U,lambda,argc,argv);
 
     nel_up=(nel+1)/2;
     #if __cplusplus > 199711L
@@ -46,7 +47,7 @@ int main(int argc,char *argv[]) {
     sf<<"sector_"<<Sz;
     sf>>filename;
 
-    lhamil config(sector,t,U,lambda,seed);
+    lhamil config(sector,V,t,U,lambda,seed);
     config.coeff_explicit_update();
     config.diag();
     config.eigenstates_reconstruction();

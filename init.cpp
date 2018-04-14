@@ -4,18 +4,19 @@ void usage(char *target) {
     std::cout<<"Options:\n";
     std::cout<<"  -l                       Number of sites\n";
     std::cout<<"  -n                       Number of electrons\n";
+    std::cout<<"  -v                       Onsite staggered potential\n";
     std::cout<<"  -t                       Hopping strength\n";
-    std::cout<<"  -U                       Onsite replusion energy\n";
+    std::cout<<"  -u                       Onsite replusion energy\n";
     std::cout<<"  -m                       Lambda\n";
     std::cout<<"Default: (l,n,t,U,k,lambda) = (2,2,1.0,0.5,0,200)\n";
 }
 
-void init_argv(int& nsite,int& nel, double &t, double &U, int &lambda, double &k, int argc,char *argv[])
+void init_argv(int& nsite,int& nel, double &V,double &t, double &U, int &lambda, double &k, int argc,char *argv[])
 {
     extern char *optarg;
     int ch,errFlag;
     errFlag=0;
-    while((ch=getopt(argc,argv,"l:n:t:U:m:k:h:"))!=-1) {
+    while((ch=getopt(argc,argv,"l:n:t:v:u:m:k:h:"))!=-1) {
         switch(ch) {
         case 'l':
             nsite=atoi(optarg);
@@ -26,7 +27,10 @@ void init_argv(int& nsite,int& nel, double &t, double &U, int &lambda, double &k
         case 't':
             t=atof(optarg);
             break;
-        case 'U':
+        case 'v':
+            V=atof(optarg);
+            break;
+        case 'u':
             U=atof(optarg);
             break;
         case 'm':

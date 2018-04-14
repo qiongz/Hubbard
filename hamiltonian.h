@@ -7,7 +7,7 @@ public:
     /** Size of the Hilbert space */
     long nHilbert;
     /** seed for the RNGs */
-    double t,U;
+    double t,U,V;
     /** Hamiltonian matrix in CSR format */
     double *hamiltonian;
     /** Eigenvalues of the hamiltonian */
@@ -24,8 +24,8 @@ public:
      \param t hopping strength,
      \param U onsite replusive interaction strength
      */
-    hamil(basis & sector,double _t, double _U);
-    void init(basis & sector,double _t, double _U);
+    hamil(basis & sector,double _V,double _t, double _U);
+    void init(basis & sector,double _V,double _t, double _U);
     const hamil & operator=(const hamil &);
     /** Return the ground state energy of the system */
     double ground_state_energy();

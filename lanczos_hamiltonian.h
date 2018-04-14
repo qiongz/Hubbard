@@ -9,7 +9,7 @@ public:
     unsigned seed;  //!< Seed for RNGs
     long nHilbert;  //!< Hilbert space size
     long lambda;    //!< Lanczos update steps
-    double t,U;
+    double t,U,V;
     double E0;      //!< Ground state eigen energy
     basis sector;   //!< Basis
     Mat H;  //!< Hamiltonian matrix in CSR format
@@ -36,15 +36,15 @@ public:
      \param _lambda Lanczos update steps
      \param _seed Seed for RNGs
     */
-    lhamil(basis & _sector,double t, double U,long _lambda,unsigned _seed); //!< Constructor with basis sector as input
+    lhamil(basis & _sector,double V,double t, double U,long _lambda,unsigned _seed); //!< Constructor with basis sector as input
     ~lhamil(); //!< Destructor
-    void init(basis &_sector,double t, double U, long _lambda,unsigned _seed);
+    void init(basis &_sector,double V,double t, double U, long _lambda,unsigned _seed);
     const lhamil & operator=(const lhamil &);
     /** \param _sector Basis sector
         \param t Hopping strength
         \param U Onsite replusive interaction strength
     */
-    void set_hamil(basis & _sector ,double t ,double U);  //!< Initialize hamiltonian matrix
+    void set_hamil(basis & _sector ,double V,double t ,double U);  //!< Initialize hamiltonian matrix
     void coeff_update(); //!< Lanczos update implemenation utilizing the Mat class
     void coeff_explicit_update(); //!< Lanczos update implemenation written in explicit arrays
     void coeff_update_wopt(vector<double> O_phi_0);
@@ -54,9 +54,9 @@ public:
     void eigenstates_reconstruction(); //!< Transform |psi_0> to |psir_0>
     double ground_state_energy();    //!< Ground state energy
     double spectral_function(double omega,double eta); //!< Spectral function with spin, continued fraction version
-    void print_hamil(); //!< print the full hamiltonian matrix
-    void print_lhamil(int n);  //!< print the Lanczos hamiltonian matrix with first n x n elements
-    void print_eigen(int n);  //!< print the first n eigenvalues
+    void print_hamil(int range); //!< print the full hamiltonian matrix
+    void print_lhamil(int range);  //!< print the Lanczos hamiltonian matrix with first n x n elements
+    void print_eigen(int range);  //!< print the first n eigenvalues
     void save_to_file(const char* filename);  //!< save object to file "filename"
     void read_from_file(const char*);        //!< load object from file "filename"
 };

@@ -7,8 +7,8 @@ Greens_func::Greens_func(lhamil & _gs_config){
     gs_sector=gs_config.sector;
     hole_sector.init(gs_sector.nsite,gs_sector.nel_up-1,gs_sector.nel_down);
     particle_sector.init(gs_sector.nsite,gs_sector.nel_up+1,gs_sector.nel_down);
-    hole_config.init(hole_sector,gs_config.t,gs_config.U,gs_config.lambda,gs_config.seed);
-    particle_config.init(particle_sector,gs_config.t,gs_config.U,gs_config.lambda,gs_config.seed);
+    hole_config.init(hole_sector,gs_config.V,gs_config.t,gs_config.U,gs_config.lambda,gs_config.seed);
+    particle_config.init(particle_sector,gs_config.V,gs_config.t,gs_config.U,gs_config.lambda,gs_config.seed);
 }
 
 Greens_func::Greens_func(hamil & _gs_hconfig,basis &_gs_sector){
@@ -16,8 +16,8 @@ Greens_func::Greens_func(hamil & _gs_hconfig,basis &_gs_sector){
     gs_sector=_gs_sector;
     hole_sector.init(gs_sector.nsite,gs_sector.nel_up-1,gs_sector.nel_down);
     particle_sector.init(gs_sector.nsite,gs_sector.nel_up+1,gs_sector.nel_down);
-    hole_hconfig.init(hole_sector,gs_hconfig.t,gs_hconfig.U);
-    particle_hconfig.init(particle_sector,gs_hconfig.t,gs_hconfig.U);
+    hole_hconfig.init(hole_sector,gs_hconfig.V,gs_hconfig.t,gs_hconfig.U);
+    particle_hconfig.init(particle_sector,gs_hconfig.V,gs_hconfig.t,gs_hconfig.U);
 }
 
 Greens_func::~Greens_func(){}

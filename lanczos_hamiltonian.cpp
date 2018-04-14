@@ -8,25 +8,26 @@ lhamil::lhamil() {}
 
 lhamil::lhamil(const Mat &_H,long _nHilbert,long _lambda, unsigned _seed):H(_H),nHilbert(_nHilbert),lambda(_lambda),seed(_seed) {}
 
-lhamil::lhamil(basis &_sector,double _t, double _U,long _lambda,unsigned _seed) {
-    sector=_sector;
+lhamil::lhamil(basis &_sector,double _V,double _t, double _U,long _lambda,unsigned _seed) {
     lambda=_lambda;
     seed=_seed;
+    V=_V;
     t=_t;
     U=_U;
-    set_hamil(sector,t,U);
+    set_hamil(_sector,V,t,U);
 }
 
 lhamil::~lhamil() {
 }
 
-void lhamil::init(basis &_sector,double _t, double _U,long _lambda,unsigned _seed) {
+void lhamil::init(basis &_sector,double _V,double _t, double _U,long _lambda,unsigned _seed) {
     sector=_sector;
     lambda=_lambda;
     seed=_seed;
+    V=_V;
     t=_t;
     U=_U;
-    set_hamil(sector,t,U);
+    set_hamil(sector,V,t,U);
 }
 const lhamil & lhamil::operator =(const lhamil & _config) {
     if(this !=&_config) {
@@ -36,6 +37,7 @@ const lhamil & lhamil::operator =(const lhamil & _config) {
         seed=_config.seed;
         t=_config.t;
         U=_config.U;
+        V=_config.V;
         lambda=_config.lambda;
         E0=_config.E0;
         norm.assign(_config.norm.begin(),_config.norm.end());
@@ -47,7 +49,7 @@ const lhamil & lhamil::operator =(const lhamil & _config) {
     return *this;
 }
 
-void lhamil::set_hamil(basis & _sector,double t,double U)
+void lhamil::set_hamil(basis & _sector,double V,double t,double U)
 {
     long nsite,nbasis_up,nbasis_down,signu,signd;
     sector=_sector;
@@ -62,6 +64,7 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
     H.value.reserve(nHilbert*nsite);
     H.outer_starts.reserve(nHilbert+1);
     long n,m,i,j,k,l,s;
+    long mask,K,L,b;
     long row=0;
     H.outer_starts.push_back(0);
     for(i=0; i<nbasis_up; i++) {
@@ -77,17 +80,48 @@ void lhamil::set_hamil(basis & _sector,double t,double U)
                     signu=1;
                     signd=1;
                 }
-                m=n+1;
+                m=(n+1>=nsite?n+1-nsite:n+1);
                 k=sector.hopping_up(i,n,m);
                 if(k!=i)
-                    matrix_elements[k*nbasis_down+j]+=-t*signu;
-
+                  matrix_elements[k*nbasis_down+j]+=-t*signu;
                 l=sector.hopping_down(j,n,m);
                 if(l!=j)
-                    matrix_elements[i*nbasis_down+l]+=-t*signd;
-
+                  matrix_elements[i*nbasis_down+l]+=-t*signd;
                 if(sector.potential(i,j,n))
                     matrix_elements[i*nbasis_down+j]+=U;
+                if(sector.onsite_up(i,n))
+                    matrix_elements[i*nbasis_down+j]+=V*pow(-1,n);
+                if(sector.onsite_down(j,n))
+                    matrix_elements[i*nbasis_down+j]+=V*pow(-1,n);
+
+
+                // explicit implementation
+                /*
+                mask=(1<<n)+(1<<m);
+                K=mask&sector.id_up[i];
+                L=K^mask;
+                if(L!=0 && L!=mask){
+                    b=sector.id_up[i]-K+L;
+                    if(sector.basis_up.find(b)!=sector.basis_up.end()) {
+                       k=sector.basis_up[b];
+                       matrix_elements[k*nbasis_down+j]+=-t*signu;
+                     }
+                }
+                K=mask&sector.id_down[j];
+                L=K^mask;
+                if(L!=0 && L!=mask){
+                   b=sector.id_down[j]-K+L;
+                   if(sector.basis_down.find(b)!=sector.basis_down.end()){
+                      l=sector.basis_down[b];
+                      matrix_elements[i*nbasis_down+l]+=-t*signd;
+                   }
+                }
+                mask=(1<<n);
+                K=sector.id_up[i]&mask;
+                L=sector.id_down[j]&mask;
+                if(K==mask && L==mask)
+                    matrix_elements[i*nbasis_down+j]+=U;
+                    */
             }
             long count=0;
             for(n=0;n<nHilbert;n++)

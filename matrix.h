@@ -10,6 +10,8 @@
 #include<cstring>
 #include<vector>
 #include<omp.h>
+#include"mkl.h"
+
 
 #if __cplusplus > 199711L
 #include<random>
@@ -17,7 +19,7 @@
 #include"mt19937-64.h"
 #endif
 using namespace std;
-extern "C" int dsyev_(char *, char *, int *, double *, int*, double *, double *, int *, int *);
+//extern "C" int dsyev_(char *, char *, int *, double *, int*, double *, double *, int *, int *);
 void diag_dsyev(double *h, double *e, int l);
 
 class Vec {

@@ -256,6 +256,7 @@ void Mat::print() {
     std::cout<<" ]"<<std::endl;
 }
 
+/*
 void diag_dsyev(double *h, double *e, int l) {
     char jobz, uplo;
     int info;
@@ -266,4 +267,13 @@ void diag_dsyev(double *h, double *e, int l) {
     double *work = new double[lwork];
     dsyev_(&jobz, &uplo, &l, h, &lda, e, work, &lwork, &info);
     delete [] work;
+}
+*/
+void diag_dsyev(double *h, double *e, int l) {
+    char jobz, uplo;
+    int info;
+    jobz = 'V';
+    uplo = 'U';
+    int lda = l;
+    info=LAPACKE_dsyev(LAPACK_COL_MAJOR,jobz, uplo,l,h,lda,e);    
 }

@@ -1,16 +1,18 @@
 #include"hamiltonian.h"
 hamil::hamil() {}
 
-hamil::hamil(basis &sector,double _t, double _U){
+hamil::hamil(basis &sector,double _V,double _t, double _U){
+    V=_V;
     t=_t;
     U=_U;
-    init(sector,t,U);
+    init(sector,V,t,U);
 }
 
 hamil::~hamil() {}
 
-void hamil::init(basis &sector,double _t,double _U){
+void hamil::init(basis &sector,double _V,double _t,double _U){
     long nsite,nbasis_up,nbasis_down,signu,signd;
+    V=_V;
     t=_t;
     U=_U;
     nsite=sector.nsite;
