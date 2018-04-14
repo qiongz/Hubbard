@@ -11,7 +11,6 @@ public:
     long lambda;    //!< Lanczos update steps
     double t,U,V;
     double E0;      //!< Ground state eigen energy
-    basis sector;   //!< Basis
     Mat H;  //!< Hamiltonian matrix in CSR format
     //Mat O;  //!< Operator matrix in CSR format
     std::vector<double> norm; //!< Normalization coefficients vector in Lanczos update

@@ -44,6 +44,10 @@ void hamil::init(basis &sector,double _V,double _t,double _U){
 
                 if(sector.potential(i,j,n))
                     hamiltonian[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=U;
+                if(sector.onsite_up(i,n))
+                    hamiltonian[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=V*pow(-1,n);
+                if(sector.onsite_down(j,n))
+                    hamiltonian[(i*nbasis_down+j)*nHilbert+i*nbasis_down+j]+=V*pow(-1,n);
             }
     }
 }
@@ -52,43 +56,25 @@ const hamil & hamil::operator =(const hamil & _gs_hconfig) {
     if(this !=&_gs_hconfig) {
         nHilbert=_gs_hconfig.nHilbert;
         t=_gs_hconfig.t;
+        V=_gs_hconfig.V;
         U=_gs_hconfig.U;
         eigenvalues.assign(_gs_hconfig.eigenvalues.begin(),_gs_hconfig.eigenvalues.end());
-        psi_0.assign(_gs_hconfig.psi_0.begin(),_gs_hconfig.psi_0.end());
+        psir_0.assign(_gs_hconfig.psir_0.begin(),_gs_hconfig.psir_0.end());
         psi_n0.assign(_gs_hconfig.psi_n0.begin(),_gs_hconfig.psi_n0.end());
     }
     return *this;
 }
 
-
-double hamil::spectral_function(vector<double> &O_phi_0,double omega,double _E0, double eta, int annil) {
-    complex<double> E;
-    complex<double> G=0;
-    for(int i=0; i<nHilbert; i++)
-        // set annil==1, which gives hole-sector
-        if(annil==1){
-            E=complex<double>(omega,eta);
-            G+=pow(psi_n0[i]*O_phi_0[i],2)/(E+eigenvalues[i]-_E0);
-          }
-        // else particle-sector
-        else{
-            E=complex<double>(omega,eta);
-            G+=pow(psi_n0[i]*O_phi_0[i],2)/(E+_E0-eigenvalues[i]);
-          }
-
-    return -G.imag()/M_PI;
-}
-
 double hamil::ground_state_energy() {
-    if(psi_0.size()==0) return 0;
+    if(psir_0.size()==0) return 0;
     double E_gs=0;
     vector<double> psi_t;
     psi_t.assign(nHilbert,0);
     for(int i=0;i<nHilbert;i++)
       for(int j=0;j<nHilbert;j++)
-         psi_t[i]+=hamiltonian[i*nHilbert+j]*psi_0[j];
+         psi_t[i]+=hamiltonian[i*nHilbert+j]*psir_0[j];
     for(int i=0; i<nHilbert; i++)
-        E_gs+=psi_t[i]*psi_0[i];
+        E_gs+=psi_t[i]*psir_0[i];
     psi_t.clear();
     return E_gs;
 }
@@ -101,12 +87,12 @@ void hamil::diag() {
     for(i=0;i<nHilbert*nHilbert;i++)
         h[i]=hamiltonian[i];
     diag_dsyev(h,en,nHilbert);
-    psi_0.assign(nHilbert,0);
+    psir_0.assign(nHilbert,0);
     psi_n0.assign(nHilbert,0);
     eigenvalues.assign(nHilbert,0);
     for(i=0; i<nHilbert; i++) {
         eigenvalues[i]=en[i];
-        psi_0[i]=h[i];
+        psir_0[i]=h[i];
         psi_n0[i]=h[i*nHilbert];
     }
     delete h,en;

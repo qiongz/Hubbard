@@ -1,13 +1,14 @@
 CC =  icpc
 #CFLAGS = -qopenmp -std=c++11
 CFLAGS = -openmp
-LIBS= -llapack -lpthread
+#LIBS= -llapack -lpthread 
+LIBS= -mkl -lpthread 
 
 check:check.cpp basis.o matrix.o init.o lanczos_hamiltonian.o hamiltonian.o mt19937-64.o  Greens_function.o
-	$(CC) $(CFLAGS) $^ -O2 -o $@ ${LIBS} $(CFLAGS) -lgsl
+	$(CC) $(CFLAGS) $^ -O3 -o $@ ${LIBS} $(CFLAGS) -lgsl
 
 hubbard:main.cpp basis.o matrix.o init.o lanczos_hamiltonian.o hamiltonian.o mt19937-64.o 
-	$(CC) $(CFLAGS) $^ -O2 -o $@ ${LIBS} $(CFLAGS) 
+	$(CC) $(CFLAGS) $^ -O3 -o $@ ${LIBS} $(CFLAGS) 
 
 basis.o:basis.cpp basis.h
 	$(CC) $(CFLAGS) -c basis.cpp

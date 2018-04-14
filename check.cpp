@@ -28,7 +28,7 @@ int main(int argc,char *argv[]) {
     t=1;
     V=0;
     U=5;
-    K=0.5;
+    K=0;
     lambda=200;
 
     init_argv(nsite,nel,V,t,U,lambda,K,argc,argv);
@@ -40,6 +40,7 @@ int main(int argc,char *argv[]) {
     Timer tmr;
     seed=tmr.nanoseconds();
     #endif
+    K=K*2.0*M_PI/nsite;
     nel_down=nel-nel_up;
     Sz=nel_up-nel_down;
     basis sector(nsite,nel_up,nel_down);
@@ -56,15 +57,14 @@ int main(int argc,char *argv[]) {
     config.eigenstates_reconstruction();
 
 
+    vector<double> E,A_hu,A_pu,A_hd,A_pd;
+    double mu_hu,mu_hd,mu_pu,mu_pd;
+    for(int i=0;i<3000;i++)
+       E.push_back(i/200.0-5);
 
-    vector<double> E,A_h,A_p,Ah,Ap;
-    double mu_h,mu_p;
-    for(int i=0;i<4000;i++)
-       E.push_back(i/200.0-10);
-
-    Greens_func lspectral(config);
-    lspectral.spectral_function_ii_uu_hole(0,0.1,E,Ah,mu_h);
-    lspectral.spectral_function_ii_uu_particle(0,0.1,E,Ap,mu_p);
+    Greens_func lspectral(config,sector);
+    //lspectral.spectral_function_ii_uu_hole(0,0.2,E,Ah,mu_h);
+    //lspectral.spectral_function_ii_uu_particle(0,0.2,E,Ap,mu_p);
 
 
     //spectral.spectral_function_ii_uu_hole_full_hamil(1,0.05,E,A_h,mu_h);
@@ -72,12 +72,14 @@ int main(int argc,char *argv[]) {
 
     //lspectral.spectral_function_ij_uu_hole(3,5,0.05,E,Ah,mu_h);
     //lspectral.spectral_function_ij_uu_particle(3,5,0.05,E,Ap,mu_p);
-    //lspectral.spectral_function_kk_uu_hole(K,0.05,E,Ah,mu_h);
-    //lspectral.spectral_function_kk_uu_particle(K,0.05,E,Ap,mu_p);
+    lspectral.spectral_function_kk_hole(K,0.05,E,A_hu,mu_hu,0);
+    lspectral.spectral_function_kk_hole(K,0.05,E,A_hd,mu_hd,1);
+    lspectral.spectral_function_kk_particle(K,0.05,E,A_pu,mu_pu,0);
+    lspectral.spectral_function_kk_particle(K,0.05,E,A_pd,mu_pd,1);
 
-    mu=(mu_h+mu_p)/2.0;
-    for(int i=0;i<4000;i++)
-       cout<<E[i]-mu<<" "<<-Ah[i]+Ap[i]<<endl;
+    mu=(mu_hu+mu_pd+mu_hd+mu_pd)/4.0;
+    for(int i=0;i<3000;i++)
+       cout<<E[i]-mu<<" "<<-A_hu[i]-A_hd[i]+A_pu[i]+A_pd[i]<<endl;
 
 
       // cout<<E[i]-mu_h/2.0<<" "<<Ah[i]<<endl;

@@ -21,18 +21,16 @@ lhamil::~lhamil() {
 }
 
 void lhamil::init(basis &_sector,double _V,double _t, double _U,long _lambda,unsigned _seed) {
-    sector=_sector;
     lambda=_lambda;
     seed=_seed;
     V=_V;
     t=_t;
     U=_U;
-    set_hamil(sector,V,t,U);
+    set_hamil(_sector,V,t,U);
 }
 const lhamil & lhamil::operator =(const lhamil & _config) {
     if(this !=&_config) {
         nHilbert=_config.nHilbert;
-        sector=_config.sector;
         H=_config.H;
         seed=_config.seed;
         t=_config.t;
@@ -49,10 +47,9 @@ const lhamil & lhamil::operator =(const lhamil & _config) {
     return *this;
 }
 
-void lhamil::set_hamil(basis & _sector,double V,double t,double U)
+void lhamil::set_hamil(basis & sector,double V,double t,double U)
 {
     long nsite,nbasis_up,nbasis_down,signu,signd;
-    sector=_sector;
     nsite=sector.nsite;
     nbasis_up=sector.nbasis_up;
     nbasis_down=sector.nbasis_down;
@@ -93,7 +90,6 @@ void lhamil::set_hamil(basis & _sector,double V,double t,double U)
                     matrix_elements[i*nbasis_down+j]+=V*pow(-1,n);
                 if(sector.onsite_down(j,n))
                     matrix_elements[i*nbasis_down+j]+=V*pow(-1,n);
-
 
                 // explicit implementation
                 /*
