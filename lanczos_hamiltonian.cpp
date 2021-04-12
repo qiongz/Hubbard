@@ -541,7 +541,7 @@ double lhamil::spectral_function(double omega, double eta) {
         d[n]=1.0/d[n];
         delta.push_back(c[n]*d[n]);
         f.push_back(f[n-1]*delta[n]);
-        if(abs(delta.back()-1)<1e-15)
+        if(abs(delta.back().real()-1)<1e-15)
             break;
     }
     G=1.0/f.back();

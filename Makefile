@@ -1,8 +1,10 @@
-CC =  icpc
+#CC =  icpc
+CC = g++
 #CFLAGS = -qopenmp -std=c++11
-CFLAGS = -openmp
-#LIBS= -llapack -lpthread 
-LIBS= -mkl -lpthread 
+#CFLAGS = -openmp 
+CFLASG = 
+LIBS= -llapack -lpthread 
+#LIBS= -mkl -lpthread 
 
 check:check.cpp basis.o matrix.o init.o lanczos_hamiltonian.o hamiltonian.o mt19937-64.o  Greens_function.o
 	$(CC) $(CFLAGS) $^ -O3 -o $@ ${LIBS} $(CFLAGS) -lgsl

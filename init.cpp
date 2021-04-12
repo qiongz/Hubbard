@@ -11,7 +11,7 @@ void usage(char *target) {
     std::cout<<"Default: (l,n,t,U,k,lambda) = (2,2,1.0,0.5,0,200)\n";
 }
 
-void init_argv(int& nsite,int& nel, double &V,double &t, double &U, int &lambda, double &k, int argc,char *argv[])
+void init_argv(int& nsite,int& nel, double &V,double &t, double &U, int &lambda, int argc,char *argv[])
 {
     extern char *optarg;
     int ch,errFlag;
@@ -35,9 +35,6 @@ void init_argv(int& nsite,int& nel, double &V,double &t, double &U, int &lambda,
             break;
         case 'm':
             lambda=atoi(optarg);
-            break;
-        case 'k':
-            k=atof(optarg);
             break;
         case 'h':
             errFlag++;
